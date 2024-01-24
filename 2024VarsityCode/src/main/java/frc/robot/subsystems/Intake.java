@@ -12,29 +12,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
     private CANSparkMax intake;
-    //private CANSparkMax director;
-    private double intakeSpeed = 0;
-    //private double directorSpeed = 0;
+    //private double intakeSpeed = 0;
 
     /** Creates a new Intake. */
     public Intake() {
         intake = new CANSparkMax(Constants.Intake.intakeCAN, MotorType.kBrushless);
-        intake = new CANSparkMax(Constants.Intake.directorCAN, MotorType.kBrushless);
     }
 
     public void setIntakeSpeed(double speed){
-        intakeSpeed = speed;
+        intake.set(speed);
     }
-    /*
-    public void setDirectorSpeed(double speed){
-        directorSpeed = speed;
-    }
-    */
 
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        intake.set(intakeSpeed);
+        //intake.set(intakeSpeed);
         //director.set(directorSpeed);
     }
 }

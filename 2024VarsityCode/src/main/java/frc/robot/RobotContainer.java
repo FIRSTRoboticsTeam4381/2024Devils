@@ -30,18 +30,16 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
     /* Controllers */
-    //private final CommandPS4Controller driver = new CommandPS4Controller(0);
+    private final CommandPS4Controller driver = new CommandPS4Controller(0);
     private final CommandPS4Controller specialist = new CommandPS4Controller(0);
 
     /* Driver Buttons */
-    //private final Trigger zeroSwerve = driver.options();
+    private final Trigger zeroSwerve = driver.options();
 
     /* Operator Buttons */
-    private final Trigger intake = specialist.cross();
-    private final Trigger reverseIntake = specialist.circle();
 
     /* Subsystems */
-    //public static final Swerve s_Swerve = new Swerve();
+    public static final Swerve s_Swerve = new Swerve();
     public static final Intake s_Intake = new Intake();
 
     //Auto Chooser
@@ -49,7 +47,7 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
-        //s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true));
+        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true));
         s_Intake.setDefaultCommand(new IntakeCommand(s_Intake, specialist));
 
         // Configure the button bindings
@@ -75,22 +73,9 @@ public class RobotContainer {
    */
     private void configureButtonBindings(){
         // Button to reset swerve odometry and angle
-        /*
         zeroSwerve
             .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro(0))
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
-        */
-
-        /*
-        intake
-            .whileTrue(new InstantCommand(() -> s_Intake.setIntakeSpeed(0.25)))
-            .onFalse(new InstantCommand(() -> s_Intake.setIntakeSpeed(0)));
-
-        reverseIntake
-            .whileTrue(new InstantCommand(() -> s_Intake.setIntakeSpeed(-0.25)))
-            .onFalse(new InstantCommand(() -> s_Intake.setIntakeSpeed(0)));
-        */
-        
     }
 
     /**

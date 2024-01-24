@@ -28,9 +28,9 @@ public class IntakeCommand extends Command {
     @Override
     public void execute() {
         if(controller.cross().getAsBoolean()){
-            intake.setIntakeSpeed(0.25);
+            intake.setIntakeSpeed(1);
         }else if(controller.circle().getAsBoolean()){
-            intake.setIntakeSpeed(-0.25);
+            intake.setIntakeSpeed(-1);
         }else{
             intake.setIntakeSpeed(0);
         }
