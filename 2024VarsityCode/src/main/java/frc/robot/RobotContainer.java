@@ -37,9 +37,11 @@ public class RobotContainer {
     private final Trigger zeroSwerve = driver.options();
 
     /* Operator Buttons */
-    private final Trigger goToAmp = specialist.povRight();
-    private final Trigger goToTrap = specialist.povUp();
-    private final Trigger goToTravel = specialist.povDown();
+    //private final Trigger goToAmp = specialist.povRight();
+    //private final Trigger goToTrap = specialist.povUp();
+    //private final Trigger goToTravel = specialist.povDown();
+    private final Trigger intakeButton = specialist.cross();
+    private final Trigger ejectButton = specialist.circle();
 
     /* Subsystems */
     public static final Swerve s_Swerve = new Swerve();
@@ -51,7 +53,7 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true));
-        s_Intake.setDefaultCommand(new IntakeCommand(s_Intake, specialist));
+        s_Intake.setDefaultCommand(new IntakeCommand(s_Intake, intakeButton, ejectButton));
 
         // Configure the button bindings
         configureButtonBindings();

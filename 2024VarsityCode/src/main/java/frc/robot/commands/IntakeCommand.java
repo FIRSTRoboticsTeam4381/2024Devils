@@ -5,18 +5,22 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Intake;
 
 public class IntakeCommand extends Command {
     private Intake intake;
-    private CommandPS4Controller controller;
+    private Trigger intakeButton;
+    private Trigger ejectButton;
+
+    private double intakeSpeed = 0.5;
 
     /** Creates a new IntakeCommand. */
-    public IntakeCommand(Intake intake, CommandPS4Controller controller) {
+    public IntakeCommand(Intake intake, Trigger intakeButton, Trigger ejectButton) {
         // Use addRequirements() here to declare subsystem dependencies.
-        this.intake = intake;
-        this.controller = controller;
+        this.intakeButton = intakeButton;
+        this.ejectButton = ejectButton;
+
         addRequirements(intake);
     }
 
@@ -27,13 +31,11 @@ public class IntakeCommand extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if(controller.cross().getAsBoolean()){
-            intake.setIntakeSpeed(1);
-        }else if(controller.circle().getAsBoolean()){
-            intake.setIntakeSpeed(-1);
-        }else{
-            intake.setIntakeSpeed(0);
-        }
+        intake.setIntakeSpeed(
+            intakeButton.getAsBoolean() ? intakeSpeed : 
+            ejectButton.getAsBoolean() ? -intakeSpeed : 
+            0
+        );
     }
 
     // Called once the command ends or is interrupted.
@@ -43,6 +45,6 @@ public class IntakeCommand extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-    return false;
+        return false;
     }
 }
