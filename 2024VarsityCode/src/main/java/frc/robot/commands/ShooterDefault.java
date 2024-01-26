@@ -5,17 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.subsystems.Shooter;
 
-public class ShooterCommand extends Command {
+public class ShooterDefault extends Command {
   private Shooter shooter;
-  private CommandPS4Controller controller;
 
   /** Creates a new ShooterCommand. */
-  public ShooterCommand(Shooter shooter, CommandPS4Controller controller) {
+  public ShooterDefault(Shooter shooter) {
     this.shooter = shooter;
-    this.controller = controller;
 
     addRequirements(shooter);
   }

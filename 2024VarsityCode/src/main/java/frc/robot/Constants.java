@@ -37,10 +37,10 @@ public final class Constants {
         public static final int leftPivotCAN = 0; // TODO
         public static final int rightPivotCAN = 0; // TODO
 
-        public static final int topShooterCAN = 0; // TODO
-        public static final int bottomShooterCAN = 0; // TODO
-        public static final int topDirectionalCAN = 0; // TODO
-        public static final int bottomDirectionalCAN = 0; // TODO
+        public static final int topFrontCAN = 0; // TODO
+        public static final int topBackCAN = 0; // TODO
+        public static final int bottomFrontCAN = 0; // TODO
+        public static final int bottomBackCAN = 0; // TODO
     }
 
     public static final class Swerve{
