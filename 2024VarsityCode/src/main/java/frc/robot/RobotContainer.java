@@ -31,12 +31,15 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
     /* Controllers */
     private final CommandPS4Controller driver = new CommandPS4Controller(0);
-    private final CommandPS4Controller specialist = new CommandPS4Controller(0);
+    private final CommandPS4Controller specialist = new CommandPS4Controller(1);
 
     /* Driver Buttons */
     private final Trigger zeroSwerve = driver.options();
 
     /* Operator Buttons */
+    private final Trigger goToAmp = specialist.povRight();
+    private final Trigger goToTrap = specialist.povUp();
+    private final Trigger goToTravel = specialist.povDown();
 
     /* Subsystems */
     public static final Swerve s_Swerve = new Swerve();

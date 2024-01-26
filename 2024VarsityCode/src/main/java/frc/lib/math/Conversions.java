@@ -114,4 +114,14 @@ public class Conversions {
         double ticks =  degrees / (360.0 / (gearRatio * 4096.0));
         return ticks;
     }
+
+    /* TODO NEEDS TO BE TESTED */
+    public static double degreesToRev(double degrees, double gearRatio){
+        double ticks = degrees * gearRatio / 360;
+        return ticks;
+    }
+    public static double revToDegrees(double ticks, double gearRatio){
+        double degrees = ticks / (gearRatio/360);
+        return degrees;
+    }
 }
