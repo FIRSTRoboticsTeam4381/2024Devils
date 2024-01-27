@@ -28,5 +28,4 @@ povRight -> pivot to amp
     hold square -> shooter on + feed index
 
 lAxis -> manual pivot adjust
-
 Functions
