@@ -10,6 +10,7 @@ import frc.robot.commands.IntakeCommands;
 import frc.robot.commands.IntakeDefault;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.Index.IndexDefault;
+import frc.robot.commands.Shooter.ShooterCommands;
 import frc.robot.commands.Shooter.ShooterDefault;
 import frc.robot.commands.ShooterPivot.ManualPivot;
 import frc.robot.subsystems.Indexer;
@@ -55,6 +56,7 @@ public class RobotContainer {
     private final Supplier<Double> leftAxisSupplier = specialist::getLeftY;
     private final Trigger hangToggle = specialist.povUp();
     private final Trigger ampToggle = specialist.povRight();
+    private final Trigger shootNote = specialist.R1();
 
     /* Subsystems */
     public static final Swerve s_Swerve = new Swerve();
@@ -64,6 +66,7 @@ public class RobotContainer {
     public static final ShooterPivot s_Pivot = new ShooterPivot();
 
     public static final IntakeCommands intakeCommands = new IntakeCommands(s_Intake, s_Index, s_Pivot);
+    public static final ShooterCommands shooterCommands = new ShooterCommands(s_Shooter, s_Index);
 
     //Auto Chooser
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -104,6 +107,13 @@ public class RobotContainer {
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
 
         intakeToggle.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(intakeCommands.toggleIntake())));
+        eject.onTrue(new InstantCommand(() -> s_Intake.setIntakeSpeed(-IntakeCommands.defaultIntakeSpeed)))
+            .onFalse(new InstantCommand(() -> s_Intake.setIntakeSpeed(0)));
+        shooterToggle.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(shooterCommands.toggleShooter())));
+        //autoShooterToggle.onTrue(shooterCommands.toggleAutoShoot());
+        //hangToggle.onTrue();
+        //ampToggle.onTrue();
+        shootNote.onTrue(shooterCommands.feedNote());
     }
 
     /**

@@ -15,7 +15,7 @@ public class IntakeCommands {
     private Indexer indexer;
     private ShooterPivot shooterPivot;
 
-    private double defaultIntakeSpeed = 0.4;
+    public static double defaultIntakeSpeed = 0.4;
 
     private boolean intaking = false;
 
@@ -41,6 +41,7 @@ public class IntakeCommands {
     }
 
     public ParallelCommandGroup stopAll(){
+        intaking = false;
         return new ParallelCommandGroup(
             // Move shooterpivot back to home
             new InstantCommand(() -> intake.setIntakeSpeed(0), intake),

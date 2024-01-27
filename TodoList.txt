@@ -21,6 +21,8 @@ Hold circle -> Spin intake backwards while held
 Square -> Toggle shooter
 Triangle -> Toggle Shooter + Auto aim
 
+R1 feed note
+
 povUp -> toggle shooter to trap mode -> pivot to trap -> raise climb
     rAxis -> control climber
     hold square -> shooter on + feed index
