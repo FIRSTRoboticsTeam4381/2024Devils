@@ -1,7 +1,32 @@
-Intake
+How the robot should work - 
+Intake - 
+Since the pivot needs to be in the correct position, intake should be a toggle that moves the arm up and down to the correct spot
+Eject just spins the intake motor backwards, doesn't do anything else
+On intaking, index motor runs until note reaches the break beam or command is cancelled
 
-Index
+Index motor cannot spin when breakbeam is broken unless shoot motor is at the correct speed
 
-Shooter
+Normal pivot runs on PID control, with 2 set points controlled with buttons. 1 for trap and 1 for amp. The left joystick is
+also used to manually adjust shooter
 
-ShooterPivot
+There is a button to turn on shooters, and another to activate auto aim
+Another button to actually feed the note to the shooter IF it is at the proper speed
+
+The button for trap position raises the climb
+
+Buttons - 
+X -> raise pivot to intake -> start intake -> run index until note breaks beam
+    X -> cancel
+Hold circle -> Spin intake backwards while held
+Square -> Toggle shooter
+Triangle -> Toggle Shooter + Auto aim
+
+povUp -> toggle shooter to trap mode -> pivot to trap -> raise climb
+    rAxis -> control climber
+    hold square -> shooter on + feed index
+povRight -> pivot to amp
+    hold square -> shooter on + feed index
+
+lAxis -> manual pivot adjust
+
+Functions
