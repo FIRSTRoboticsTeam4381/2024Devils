@@ -24,6 +24,8 @@ public class Shooter extends SubsystemBase {
 
   private SparkPIDController shooterPID;
 
+  private Mode mode = Mode.SHOOT;
+
   /** Creates a new Shooter. */
   public Shooter() {
     topFront = new CANSparkFlex(Constants.Shooter.topFrontCAN, MotorType.kBrushless);
@@ -50,11 +52,15 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setMode(Mode mode){
+    this.mode = mode;
     topFront.setInverted(mode==Mode.SHOOT||mode==Mode.EJECT_BOTTOM?false:true);
     bottomFront.setInverted(mode==Mode.SHOOT||mode==Mode.EJECT_TOP?true:false);
   }
   public void setSpeed(double speed){
     setPoint = speed;
+  }
+  public double getTestSpeed(){
+    return (mode==Mode.SHOOT?1.0:0.35);
   }
 
   @Override

@@ -26,6 +26,7 @@ public class ShooterPivot extends SubsystemBase {
   private SparkPIDController pivotPID;
 
   private double pivotSetPoint = 0.0;
+  private double pivotSpeed = 0.0; // TODO for testing
 
   /** Creates a new ShooterPivot. */
   public ShooterPivot() {
@@ -53,10 +54,15 @@ public class ShooterPivot extends SubsystemBase {
   public double getAngleSetpoint(){
     return Conversions.revToDegrees(pivotSetPoint, 1.0/125.0);
   }
+  public void setPivotSpeed(double speed){
+    // TODO for testing
+    pivotSpeed = speed;
+  }
 
   // Called once per scheduler run
   @Override
   public void periodic(){
-    pivotPID.setReference(pivotSetPoint, ControlType.kPosition);
+    //pivotPID.setReference(pivotSetPoint, ControlType.kPosition);
+    rightPivot.set(pivotSpeed); // TODO for testing
   }
 }
