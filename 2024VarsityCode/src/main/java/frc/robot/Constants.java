@@ -41,6 +41,10 @@ public final class Constants {
         public static final int topBackCAN = 0; // TODO
         public static final int bottomFrontCAN = 0; // TODO
         public static final int bottomBackCAN = 0; // TODO
+
+        public static final int indexCAN = 0; // TODO
+
+        public static final int indexDIO = 0;
     }
 
     public static final class Swerve{

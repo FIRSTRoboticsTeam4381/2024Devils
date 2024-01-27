@@ -8,18 +8,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Intake;
 
-public class IntakeCommand extends Command {
+public class IntakeDefault extends Command {
     private Intake intake;
-    private Trigger intakeButton;
-    private Trigger ejectButton;
-
-    private double intakeSpeed = 0.5;
 
     /** Creates a new IntakeCommand. */
-    public IntakeCommand(Intake intake, Trigger intakeButton, Trigger ejectButton) {
+    public IntakeDefault(Intake intake) {
         // Use addRequirements() here to declare subsystem dependencies.
-        this.intakeButton = intakeButton;
-        this.ejectButton = ejectButton;
 
         addRequirements(intake);
     }
@@ -30,13 +24,7 @@ public class IntakeCommand extends Command {
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
-    public void execute() {
-        intake.setIntakeSpeed(
-            intakeButton.getAsBoolean() ? intakeSpeed : 
-            ejectButton.getAsBoolean() ? -intakeSpeed : 
-            0
-        );
-    }
+    public void execute() {}
 
     // Called once the command ends or is interrupted.
     @Override
