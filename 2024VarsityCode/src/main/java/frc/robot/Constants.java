@@ -47,6 +47,11 @@ public final class Constants {
         public static final int indexDIO = 0;
     }
 
+    public static final class Climb{
+        public static final int basePivotCAN = 0; // TODO
+        public static final int midPivotCAN = 0; // TODO
+    }
+
     public static final class Swerve{
         public static final int pigeonID = 1; // TODO are we removing the pigeon?
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
