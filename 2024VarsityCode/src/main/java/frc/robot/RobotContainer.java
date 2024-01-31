@@ -7,6 +7,8 @@ package frc.robot;
 import frc.lib.util.LogOrDash;
 import frc.robot.autos.Autos;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.Intake.IntakeDefault;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Swerve;
 
 import java.util.function.Supplier;
@@ -42,6 +44,7 @@ public class RobotContainer {
 
     /* Subsystems */
     public static final Swerve s_Swerve = new Swerve();
+    public static final Intake s_Intake = new Intake();
 
     //Auto Chooser
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -49,6 +52,7 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true));
+        s_Intake.setDefaultCommand(new IntakeDefault(s_Intake));
 
         // Configure the button bindings
         configureButtonBindings();
