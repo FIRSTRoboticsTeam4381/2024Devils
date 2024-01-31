@@ -54,15 +54,13 @@ public class ShooterPivot extends SubsystemBase {
   public double getAngleSetpoint(){
     return Conversions.revToDegrees(pivotSetPoint, 1.0/125.0);
   }
-  public void setPivotSpeed(double speed){
-    // TODO for testing
-    pivotSpeed = speed;
+  public void rotatePivot(double rotation){
+    pivotSetPoint += rotation;
   }
 
   // Called once per scheduler run
   @Override
   public void periodic(){
-    //pivotPID.setReference(pivotSetPoint, ControlType.kPosition);
-    rightPivot.set(pivotSpeed); // TODO for testing
+    pivotPID.setReference(pivotSetPoint, ControlType.kPosition);
   }
 }

@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkFlex;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -20,11 +21,13 @@ public class Shooter extends SubsystemBase {
   private CANSparkFlex bottomFront;
   private CANSparkFlex bottomBack;
 
+  private RelativeEncoder shootEncoder;
+
   private double setPoint = 0.0;
 
-  private SparkPIDController shooterPID;
-
   private Mode mode = Mode.SHOOT;
+
+  public static final int maxRPM = 5000;
 
   /** Creates a new Shooter. */
   public Shooter() {
@@ -42,13 +45,7 @@ public class Shooter extends SubsystemBase {
     bottomFront.follow(bottomBack, true);
     topFront.follow(bottomBack, false);
 
-    shooterPID = bottomBack.getPIDController();
-    shooterPID.setFF(0);
-    shooterPID.setP(0);
-    shooterPID.setI(0);
-    shooterPID.setD(0);
-    shooterPID.setFeedbackDevice(bottomBack.getEncoder());
-    shooterPID.setOutputRange(0, 1);
+    shootEncoder = bottomBack.getEncoder();
   }
 
   public void setMode(Mode mode){
@@ -62,11 +59,17 @@ public class Shooter extends SubsystemBase {
   public double getTestSpeed(){
     return (mode==Mode.SHOOT?1.0:0.35);
   }
+  public double getVelocity(){
+    return shootEncoder.getVelocity();
+  }
+  public boolean isWithinError(double error){
+    return (Math.abs(getVelocity()-maxRPM)<error);
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    shooterPID.setReference(setPoint, ControlType.kDutyCycle);
+    bottomBack.set(setPoint);
   }
 
   public enum Mode{
