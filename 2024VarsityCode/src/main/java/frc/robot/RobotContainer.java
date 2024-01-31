@@ -7,6 +7,9 @@ package frc.robot;
 import frc.lib.util.LogOrDash;
 import frc.robot.autos.Autos;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.Shooter.ShooterCommands;
+import frc.robot.commands.Shooter.ShooterDefault;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 
 import java.util.function.Supplier;
@@ -39,9 +42,14 @@ public class RobotContainer {
     private final Trigger zeroSwerve = driver.options();
 
     /* Operator Buttons */
+    private final Trigger shooterToggle = specialist.square();
 
     /* Subsystems */
     public static final Swerve s_Swerve = new Swerve();
+    public static final Shooter s_Shooter = new Shooter();
+
+    /* Commands */
+    public static final ShooterCommands shooterCommands = new ShooterCommands(s_Shooter);
 
     //Auto Chooser
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -49,6 +57,7 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true));
+        s_Shooter.setDefaultCommand(new ShooterDefault(s_Shooter));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -76,6 +85,9 @@ public class RobotContainer {
         zeroSwerve
             .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro(0))
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
+
+        shooterToggle
+            .onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(shooterCommands.toggleShooter(0.8, Shooter.Mode.SHOOT))));
     }
 
     /**
