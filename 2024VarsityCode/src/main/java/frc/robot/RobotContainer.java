@@ -7,6 +7,8 @@ package frc.robot;
 import frc.lib.util.LogOrDash;
 import frc.robot.autos.Autos;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.Pivot.PivotDefault;
+import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Swerve;
 
 import java.util.function.Supplier;
@@ -39,9 +41,11 @@ public class RobotContainer {
     private final Trigger zeroSwerve = driver.options();
 
     /* Operator Buttons */
+    private final Supplier<Double> leftStickY = specialist::getLeftY;
 
     /* Subsystems */
     public static final Swerve s_Swerve = new Swerve();
+    public static final Pivot s_Pivot = new Pivot();
 
     //Auto Chooser
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -49,6 +53,7 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true));
+        s_Pivot.setDefaultCommand(new PivotDefault(s_Pivot, leftStickY));
 
         // Configure the button bindings
         configureButtonBindings();
