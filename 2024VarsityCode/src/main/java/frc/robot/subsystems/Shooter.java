@@ -5,76 +5,63 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkFlex;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
-  private CANSparkFlex topFront;
-  private CANSparkFlex topBack;
-  private CANSparkFlex bottomFront;
-  private CANSparkFlex bottomBack;
+  private CANSparkFlex propMotor;
+  private CANSparkFlex topMotor;
+  private CANSparkFlex bottomMotor;
 
-  private RelativeEncoder shootEncoder;
-
-  private double setPoint = 0.0;
-
-  private Mode mode = Mode.SHOOT;
-
-  public static final int maxRPM = 5000;
+  private double propSpeed = 0.0;
+  private double topSpeed = 0.0;
+  private double bottomSpeed = 0.0;
 
   /** Creates a new Shooter. */
   public Shooter() {
-    topFront = new CANSparkFlex(Constants.Shooter.topFrontCAN, MotorType.kBrushless);
-    topBack = new CANSparkFlex(Constants.Shooter.topBackCAN, MotorType.kBrushless);
-    bottomFront = new CANSparkFlex(Constants.Shooter.bottomFrontCAN, MotorType.kBrushless);
-    bottomBack = new CANSparkFlex(Constants.Shooter.bottomBackCAN, MotorType.kBrushless);
-
-    topFront.setIdleMode(IdleMode.kCoast);
-    topBack.setIdleMode(IdleMode.kCoast);
-    bottomFront.setIdleMode(IdleMode.kCoast);
-    bottomBack.setIdleMode(IdleMode.kCoast);
-
-    topBack.follow(bottomBack, true);
-    bottomFront.follow(bottomBack, true);
-    topFront.follow(bottomBack, false);
-
-    shootEncoder = bottomBack.getEncoder();
+    propMotor = new CANSparkFlex(Constants.Shooter.propMotorCAN, MotorType.kBrushless);
+    topMotor = new CANSparkFlex(Constants.Shooter.topMotorCAN, MotorType.kBrushless);
+    bottomMotor = new CANSparkFlex(Constants.Shooter.bottomMotorCAN, MotorType.kBrushless);
   }
 
-  public void setMode(Mode mode){
-    this.mode = mode;
-    topFront.setInverted(mode==Mode.SHOOT||mode==Mode.EJECT_BOTTOM?false:true);
-    bottomFront.setInverted(mode==Mode.SHOOT||mode==Mode.EJECT_TOP?true:false);
+  private void setPropSpeed(double speed){
+    propSpeed = speed;
   }
-  public void setSpeed(double speed){
-    setPoint = speed;
+  private void setTopSpeed(double speed){
+    topSpeed = speed;
   }
-  public double getTestSpeed(){
-    return (mode==Mode.SHOOT?1.0:0.35);
+  private void setBottomSpeed(double speed){
+    bottomSpeed = speed;
   }
-  public double getVelocity(){
-    return shootEncoder.getVelocity();
+
+  public void shoot(double speed){
+    setPropSpeed(speed);
+    setTopSpeed(speed);
+    setBottomSpeed(speed);
   }
-  public boolean isWithinError(double error){
-    return (Math.abs(getVelocity()-maxRPM)<error);
+  public void ejectTop(double speed){
+    setPropSpeed(speed);
+    setTopSpeed(-speed);
+    setBottomSpeed(speed);
+  }
+  public void ejectBottom(double speed){
+    setPropSpeed(speed);
+    setTopSpeed(speed);
+    setBottomSpeed(-speed);
+  }
+  public void stopAll(){
+    setPropSpeed(0);
+    setTopSpeed(0);
+    setBottomSpeed(0);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    bottomBack.set(setPoint);
-  }
-
-  public enum Mode{
-    SHOOT,
-    EJECT_TOP,
-    EJECT_BOTTOM
+    propMotor.set(propSpeed);
+    topMotor.set(topSpeed);
+    bottomMotor.set(bottomSpeed);
   }
 }
