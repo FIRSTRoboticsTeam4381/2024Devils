@@ -15,20 +15,13 @@ public class Indexer extends SubsystemBase {
   private CANSparkMax indexMotor;
   private double indexSpeed = 0.0;
 
-  private DigitalInput indexEye;
-
   /** Creates a new Indexer. */
   public Indexer() {
     indexMotor = new CANSparkMax(Constants.Shooter.indexCAN, MotorType.kBrushless);
-
-    indexEye = new DigitalInput(Constants.Shooter.indexDIO);
   }
 
   public void setSpeed(double speed){
     indexSpeed = speed;
-  }
-  public boolean getEye(){
-    return !indexEye.get(); // TODO Break beam should return false when it is broken
   }
 
   @Override

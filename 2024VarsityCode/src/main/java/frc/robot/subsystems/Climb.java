@@ -17,23 +17,29 @@ public class Climb extends SubsystemBase {
   private CANSparkMax basePivot;
   private CANSparkMax midPivot;
 
-  private RelativeEncoder baseEncoder;
-  private RelativeEncoder midEncoder;
+  private double basePivotSpeed = 0.0;
+  private double midPivotSpeed = 0.0;
 
   /** Creates a new Climb. */
   public Climb() {
     basePivot = new CANSparkMax(Constants.Climb.basePivotCAN, MotorType.kBrushless);
     midPivot = new CANSparkMax(Constants.Climb.midPivotCAN, MotorType.kBrushless);
 
-    baseEncoder = basePivot.getEncoder();
-    midEncoder = midPivot.getEncoder();
-
     basePivot.setIdleMode(IdleMode.kBrake);
     midPivot.setIdleMode(IdleMode.kBrake);
+  }
+
+  public void setBaseSpeed(double speed){
+    basePivotSpeed = speed;
+  }
+  public void setMidSpeed(double speed){
+    midPivotSpeed = speed;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    basePivot.set(basePivotSpeed);
+    midPivot.set(midPivotSpeed);
   }
 }

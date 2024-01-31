@@ -6,13 +6,13 @@ package frc.robot;
 
 import frc.lib.util.LogOrDash;
 import frc.robot.autos.Autos;
-import frc.robot.commands.IntakeCommands;
+import frc.robot.commands.ClimbDefault;
+import frc.robot.commands.IndexDefault;
 import frc.robot.commands.IntakeDefault;
+import frc.robot.commands.ShooterDefault;
+import frc.robot.commands.ShooterPivotDefault;
 import frc.robot.commands.TeleopSwerve;
-import frc.robot.commands.Index.IndexDefault;
-import frc.robot.commands.Shooter.ShooterCommands;
-import frc.robot.commands.Shooter.ShooterDefault;
-import frc.robot.commands.ShooterPivot.ManualPivot;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -49,14 +49,14 @@ public class RobotContainer {
     private final Trigger zeroSwerve = driver.options();
 
     /* Operator Buttons */
-    private final Trigger intakeToggle = specialist.cross();
+    private final Trigger intake = specialist.cross();
     private final Trigger eject = specialist.circle();
-    private final Trigger shooterToggle = specialist.square();
-    private final Trigger autoShooterToggle = specialist.triangle();
-    private final Supplier<Double> leftAxisSupplier = specialist::getLeftY;
-    private final Trigger hangToggle = specialist.povUp();
-    private final Trigger ampToggle = specialist.povRight();
-    private final Trigger shootNote = specialist.R1();
+    private final Trigger shoot = specialist.R1();
+    private final Trigger ejectTop = specialist.triangle();
+    private final Trigger ejectBottom = specialist.square();
+    private final Supplier<Double> leftYAxis = specialist::getLeftY;
+    private final Supplier<Double> r2Axis = specialist::getR2Axis;
+    private final Supplier<Double> l2Axis = specialist::getL2Axis;
 
     /* Subsystems */
     public static final Swerve s_Swerve = new Swerve();
@@ -64,9 +64,7 @@ public class RobotContainer {
     public static final Indexer s_Index = new Indexer();
     public static final Shooter s_Shooter = new Shooter();
     public static final ShooterPivot s_Pivot = new ShooterPivot();
-
-    public static final IntakeCommands intakeCommands = new IntakeCommands(s_Intake, s_Index, s_Pivot);
-    public static final ShooterCommands shooterCommands = new ShooterCommands(s_Shooter, s_Index);
+    public static final Climb s_Climb = new Climb();
 
     //Auto Chooser
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -74,10 +72,13 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true));
-        s_Intake.setDefaultCommand(new IntakeDefault(s_Intake));
-        s_Index.setDefaultCommand(new IndexDefault(s_Index));
-        s_Shooter.setDefaultCommand(new ShooterDefault(s_Shooter));
-        s_Pivot.setDefaultCommand(new ManualPivot(s_Pivot, leftAxisSupplier));
+
+        s_Intake.setDefaultCommand(new IntakeDefault(s_Intake, intake, eject));
+        s_Index.setDefaultCommand(new IndexDefault(s_Index, intake, eject));
+        s_Shooter.setDefaultCommand(new ShooterDefault(s_Shooter, shoot, ejectTop, ejectBottom));
+        s_Pivot.setDefaultCommand(new ShooterPivotDefault(s_Pivot, leftYAxis));
+        s_Climb.setDefaultCommand(new ClimbDefault(s_Climb, r2Axis, l2Axis));;
+
 
         // Configure the button bindings
         configureButtonBindings();
@@ -105,15 +106,6 @@ public class RobotContainer {
         zeroSwerve
             .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro(0))
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
-
-        intakeToggle.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(intakeCommands.toggleIntake())));
-        eject.onTrue(new InstantCommand(() -> s_Intake.setIntakeSpeed(-IntakeCommands.defaultIntakeSpeed)))
-            .onFalse(new InstantCommand(() -> s_Intake.setIntakeSpeed(0)));
-        shooterToggle.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(shooterCommands.toggleShooter())));
-        //autoShooterToggle.onTrue(shooterCommands.toggleAutoShoot());
-        //hangToggle.onTrue();
-        //ampToggle.onTrue();
-        shootNote.onTrue(shooterCommands.feedNote());
     }
 
     /**

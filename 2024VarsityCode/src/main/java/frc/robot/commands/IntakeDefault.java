@@ -9,30 +9,45 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Intake;
 
 public class IntakeDefault extends Command {
-    private Intake intake;
+  private Intake s_Intake;
+  private Trigger intakeButton;
+  private Trigger ejectButton;
 
-    /** Creates a new IntakeCommand. */
-    public IntakeDefault(Intake intake) {
-        // Use addRequirements() here to declare subsystem dependencies.
+  private static final double INTAKE_SPEED = 0.5;
 
-        addRequirements(intake);
+  /** Creates a new IntakeDefault. */
+  public IntakeDefault(Intake s_Intake, Trigger intakeButton, Trigger ejectButton) {
+    this.s_Intake = s_Intake;
+    this.intakeButton = intakeButton;
+    this.ejectButton = ejectButton;
+
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(s_Intake);
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {}
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    if(intakeButton.getAsBoolean()){
+      s_Intake.setIntakeSpeed(INTAKE_SPEED);
+    }else if(ejectButton.getAsBoolean()){
+      s_Intake.setIntakeSpeed(-INTAKE_SPEED);
+    }else{
+      s_Intake.setIntakeSpeed(0);
     }
+  }
 
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {}
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
 
-    // Called every time the scheduler runs while the command is scheduled.
-    @Override
-    public void execute() {}
-
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {}
-
-    // Returns true when the command should end.
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
 }

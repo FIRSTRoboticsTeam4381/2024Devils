@@ -37,10 +37,9 @@ public final class Constants {
         public static final int leftPivotCAN = 0; // TODO
         public static final int rightPivotCAN = 0; // TODO
 
-        public static final int topFrontCAN = 0; // TODO
-        public static final int topBackCAN = 0; // TODO
-        public static final int bottomFrontCAN = 0; // TODO
-        public static final int bottomBackCAN = 0; // TODO
+        public static final int propMotorCAN = 0; // TODO
+        public static final int topMotorCAN = 0; // TODO
+        public static final int bottomMotorCAN = 0; // TODO
 
         public static final int indexCAN = 0; // TODO
 
