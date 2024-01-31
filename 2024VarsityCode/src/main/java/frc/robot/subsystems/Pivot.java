@@ -17,6 +17,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.math.Conversions;
 import frc.robot.Constants;
 
 public class Pivot extends SubsystemBase {
@@ -49,11 +50,22 @@ public class Pivot extends SubsystemBase {
     pivotController.setOutputRange(-1, 1);
   }
 
+  public double getPosition(){
+    return pivotEncoder.getPosition();
+  }
+  public double getAngle(){
+    return getPosition()/125*360; // TODO check this, idk what this should be
+  }
+
+  public void setPosition(double position){
+    setPoint = position;
+  }
+  public void setAngle(double angle){
+    setPoint = angle/360*125; // TODO check this, idk what this should be
+  }
+
   public void moveSetpoint(double movement){
     setPoint += movement*MOVE_SPEED;
-  }
-  public void setReference(double position){
-    setPoint = position;
   }
   public boolean atReference(){
     return Math.abs(pivotEncoder.getPosition()-setPoint) < TOLERANCE;

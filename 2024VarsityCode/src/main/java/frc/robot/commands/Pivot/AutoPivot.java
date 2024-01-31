@@ -9,11 +9,17 @@
 package frc.robot.commands.Pivot;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Pivot;
 
 public class AutoPivot extends Command {
+  private Pivot s_Pivot;
+
   /** Creates a new AutoPivot. */
-  public AutoPivot() {
+  public AutoPivot(Pivot pivot) {
+    s_Pivot = pivot;
+
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(pivot);
   }
 
   // Called when the command is initially scheduled.
@@ -22,7 +28,22 @@ public class AutoPivot extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    double distFromGoal = getDistFromGoal();
+    double fireAngle = calcAngle(distFromGoal, calcVelocity(distFromGoal));
+
+    s_Pivot.setAngle(fireAngle);
+  }
+
+  private double getDistFromGoal(){
+    return 0.0; // TODO
+  }
+  private double calcAngle(double dist, double velocity){
+    return 0.0; // TODO
+  }
+  private double calcVelocity(double dist){
+    return 0.0; // TODO
+  }
 
   // Called once the command ends or is interrupted.
   @Override

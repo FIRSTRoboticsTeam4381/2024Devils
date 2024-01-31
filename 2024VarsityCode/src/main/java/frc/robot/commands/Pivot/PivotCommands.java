@@ -15,10 +15,10 @@ public class PivotCommands {
     }
 
     public InstantCommand setAmpPos(){
-        return new InstantCommand(() -> s_Pivot.setReference(0 /*TODO find position */), s_Pivot);
+        return new InstantCommand(() -> s_Pivot.setPosition(0 /*TODO find position */), s_Pivot);
     }
     public InstantCommand setDownPos(){
-        return new InstantCommand(() -> s_Pivot.setReference(0), s_Pivot);
+        return new InstantCommand(() -> s_Pivot.setPosition(0), s_Pivot);
     }
 
     public SequentialCommandGroup goToPosition(InstantCommand positionCommand){
