@@ -28,28 +28,6 @@ public final class Constants {
 
     public static final int NEO_TICKS_PER_REV = 42; //TODO
 
-    public static final class Intake{
-        public static final int intakeCAN = 0; // TODO
-    }
-
-    public static final class Shooter{
-        public static final int leftPivotCAN = 0; // TODO
-        public static final int rightPivotCAN = 0; // TODO
-
-        public static final int propMotorCAN = 0; // TODO
-        public static final int topMotorCAN = 0; // TODO
-        public static final int bottomMotorCAN = 0; // TODO
-
-        public static final int indexCAN = 0; // TODO
-
-        public static final int indexDIO = 0;
-    }
-
-    public static final class Climb{
-        public static final int basePivotCAN = 0; // TODO
-        public static final int midPivotCAN = 0; // TODO
-    }
-
     public static final class Swerve{
         public static final int pigeonID = 1; // TODO are we removing the pigeon?
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
