@@ -29,7 +29,7 @@ public final class Constants {
     public static final int NEO_TICKS_PER_REV = 42; //TODO
 
     public static final class Index{
-        public static final int indexCAN = 0; // TODO
+        public static final int indexCAN = 47; // TODO
         public static final int indexDIO = 0; // TODO
     }
 
