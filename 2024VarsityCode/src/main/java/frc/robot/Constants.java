@@ -29,9 +29,9 @@ public final class Constants {
     public static final int NEO_TICKS_PER_REV = 42; //TODO
 
     public static final class Shooter{
-        public static final int propCAN = 0; // TODO
-        public static final int topCAN = 0; // TODO
-        public static final int bottomCAN = 0; // TODO
+        public static final int propCAN = 48; // TODO
+        public static final int topCAN = 49; // TODO
+        public static final int bottomCAN = 50; // TODO
     }
 
     public static final class Swerve{
