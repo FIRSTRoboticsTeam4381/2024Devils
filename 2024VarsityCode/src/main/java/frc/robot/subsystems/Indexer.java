@@ -17,7 +17,7 @@ public class Indexer extends SubsystemBase {
 
   /** Creates a new Indexer. */
   public Indexer() {
-    indexMotor = new CANSparkMax(Constants.Shooter.indexCAN, MotorType.kBrushless);
+    indexMotor = new CANSparkMax(Constants.Index.indexCAN, MotorType.kBrushless);
   }
 
   public void setSpeed(double speed){

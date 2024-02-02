@@ -18,8 +18,8 @@ public class ShooterPivot extends SubsystemBase {
 
   /** Creates a new ShooterPivot. */
   public ShooterPivot() {
-    rightPivot = new CANSparkFlex(Constants.Shooter.rightPivotCAN, MotorType.kBrushless);
-    leftPivot = new CANSparkFlex(Constants.Shooter.leftPivotCAN, MotorType.kBrushless);
+    rightPivot = new CANSparkFlex(Constants.Pivot.rightPivotCAN, MotorType.kBrushless);
+    leftPivot = new CANSparkFlex(Constants.Pivot.leftPivotCAN, MotorType.kBrushless);
 
     leftPivot.follow(rightPivot);
   }

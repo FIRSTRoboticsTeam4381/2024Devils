@@ -12,12 +12,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
     private CANSparkMax intake;
+    private CANSparkMax helper;
 
     private double intakeSpeed = 0.0;
 
     /** Creates a new Intake. */
     public Intake() {
-        intake = new CANSparkMax(Constants.Intake.intakeCAN, MotorType.kBrushless);
+        intake = new CANSparkMax(Constants.Intake.primaryCAN, MotorType.kBrushless);
+        helper = new CANSparkMax(Constants.Intake.helperCAN, MotorType.kBrushless);
     }
 
     public void setIntakeSpeed(double speed){
@@ -28,5 +30,6 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         // This method will be called once per scheduler run
         intake.set(intakeSpeed);
+        helper.set(intakeSpeed);
     }
 }

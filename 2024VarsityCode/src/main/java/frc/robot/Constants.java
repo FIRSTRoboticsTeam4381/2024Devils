@@ -29,26 +29,24 @@ public final class Constants {
     public static final int NEO_TICKS_PER_REV = 42; //TODO
 
     public static final class Intake{
-        public static final int intakeCAN = 0; // TODO
-        public static final int directorCAN = 0; // TODO
+        public static final int primaryCAN = 45; // TODO
+        public static final int helperCAN = 46; // TODO
     }
-
+    public static final class Index{
+        public static final int indexCAN = 47;
+    }
     public static final class Shooter{
-        public static final int leftPivotCAN = 0; // TODO
-        public static final int rightPivotCAN = 0; // TODO
-
-        public static final int propMotorCAN = 0; // TODO
-        public static final int topMotorCAN = 0; // TODO
-        public static final int bottomMotorCAN = 0; // TODO
-
-        public static final int indexCAN = 0; // TODO
-
-        public static final int indexDIO = 0;
+        public static final int propMotorCAN = 48;
+        public static final int topMotorCAN = 49;
+        public static final int bottomMotorCAN = 50;
     }
-
+    public static final class Pivot{
+        public static final int rightPivotCAN = 51;
+        public static final int leftPivotCAN = 52;
+    }
     public static final class Climb{
-        public static final int basePivotCAN = 0; // TODO
-        public static final int midPivotCAN = 0; // TODO
+        public static final int basePivotCAN = 53;
+        public static final int midPivotCAN = 54;
     }
 
     public static final class Swerve{
