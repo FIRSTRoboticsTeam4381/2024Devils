@@ -29,8 +29,8 @@ public final class Constants {
     public static final int NEO_TICKS_PER_REV = 42; //TODO
 
     public static final class Pivot{
-        public static final int rightPivotCAN = 0; // TODO
-        public static final int leftPivotCAN = 0; // TODO
+        public static final int rightPivotCAN = 51; // TODO
+        public static final int leftPivotCAN = 52; // TODO
     }
 
     public static final class Swerve{
