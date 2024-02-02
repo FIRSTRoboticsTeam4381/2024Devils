@@ -29,8 +29,8 @@ public final class Constants {
     public static final int NEO_TICKS_PER_REV = 42; //TODO
 
     public static final class Intake{
-        public static final int primaryIntakeCAN = 0; // TODO
-        public static final int helperIntakeCAN = 0; // TODO
+        public static final int primaryIntakeCAN = 45; // TODO
+        public static final int helperIntakeCAN = 46; // TODO
     }
 
     public static final class Swerve{
