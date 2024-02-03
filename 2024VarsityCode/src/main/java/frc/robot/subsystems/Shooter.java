@@ -48,7 +48,7 @@ public class Shooter extends SubsystemBase {
     topSpeed = speed;
   }
   private void setBottomSpeed(double speed){
-    bottomSpeed = speed;
+    bottomSpeed = -speed;
   }
 
   public void shoot(double speed){

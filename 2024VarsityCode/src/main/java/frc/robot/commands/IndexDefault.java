@@ -13,8 +13,7 @@ public class IndexDefault extends Command {
   private Trigger intakeButton;
   private Trigger ejectButton;
 
-  private static final double INDEX_SPEED = 0.5;
-
+  private static final double INDEX_SPEED = 1.0;
   /** Creates a new IndexDefault. */
   public IndexDefault(Indexer index, Trigger intakeButton, Trigger ejectButton) {
     s_Index = index;

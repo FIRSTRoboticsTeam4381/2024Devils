@@ -14,8 +14,8 @@ public class ShooterDefault extends Command {
   private Trigger ejectTopButton;
   private Trigger ejectBottomButton;
 
-  private static final double SHOOT_SPEED = 0.8;
-  private static final double EJECT_SPEED = 0.35;
+  private static final double SHOOT_SPEED = 0.5;
+  private static final double EJECT_SPEED = 0.2;
 
   /** Creates a new ShooterDefault. */
   public ShooterDefault(Shooter shooter, Trigger shoot, Trigger ejectTop, Trigger ejectBottom) {

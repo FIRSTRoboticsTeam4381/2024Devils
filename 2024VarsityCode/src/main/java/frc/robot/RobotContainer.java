@@ -5,7 +5,7 @@
 package frc.robot;
 
 import frc.lib.util.LogOrDash;
-import frc.robot.autos.Autos;
+//import frc.robot.autos.Autos;
 import frc.robot.commands.ClimbDefault;
 import frc.robot.commands.IndexDefault;
 import frc.robot.commands.IntakeDefault;
@@ -42,11 +42,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
     /* Controllers */
-    private final CommandPS4Controller driver = new CommandPS4Controller(0);
-    private final CommandPS4Controller specialist = new CommandPS4Controller(1);
+    //private final CommandPS4Controller driver = new CommandPS4Controller(0);
+    private final CommandPS4Controller specialist = new CommandPS4Controller(0);
 
     /* Driver Buttons */
-    private final Trigger zeroSwerve = driver.options();
+    //private final Trigger zeroSwerve = driver.options();
 
     /* Operator Buttons */
     private final Trigger intake = specialist.cross();
@@ -103,9 +103,6 @@ public class RobotContainer {
    */
     private void configureButtonBindings(){
         // Button to reset swerve odometry and angle
-        zeroSwerve
-            .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro(0))
-            .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
     }
 
     /**
