@@ -7,6 +7,7 @@ package frc.robot.autos;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -28,7 +29,7 @@ public final class Autos {
     public static Command testPath(){
         PathPlannerPath path = PathPlannerPath.fromPathFile("TestPath1");
 
-        return AutoBuilder.followPathWithEvents(path);
+        return AutoBuilder.followPath(path);
     }
 
     // TODO test of a path group
@@ -36,7 +37,7 @@ public final class Autos {
         List<PathPlannerPath> paths = PathPlannerAuto.getPathGroupFromAutoFile("TestAuto");
         Command[] pathGroup = new Command[paths.size()];
         for(int i = 0; i < pathGroup.length; i++){
-            pathGroup[i] = AutoBuilder.followPathWithEvents(paths.get(i));
+            pathGroup[i] = AutoBuilder.followPath(paths.get(i));
         }
 
         return new SequentialCommandGroup(pathGroup);
