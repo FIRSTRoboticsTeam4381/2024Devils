@@ -5,9 +5,11 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -15,9 +17,13 @@ public class Indexer extends SubsystemBase {
   private CANSparkMax indexMotor;
   private double indexSpeed = 0.0;
 
+  private RelativeEncoder indexEncoder;
+
   /** Creates a new Indexer. */
   public Indexer() {
     indexMotor = new CANSparkMax(Constants.Index.indexCAN, MotorType.kBrushless);
+
+    indexEncoder = indexMotor.getEncoder();
   }
 
   public void setSpeed(double speed){
@@ -28,5 +34,8 @@ public class Indexer extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     indexMotor.set(indexSpeed);
+
+    SmartDashboard.putNumber("Index Power", indexMotor.get());
+    SmartDashboard.putNumber("Index Velocity", indexEncoder.getVelocity());
   }
 }
