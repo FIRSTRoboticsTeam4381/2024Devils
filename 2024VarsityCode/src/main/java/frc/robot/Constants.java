@@ -28,6 +28,8 @@ public final class Constants {
 
     public static final int NEO_TICKS_PER_REV = 42; //TODO
 
+    public static final int ledPWM = 0;
+
     public static final class Swerve{
         public static final int pigeonID = 1; // TODO are we removing the pigeon?
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
@@ -43,6 +45,7 @@ public final class Constants {
 
         public static final double driveGearRatio = (6.75 / 1.0); //TODO
         public static final double angleGearRatio = (150.0/7.0 / 1.0); //TODO
+
 
         public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
             new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
