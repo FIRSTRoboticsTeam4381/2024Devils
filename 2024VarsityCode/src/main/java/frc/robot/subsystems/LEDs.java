@@ -56,9 +56,10 @@ public class LEDs extends SubsystemBase {
    * (lower in load order overwrites higher in load order)
    * @param effect
    */
-  public void addEffect(LightingEffect effect){
-    activeEffects.add(effect);
-    //TODO
+  public void addEffect(LightingEffect... effects){
+    for(int i = 0; i < effects.length; i++){
+      activeEffects.add(effects[i]);
+    }
   }
   /**
    * Add an effect to the stack. Specify the position in the load order to send the effect to
@@ -66,16 +67,21 @@ public class LEDs extends SubsystemBase {
    * @param effect
    * @param position
    */
-  public void addEffect(LightingEffect effect, int index){
-    activeEffects.add(index, effect);
+  public void addEffect(int index, LightingEffect... effects){
+    for(int i = 0; i < effects.length; i++){
+      activeEffects.add(index+i, effects[i]);
+    }
   }
   public void removeEffect(int index){
-    //TODO
     activeEffects.remove(index);
   }
   public void clearEffects(){
     activeEffects.clear();
     activeEffects.add(new SolidColorEffect(ledLength, Colors.OFF));
+  }
+  public void setEffect(LightingEffect... effects){
+    clearEffects();
+    addEffect(effects);
   }
 
   @Override

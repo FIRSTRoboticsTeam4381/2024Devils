@@ -3,7 +3,7 @@ package frc.lib.util.LEDs;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
 public class VisorEffect extends LightingEffect{
-    private int location = 0;
+    private int location;
     private int[][] pixels;
 
     private int[] visorColor;
@@ -13,13 +13,17 @@ public class VisorEffect extends LightingEffect{
 
     private int modifier = -1;
 
-    public VisorEffect(int bufferLength, int[] visorColor, int visorSize, int speed){
+    public VisorEffect(int bufferLength, int[] visorColor, int visorSize, int speed, int startLocation){
         super(bufferLength);
         this.visorColor = visorColor;
         this.visorSize = visorSize;
         this.speed = speed;
+        location = startLocation;
 
         pixels = new int[bufferLength][3];
+    }
+    public VisorEffect(int bufferLength, int[] visorColor, int visorSize, int speed){
+        this(bufferLength, visorColor, visorSize, speed, 0);
     }
 
     public AddressableLEDBuffer updateBuffer(){
