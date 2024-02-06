@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
 public class RainEffect extends LightingEffect{
     private int[][] pixels;
-    private int[] baseColor;
 
     private int speed;
 
@@ -17,9 +16,8 @@ public class RainEffect extends LightingEffect{
 
     private int[] color;
 
-    public RainEffect(int bufferSize, int[] baseColor, int speed, int volume){
+    public RainEffect(int bufferSize, int speed, int volume){
         super(bufferSize);
-        this.baseColor = baseColor;
         this.speed = speed;
         this.maxVolume = volume;
 
@@ -29,8 +27,8 @@ public class RainEffect extends LightingEffect{
 
         pixels = new int[bufferSize][3];
     }
-    public RainEffect(int bufferSize, int[] baseColor, int[] rainColor, int speed, int volume){
-        this(bufferSize, baseColor, speed, volume);
+    public RainEffect(int bufferSize, int[] rainColor, int speed, int volume){
+        this(bufferSize, speed, volume);
         this.color = rainColor;
     }
 
@@ -56,9 +54,6 @@ public class RainEffect extends LightingEffect{
             }
         }
 
-        for(int i = 0; i < pixels.length; i++){
-            pixels[i] = baseColor;
-        }
         for(int i = 0; i < activeIndexes.size(); i++){
             pixels[activeIndexes.get(i)] = dropColors.get(i);
         }
