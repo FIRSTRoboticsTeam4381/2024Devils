@@ -5,7 +5,6 @@
 package frc.robot;
 
 import frc.lib.util.LEDs.AlternatingTransitionEffect;
-import frc.lib.util.LEDs.Colors;
 import frc.lib.util.LEDs.RainEffect;
 import frc.lib.util.LEDs.SolidColorEffect;
 import frc.lib.util.LEDs.VisorEffect;
