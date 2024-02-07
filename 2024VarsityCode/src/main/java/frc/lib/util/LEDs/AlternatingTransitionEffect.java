@@ -27,12 +27,12 @@ public class AlternatingTransitionEffect extends LightingEffect{
      * @param waveLength The length of each resulting wave. Think of this like a sine wave, this is the period length. Measured in LED pixels
      * @param speed The speed of the wave effect. Measured in LED pixels per second. Expected range 1-50, values outside of that will cause unknown behavior
      */
-    public AlternatingTransitionEffect(int startLED, int lastLED, Color color1, Color color2, int waveLength, int speed){
+    public AlternatingTransitionEffect(int startLED, int lastLED, Color color1, Color color2, int waveLength, double speed){
         super(startLED, lastLED);
         stepList = new ArrayList<Color>();
         this.timer = 0;
-        pixPerMs = speed/1000;
-        msPerPix = 1/pixPerMs;
+        pixPerMs = speed/100.0;
+        msPerPix = 1.0/pixPerMs;
 
         Color[] foreSteps = calcSteps(color1, color2, waveLength/2);
         Color[] backSteps = calcSteps(color2, color1, waveLength/2);
@@ -53,7 +53,7 @@ public class AlternatingTransitionEffect extends LightingEffect{
      * @param waveLength The length of each resulting wave. Think of this like a sine wave, this is the period length. Measured in LED pixels
      * @param speed The speed of the wave effect. Measured in LED pixels per second. Expected range 1-50, values outside of that will cause unknown behavior
      */
-    public AlternatingTransitionEffect(int bufferLength, Color color1, Color color2, int waveLength, int speed){
+    public AlternatingTransitionEffect(int bufferLength, Color color1, Color color2, int waveLength, double speed){
         this(0, bufferLength-1, color1, color2, waveLength, speed);
     }
 
@@ -88,7 +88,7 @@ public class AlternatingTransitionEffect extends LightingEffect{
     public Color[] updatePixels(){
         // Create a color array and tick the timer up by 20 ms (because this will be called every 20 ms if active)
         Color[] pixels = new Color[bufferLength];
-        timer += 0.02;
+        timer += 2.0;
 
         // If enough time has passed (as specified by speed), move the position forward by 1 pixel
         if(timer >= msPerPix){

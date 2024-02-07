@@ -54,7 +54,7 @@ public class LEDs extends SubsystemBase {
      * (lower in load order overwrites higher in load order)
      * @param effect
      */
-    public void addEffect(LightingEffect... effects){
+    public void addEffects(LightingEffect... effects){
         for(int i = 0; i < effects.length; i++){
             activeEffects.add(effects[i]);
         }
@@ -91,9 +91,9 @@ public class LEDs extends SubsystemBase {
      * Clears all current effects from the stack and adds the provided effects, activating them instantly
      * @param effects The effects to add to the stack
      */
-    public void setEffect(LightingEffect... effects){
+    public void setEffects(LightingEffect... effects){
         clearEffects();
-        addEffect(effects);
+        addEffects(effects);
     }
 
     /**
@@ -110,9 +110,9 @@ public class LEDs extends SubsystemBase {
         for(LightingEffect e : activeEffects){
             Color[] effectPixels = e.updatePixels();
             int location = e.getFirstLED();
-            for(int i = location; i < effectPixels.length; i++){
-                if(effectPixels[i-location].red!=0||effectPixels[i-location].green!=0||effectPixels[i-location].blue!=0)
-                    buffer.setRGB(i, (int)(effectPixels[i].red*255), (int)(effectPixels[i].green*255), (int)(effectPixels[i].blue*255));
+            for(int i = 0; i < effectPixels.length; i++){
+                if(effectPixels[i].red!=0||effectPixels[i].green!=0||effectPixels[i].blue!=0)
+                    buffer.setRGB(i+location, (int)(effectPixels[i].red*255), (int)(effectPixels[i].green*255), (int)(effectPixels[i].blue*255));
             }
         }
 

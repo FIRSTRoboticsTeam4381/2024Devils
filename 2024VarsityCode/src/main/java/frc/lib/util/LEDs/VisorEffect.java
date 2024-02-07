@@ -33,8 +33,9 @@ public class VisorEffect extends LightingEffect{
         this.visorColor = visorColor;
         this.visorSize = visorSize;
 
-        this.pixPerMs = speed/1000;
-        this.msPerPix = 1/pixPerMs;
+        pixPerMs = speed/100.0;
+        msPerPix = 1.0/pixPerMs;
+
         visorLocation = startLocation;
         this.timer = 0;
     }
@@ -81,7 +82,7 @@ public class VisorEffect extends LightingEffect{
     public Color[] updatePixels(){
         // Creates a new color array and ticks the timer up by 20 ms (because this is called every 20 ms when active)
         Color[] pixels = new Color[bufferLength];
-        timer += 0.02;
+        timer += 2.0;
 
         // If enough time has passed (defined by speed), move the visor location forward by 1
         if(timer >= msPerPix){
@@ -96,8 +97,11 @@ public class VisorEffect extends LightingEffect{
         }
 
         // If the visor has reached one of the ends of the LED strip, flip the direction
-        if(visorLocation <= 0 || visorLocation >= bufferLength-1){
-            movementModifier *= -1;
+        if(visorLocation <= 0){
+            movementModifier = 1;
+        }
+        else if(visorLocation >= bufferLength-1){
+            movementModifier = -1;
         }
 
         return pixels;
