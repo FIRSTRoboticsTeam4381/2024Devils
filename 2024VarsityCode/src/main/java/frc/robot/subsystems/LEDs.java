@@ -21,7 +21,6 @@ import frc.robot.Constants;
  */
 public class LEDs extends SubsystemBase {
   private AddressableLED led;
-  private AddressableLEDBuffer ledBuffer;
   private int ledLength = 0;
 
   private ArrayList<LightingEffect> activeEffects;
@@ -35,21 +34,24 @@ public class LEDs extends SubsystemBase {
     led = new AddressableLED(port);
     led.setLength(ledLength);
 
-    updateEffects();
-    led.setData(ledBuffer);
+    led.setData(updateEffects());
     led.start();
   }
 
-  public void updateEffects(){
-    ledBuffer = new AddressableLEDBuffer(ledLength);
+  public AddressableLEDBuffer updateEffects(){
+    AddressableLEDBuffer buffer = new AddressableLEDBuffer(ledLength);
 
+    for(int i = 0; i < buffer.getLength(); i++){
+      buffer.setRGB(i, 0, 0, 0);
+    }
     for(LightingEffect e : activeEffects){
       AddressableLEDBuffer b = e.updateBuffer();
       for(int i = 0; i < ledLength; i++){
-        if(!(b.getLED(i).red==0&&b.getLED(i).green==0&&b.getLED(i).blue==0)) // If the LED has an active color effect
-          ledBuffer.setRGB(i, b.getLED8Bit(i).red, b.getLED8Bit(i).green, b.getLED8Bit(i).blue);
+        if(b.getLED(i).red!=0||b.getLED(i).green!=0||b.getLED(i).blue!=0) // If the LED has an active color effect
+          buffer.setRGB(i, b.getLED8Bit(i).red, b.getLED8Bit(i).green, b.getLED8Bit(i).blue);
       }
     }
+    return buffer;
   }
   /**
    * Add an effect to the stack. Sends the effect to the bottom of the load order by default
@@ -86,8 +88,8 @@ public class LEDs extends SubsystemBase {
 
   @Override
   public void periodic() {
-    updateEffects();
-    led.setData(ledBuffer);
+    AddressableLEDBuffer buffer = updateEffects();
+    led.setData(buffer);
     // This method will be called once per scheduler run
   }
 }

@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import frc.lib.util.LogOrDash;
 import frc.lib.util.LEDs.AlternatingTransitionEffect;
 import frc.lib.util.LEDs.Colors;
 import frc.lib.util.LEDs.RainEffect;
@@ -12,9 +11,7 @@ import frc.lib.util.LEDs.SolidColorEffect;
 import frc.lib.util.LEDs.VisorEffect;
 import frc.robot.autos.Autos;
 import frc.robot.commands.LEDCommand;
-import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.LEDs;
-import frc.robot.subsystems.Swerve;
 
 import java.util.function.Supplier;
 
@@ -52,15 +49,16 @@ public class RobotContainer {
     private final Trigger whiteRainBlueBackground = testingController.button(8);
     private final Trigger blueBackgroundTwoVisors = testingController.button(9);
     private final Trigger purpleBackgroundTwoVisorsRandomRain = testingController.button(10);
+    private final Trigger off = testingController.button(11);
 
     /* Subsystems */
     private static final int LED_LENGTH = 150;
 
-    private static final int WAVE_LENGTH = 30;
-    private static final int WAVE_SPEED = 5;
+    private static final int WAVE_LENGTH = 10;
+    private static final int WAVE_SPEED = 1;
 
-    private static final int VISOR_SIZE = 8;
-    private static final int VISOR_SPEED = 3;
+    private static final int VISOR_SIZE = 5;
+    private static final int VISOR_SPEED = 2;
 
     private static final int RAIN_SPEED = 5;
     private static final int RAIN_VOLUME = 40;
@@ -84,7 +82,7 @@ public class RobotContainer {
     private void configureButtonBindings(){
         solidRed.onTrue(new InstantCommand(() -> leds.setEffect(new SolidColorEffect(LED_LENGTH, Colors.RED))));
         solidWhite.onTrue(new InstantCommand(() -> leds.setEffect(new SolidColorEffect(LED_LENGTH, Colors.WHITE))));
-        blueWhiteWave.onTrue(new InstantCommand(() -> leds.setEffect(new AlternatingTransitionEffect(LED_LENGTH, Colors.TEAL, Colors.WHITE, WAVE_LENGTH, WAVE_SPEED)))); // TODO
+        blueWhiteWave.onTrue(new InstantCommand(() -> leds.setEffect(new AlternatingTransitionEffect(LED_LENGTH, new int[] {150, 75, 0}, new int[] {0, 150, 0}, WAVE_LENGTH, WAVE_SPEED)))); // TODO
         orangeVisorRedBackground.onTrue(new InstantCommand(() -> leds.setEffect(new SolidColorEffect(LED_LENGTH, Colors.RED), 
                                                                                 new VisorEffect(LED_LENGTH, new int[] {255, 150, 0}, VISOR_SIZE, VISOR_SPEED)))); // TODO
         randomRainBlankBackground.onTrue(new InstantCommand(() -> leds.setEffect(new RainEffect(LED_LENGTH, RAIN_SPEED, RAIN_VOLUME)))); // TODO
@@ -97,6 +95,8 @@ public class RobotContainer {
                                                                                             new VisorEffect(LED_LENGTH, Colors.WHITE, VISOR_SIZE, VISOR_SPEED),
                                                                                             new VisorEffect(LED_LENGTH, Colors.BLUE, VISOR_SIZE, VISOR_SPEED, LED_LENGTH-10),
                                                                                             new RainEffect(LED_LENGTH, RAIN_SPEED, RAIN_VOLUME))));
+
+        off.onTrue(new InstantCommand(() -> leds.clearEffects()));
     }
 
     /**

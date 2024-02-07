@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
 public class RainEffect extends LightingEffect{
-    private int[][] pixels;
-
     private int speed;
 
     private int maxVolume;
@@ -24,8 +22,6 @@ public class RainEffect extends LightingEffect{
         activeIndexes = new ArrayList<Integer>();
         timers = new ArrayList<Integer>();
         dropColors = new ArrayList<int[]>();
-
-        pixels = new int[bufferSize][3];
     }
     public RainEffect(int bufferSize, int[] rainColor, int speed, int volume){
         this(bufferSize, speed, volume);
@@ -48,17 +44,14 @@ public class RainEffect extends LightingEffect{
         // If its not already at the max number of raindrops, add a few more
         if(activeIndexes.size() < maxVolume){
             for(int i = 0; i < speed; i++){
-                activeIndexes.add((int)(Math.random()*pixels.length));
+                activeIndexes.add((int)(Math.random()*bufferLength));
                 timers.add((int)((Math.random()*50+1)/speed));
                 dropColors.add(color==null?new int[] {(int)(Math.random()*256),(int)(Math.random()*256),(int)(Math.random()*256)}:color);
             }
         }
 
         for(int i = 0; i < activeIndexes.size(); i++){
-            pixels[activeIndexes.get(i)] = dropColors.get(i);
-        }
-        for(int i = 0; i < bufferLength; i++){
-            buffer.setRGB(i, pixels[i][0], pixels[i][1], pixels[i][2]);
+            buffer.setRGB(activeIndexes.get(i), dropColors.get(i)[0], dropColors.get(i)[1], dropColors.get(i)[2]);
         }
 
         return buffer;
