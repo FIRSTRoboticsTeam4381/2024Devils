@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
@@ -42,11 +43,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
     /* Controllers */
-    //private final CommandPS4Controller driver = new CommandPS4Controller(0);
     private final CommandPS4Controller specialist = new CommandPS4Controller(0);
-
-    /* Driver Buttons */
-    //private final Trigger zeroSwerve = driver.options();
 
     /* Operator Buttons */
     private final Trigger intake = specialist.cross();
@@ -66,13 +63,8 @@ public class RobotContainer {
     public static final ShooterPivot s_Pivot = new ShooterPivot();
     public static final Climb s_Climb = new Climb();
 
-    //Auto Chooser
-    SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
-
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
-        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true));
-
         s_Intake.setDefaultCommand(new IntakeDefault(s_Intake, intake, eject));
         s_Index.setDefaultCommand(new IndexDefault(s_Index, intake, eject));
         s_Shooter.setDefaultCommand(new ShooterDefault(s_Shooter, shoot, ejectTop, ejectBottom));
@@ -82,17 +74,6 @@ public class RobotContainer {
 
         // Configure the button bindings
         configureButtonBindings();
-
-        // Add autonomous options to chooser
-        m_AutoChooser.setDefaultOption("None", Autos.none());
-        // TODO m_AutoChooser.addOption("PathPlanner Example", Autos.exampleAuto());
-        m_AutoChooser.addOption("Test", Autos.testPath());
-
-        SmartDashboard.putData(m_AutoChooser);
-
-        // Button to turn on/off sending debug data to the dashboard
-        SmartDashboard.putData("Toggle Debug Dashboards", LogOrDash.toggleDashboard());
-        //SmartDashboard.putData("Burn Spark Settings", s_Swerve.configToFlash());
     }
 
     /**
@@ -111,6 +92,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand(){
-        return m_AutoChooser.getSelected();
+        return Commands.none();
     }
 }
