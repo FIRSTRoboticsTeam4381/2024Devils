@@ -1,21 +1,29 @@
 package frc.lib.util.LEDs;
 
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.util.Color;
 
 public class SolidColorEffect extends LightingEffect{
-    private int[] color;
+    private Color color;
 
-    public SolidColorEffect(int bufferLength, int[] color){
-        super(bufferLength);
+    public SolidColorEffect(int startLED, int lastLED, Color color){
+        super(startLED, lastLED);
         this.color = color;
+    }
+    public SolidColorEffect(int bufferLength, Color color){
+        this(0, bufferLength-1, color);
     }
 
     @Override
-    public AddressableLEDBuffer updateBuffer() {
-        AddressableLEDBuffer buffer = new AddressableLEDBuffer(bufferLength);
+    public Color[] updatePixels() {
+        return updatePixelsAtPercent(1);
+    }
+
+    public Color[] updatePixelsAtPercent(double p){
+        Color[] pixels = new Color[bufferLength];
         for(int i = 0; i < bufferLength; i++){
-            buffer.setRGB(i, color[0], color[1], color[2]);
+            pixels[i] = new Color(color.red*p, color.green*p, color.blue*p);
         }
-        return buffer;
+        return pixels;
     }
 }

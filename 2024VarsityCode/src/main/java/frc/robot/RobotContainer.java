@@ -41,27 +41,9 @@ public class RobotContainer {
     private final CommandJoystick testingController = new CommandJoystick(0);
 
     /* Buttons */
-    private final Trigger solidRed = testingController.button(3);
-    private final Trigger solidWhite = testingController.button(4);
-    private final Trigger blueWhiteWave = testingController.button(5);
-    private final Trigger orangeVisorRedBackground = testingController.button(6);
-    private final Trigger randomRainBlankBackground = testingController.button(7);
-    private final Trigger whiteRainBlueBackground = testingController.button(8);
-    private final Trigger blueBackgroundTwoVisors = testingController.button(9);
-    private final Trigger purpleBackgroundTwoVisorsRandomRain = testingController.button(10);
-    private final Trigger off = testingController.button(11);
 
     /* Subsystems */
     private static final int LED_LENGTH = 150;
-
-    private static final int WAVE_LENGTH = 10;
-    private static final int WAVE_SPEED = 1;
-
-    private static final int VISOR_SIZE = 5;
-    private static final int VISOR_SPEED = 2;
-
-    private static final int RAIN_SPEED = 5;
-    private static final int RAIN_VOLUME = 40;
 
     private static final LEDs leds = new LEDs(LED_LENGTH, 0);
 
@@ -80,23 +62,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
     private void configureButtonBindings(){
-        solidRed.onTrue(new InstantCommand(() -> leds.setEffect(new SolidColorEffect(LED_LENGTH, Colors.RED))));
-        solidWhite.onTrue(new InstantCommand(() -> leds.setEffect(new SolidColorEffect(LED_LENGTH, Colors.WHITE))));
-        blueWhiteWave.onTrue(new InstantCommand(() -> leds.setEffect(new AlternatingTransitionEffect(LED_LENGTH, new int[] {150, 75, 0}, new int[] {0, 150, 0}, WAVE_LENGTH, WAVE_SPEED)))); // TODO
-        orangeVisorRedBackground.onTrue(new InstantCommand(() -> leds.setEffect(new SolidColorEffect(LED_LENGTH, Colors.RED), 
-                                                                                new VisorEffect(LED_LENGTH, new int[] {255, 150, 0}, VISOR_SIZE, VISOR_SPEED)))); // TODO
-        randomRainBlankBackground.onTrue(new InstantCommand(() -> leds.setEffect(new RainEffect(LED_LENGTH, RAIN_SPEED, RAIN_VOLUME)))); // TODO
-        whiteRainBlueBackground.onTrue(new InstantCommand(() -> leds.setEffect(new SolidColorEffect(LED_LENGTH, Colors.BLUE),
-                                                                                new RainEffect(LED_LENGTH, Colors.WHITE, RAIN_SPEED, RAIN_VOLUME)))); // TODO
-        blueBackgroundTwoVisors.onTrue(new InstantCommand(() -> leds.setEffect(new SolidColorEffect(LED_LENGTH, Colors.BLUE),
-                                                                                new VisorEffect(LED_LENGTH, Colors.WHITE, VISOR_SIZE, VISOR_SPEED),
-                                                                                new VisorEffect(LED_LENGTH, Colors.YELLOW, VISOR_SIZE, VISOR_SPEED, LED_LENGTH-10))));
-        purpleBackgroundTwoVisorsRandomRain.onTrue(new InstantCommand(() -> leds.setEffect(new SolidColorEffect(LED_LENGTH, new int[] {100, 255, 0}),
-                                                                                            new VisorEffect(LED_LENGTH, Colors.WHITE, VISOR_SIZE, VISOR_SPEED),
-                                                                                            new VisorEffect(LED_LENGTH, Colors.BLUE, VISOR_SIZE, VISOR_SPEED, LED_LENGTH-10),
-                                                                                            new RainEffect(LED_LENGTH, RAIN_SPEED, RAIN_VOLUME))));
 
-        off.onTrue(new InstantCommand(() -> leds.clearEffects()));
     }
 
     /**

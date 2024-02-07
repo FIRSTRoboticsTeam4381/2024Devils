@@ -2,41 +2,47 @@ package frc.lib.util.LEDs;
 
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 
 public class VisorEffect extends LightingEffect{
-    private int location;
-
-    private int[] visorColor;
-
+    private Color visorColor;
+    private int visorLocation;
     private int visorSize;
-    private int speed;
+    private int visorSpeed;
 
-    private int modifier = -1;
+    private int movementModifier = -1;
 
-    public VisorEffect(int bufferLength, int[] visorColor, int visorSize, int speed, int startLocation){
-        super(bufferLength);
+    public VisorEffect(int startLED, int lastLED, Color visorColor, int visorSize, int speed, int startLocation){
+        super(startLED, lastLED);
         this.visorColor = visorColor;
         this.visorSize = visorSize;
-        this.speed = speed;
-        location = startLocation;
+        this.visorSpeed = speed;
+        visorLocation = startLocation;
     }
-    public VisorEffect(int bufferLength, int[] visorColor, int visorSize, int speed){
+    public VisorEffect(int bufferLength, Color visorColor, int visorSize, int speed, int startLocation){
+        this(0, bufferLength-1, visorColor, visorSize, speed, 0);
+    }
+    public VisorEffect(int startLED, int lastLED, Color visorColor, int visorSize, int speed){
+        this(startLED, lastLED, visorColor, visorSize, speed, 0);
+    }
+    public VisorEffect(int bufferLength, Color visorColor, int visorSize, int speed){
         this(bufferLength, visorColor, visorSize, speed, 0);
     }
 
-    public AddressableLEDBuffer updateBuffer(){
-        AddressableLEDBuffer buffer = new AddressableLEDBuffer(bufferLength);
+    @Override
+    public Color[] updatePixels(){
+        Color[] pixels = new Color[bufferLength];
 
         for(int i = 0; i < bufferLength; i++){
-            if (i > location-visorSize && i < location+visorSize) buffer.setRGB(i, visorColor[0], visorColor[1], visorColor[2]);
-            else buffer.setRGB(i, 0, 0, 0);
+            if (i > visorLocation-visorSize && i < visorLocation+visorSize) pixels[i] = visorColor;
+            else pixels[i] = new Color(0,0,0);
         }
 
-        if(location <= 0 || location >= bufferLength-1){
-            modifier *= -1;
+        if(visorLocation <= 0 || visorLocation >= bufferLength-1){
+            movementModifier *= -1;
         }
-        location += modifier*speed;
+        visorLocation += movementModifier*visorSpeed;
 
-        return buffer;
+        return pixels;
     }
 }
