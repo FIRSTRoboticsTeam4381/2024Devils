@@ -4,30 +4,14 @@
 
 package frc.robot;
 
-import frc.lib.util.LEDs.AlternatingTransitionEffect;
-import frc.lib.util.LEDs.RainEffect;
-import frc.lib.util.LEDs.SolidColorEffect;
-import frc.lib.util.LEDs.VisorEffect;
-import frc.robot.autos.Autos;
 import frc.robot.commands.LEDCommand;
 import frc.robot.subsystems.LEDs;
 
-import java.util.function.Supplier;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -42,9 +26,7 @@ public class RobotContainer {
     /* Buttons */
 
     /* Subsystems */
-    private static final int LED_LENGTH = 150;
-
-    private static final LEDs leds = new LEDs(LED_LENGTH, 0);
+    private static final LEDs leds = new LEDs(Constants.ledLength, Constants.ledPWM);
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){

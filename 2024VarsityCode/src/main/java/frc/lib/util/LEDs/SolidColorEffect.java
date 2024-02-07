@@ -1,6 +1,5 @@
 package frc.lib.util.LEDs;
 
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 
 /** Set all LEDs in a range to a solid color */

@@ -1,7 +1,5 @@
 package frc.lib.util.LEDs;
 
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 
 /** Simple effect with a blank background and a bar ("visor") of LEDs moving back and forth */

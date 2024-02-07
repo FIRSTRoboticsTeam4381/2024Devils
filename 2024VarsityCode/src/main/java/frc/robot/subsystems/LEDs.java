@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import java.util.ArrayList;
-import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -13,7 +12,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.LEDs.LightingEffect;
 import frc.lib.util.LEDs.SolidColorEffect;
-import frc.robot.Constants;
 
 /* Note for self. The example usage of AddressableLED and AddressableLEDBuffer had
  * not problem with repeatedly using led.set(buffer) every periodic call. This means

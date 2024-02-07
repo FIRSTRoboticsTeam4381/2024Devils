@@ -1,8 +1,6 @@
 package frc.lib.util.LEDs;
 
 import java.util.ArrayList;
-
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 
 /** An effect that creates random assortments of light speckles */
