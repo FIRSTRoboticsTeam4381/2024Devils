@@ -7,7 +7,7 @@ public class SolidColorEffect extends LightingEffect{
 
     /* ATTRIBUTES */
 
-    private Color color;
+    protected Color color;
 
 
     /* CONSTRUCTORS */

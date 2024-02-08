@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.LEDs.ConditionalSolidColor;
 import frc.lib.util.LEDs.LightingEffect;
 import frc.lib.util.LEDs.SolidColorEffect;
 
@@ -25,6 +26,7 @@ public class LEDs extends SubsystemBase {
     private int ledLength = 0;
 
     private ArrayList<LightingEffect> activeEffects;
+    private ArrayList<LightingEffect> statusEffects;
     
 
     /* CONSTRUCTORS */
@@ -48,6 +50,16 @@ public class LEDs extends SubsystemBase {
 
 
     /* METHODS */
+
+    /*
+    public void setupStatusEffects(Shooter shooter, Pivot pivot, Index index){
+        statusEffects = new ArrayList<LightingEffect>();
+
+        ConditionalSolidColor shooterSpeed = new ConditionalSolidColor(shooter::runningAtSpeed, new Color(0,255,0), new Color(0,0,0), 0, 9);
+        ConditionalSolidColor pivotAngle = new ConditionalSolidColor(pivot::angleAtTarget, new Color(0,255,0), new Color(0,0,0), 10, 19);
+        ConditionalSolidColor noteInIndex = new ConditionalSolidColor(index::noteInIndex, new Color(0,255,0), new Color(0,0,0), 20, 29);
+    }
+    */
 
     /**
      * Add an effect to the stack. Sends the effect to the bottom of the load order by default
@@ -108,6 +120,14 @@ public class LEDs extends SubsystemBase {
             buffer.setRGB(i,0,0,0);
         }
         for(LightingEffect e : activeEffects){
+            Color[] effectPixels = e.updatePixels();
+            int location = e.getFirstLED();
+            for(int i = 0; i < effectPixels.length; i++){
+                if(effectPixels[i].red!=0||effectPixels[i].green!=0||effectPixels[i].blue!=0)
+                    buffer.setRGB(i+location, (int)(effectPixels[i].red*255), (int)(effectPixels[i].green*255), (int)(effectPixels[i].blue*255));
+            }
+        }
+        for(LightingEffect e : statusEffects){
             Color[] effectPixels = e.updatePixels();
             int location = e.getFirstLED();
             for(int i = 0; i < effectPixels.length; i++){
