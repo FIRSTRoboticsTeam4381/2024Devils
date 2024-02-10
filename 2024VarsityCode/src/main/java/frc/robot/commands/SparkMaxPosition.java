@@ -15,13 +15,13 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class SparkMaxPosition extends Command{
     /** Creates a new SparkMaxPosition */
-    private CANSparkMax motor;
+    private CANSparkBase motor;
     private double position;
     private int slotNumber;
     private double error;
     private Supplier<Double> feedback;
 
-    public SparkMaxPosition(CANSparkMax m, double pos, int slot, double err, Subsystem s){
+    public SparkMaxPosition(CANSparkBase m, double pos, int slot, double err, Subsystem s){
         // Use addRequirements() here to declare subsystem dependencies.
         motor = m;
         position = pos;
