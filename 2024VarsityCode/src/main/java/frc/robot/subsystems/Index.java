@@ -15,6 +15,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -22,8 +24,8 @@ public class Index extends SubsystemBase {
   private CANSparkMax indexMotor;
   private DigitalInput indexEye;
 
-  private double indexSpeed = 0.0;
-  public static final double DEFAULT_SPEED = 0.3;
+  public static final double INDEX_SPEED = 0.5;
+
   /** Creates a new Index. */
   public Index() {
     indexMotor = new CANSparkMax(Constants.Index.indexCAN, MotorType.kBrushless);
@@ -33,14 +35,41 @@ public class Index extends SubsystemBase {
   public boolean noteStored(){
     return !indexEye.get();
   }
+  public boolean noteShot(){
+    return indexEye.get();
+  }
 
   public void setIndexSpeed(double speed){
-    indexSpeed = speed;
+    indexMotor.set(speed);
+  }
+
+  public InstantCommand start(){
+    return new InstantCommand(() -> setIndexSpeed(0.5), this);
+  }
+  public InstantCommand stop(){
+    return new InstantCommand(() -> setIndexSpeed(0.0), this);
+  }
+  public FunctionalCommand indexUntilIn(){
+    return new FunctionalCommand(
+      ()->setIndexSpeed(INDEX_SPEED),
+      ()->{},
+      (interrupted)->setIndexSpeed(0.0),
+      this::noteStored,
+      this
+    );
+  }
+  public FunctionalCommand indexUntilShot(){
+    return new FunctionalCommand(
+      ()->setIndexSpeed(INDEX_SPEED),
+      ()->{},
+      (interrupted)->setIndexSpeed(0.0),
+      this::noteShot,
+      this
+    );
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    indexMotor.set(indexSpeed);
   }
 }
