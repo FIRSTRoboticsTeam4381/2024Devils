@@ -12,6 +12,7 @@ import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 
 import java.util.function.Supplier;
@@ -47,12 +48,14 @@ public class RobotContainer {
     private final Supplier<Double> pivotAxis = specialist::getLeftY;
     private final Trigger toggleIntakeButton = specialist.cross();
     private final Trigger ejectButton = specialist.circle();
+    private final Trigger shooterToggle = specialist.square();
 
     /* Subsystems */
     public static final Swerve s_Swerve = new Swerve();
     public static final Intake s_Intake = new Intake();
     public static final Index s_Index = new Index();
     public static final Pivot s_Pivot = new Pivot();
+    public static final Shooter s_Shooter = new Shooter();
 
     /* Commands */
     public static final Compositions commands = new Compositions(s_Intake, s_Index, s_Pivot);
@@ -94,6 +97,8 @@ public class RobotContainer {
 
         toggleIntakeButton.onTrue(new InstantCommand(()-> CommandScheduler.getInstance().schedule(commands.toggleIntaking())));
         ejectButton.onTrue(s_Index.startEject()).onFalse(s_Index.stop());
+
+        shooterToggle.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(s_Shooter.toggleShooter())));
     }
 
     /**
