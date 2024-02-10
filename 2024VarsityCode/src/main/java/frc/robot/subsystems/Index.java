@@ -21,10 +21,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Index extends SubsystemBase {
+
+  /* ATTRIBUTES */
+
   private CANSparkMax indexMotor;
   private DigitalInput indexEye;
 
   public static final double INDEX_SPEED = 0.5;
+
+
+  /* CONSTRUCTORS */
 
   /** Creates a new Index. */
   public Index() {
@@ -32,9 +38,13 @@ public class Index extends SubsystemBase {
     indexEye = new DigitalInput(Constants.Index.indexDIO);
   }
 
+
+  /* METHODS */
+
   public boolean noteStored(){
     return !indexEye.get();
   }
+
   public boolean noteShot(){
     return indexEye.get();
   }
@@ -43,12 +53,17 @@ public class Index extends SubsystemBase {
     indexMotor.set(speed);
   }
 
+
+  /* COMMANDS */
+
   public InstantCommand start(){
     return new InstantCommand(() -> setIndexSpeed(0.5), this);
   }
+
   public InstantCommand stop(){
     return new InstantCommand(() -> setIndexSpeed(0.0), this);
   }
+
   public FunctionalCommand indexUntilIn(){
     return new FunctionalCommand(
       ()->setIndexSpeed(INDEX_SPEED),
@@ -58,6 +73,7 @@ public class Index extends SubsystemBase {
       this
     );
   }
+
   public FunctionalCommand indexUntilShot(){
     return new FunctionalCommand(
       ()->setIndexSpeed(INDEX_SPEED),
@@ -67,6 +83,9 @@ public class Index extends SubsystemBase {
       this
     );
   }
+
+
+  /* PERIODIC */
 
   @Override
   public void periodic() {

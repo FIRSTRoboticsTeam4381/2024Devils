@@ -19,8 +19,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
+
+  /* ATTRIBUTES */
+
   private CANSparkMax primaryIntake;
   private CANSparkMax helperIntake;
+  public static final double INTAKE_SPEED = 0.5;
+
+
+  /* CONSTRUCTORS */
 
   /** Creates a new Intake. */
   public Intake() {
@@ -28,18 +35,27 @@ public class Intake extends SubsystemBase {
     helperIntake = new CANSparkMax(Constants.Intake.helperIntakeCAN, MotorType.kBrushless);
   }
 
+
+  /* METHODS */
+
   public void setIntakeSpeed(double speed){
     primaryIntake.set(speed);
     helperIntake.set(speed);
   }
 
+
+  /* COMMANDS */
+
   public InstantCommand start(){
-    return new InstantCommand(() -> setIntakeSpeed(0.5), this);
+    return new InstantCommand(() -> setIntakeSpeed(INTAKE_SPEED), this);
   }
   public InstantCommand stop(){
     return new InstantCommand(() -> setIntakeSpeed(0.0), this);
   }
 
+
+  /* PERIODIC */
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
