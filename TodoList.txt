@@ -1,3 +1,15 @@
+Systems
+
+To do
+ - LEDs
+ - Index
+ - Shooter
+ - pivot
+ - climb
+
+Done
+ - Intake
+
 How the robot should work - 
 Intake - 
 Since the pivot needs to be in the correct position, intake should be a toggle that moves the arm up and down to the correct spot
