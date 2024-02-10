@@ -66,13 +66,20 @@ public class Shooter extends SubsystemBase {
   public boolean getShooting(){
     return shooting;
   }
+  public void setShooting(boolean s){
+    shooting = s;
+  }
+
+  public boolean isAtSpeed(){
+    return (Math.abs(SHOOTING_SPEED*maxRPM-propMotor.getEncoder().getVelocity()) < 200);
+  }
 
   public ConditionalCommand toggleShooter(){
     return new ConditionalCommand(startShooter(), stop(), this::getShooting);
   }
   
   public SequentialCommandGroup startShooter(){
-    shooting = true;
+    setShooting(true);
     return new SequentialCommandGroup(
       new FlywheelRamp(this, SHOOTING_SPEED*maxRPM),
       new InstantCommand(() -> setAll(SHOOTING_SPEED, true), this)
@@ -84,7 +91,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public InstantCommand stop(){
-    shooting = false;
+    setShooting(false);
     return new InstantCommand(() -> setAll(0, true), this);
   }
 

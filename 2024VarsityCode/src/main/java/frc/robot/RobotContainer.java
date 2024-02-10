@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.lib.util.LogOrDash;
 import frc.robot.autos.Autos;
+import frc.robot.commands.AutoShoot;
 import frc.robot.commands.Compositions;
 import frc.robot.commands.ManualPivot;
 import frc.robot.commands.TeleopSwerve;
@@ -25,7 +26,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -49,6 +52,10 @@ public class RobotContainer {
     private final Trigger toggleIntakeButton = specialist.cross();
     private final Trigger ejectButton = specialist.circle();
     private final Trigger shooterToggle = specialist.square();
+    private final Trigger autoShootToggle = specialist.triangle();
+    private final Trigger shootNoteButton = specialist.R1();
+    private final Trigger ampModeToggle = specialist.povRight();
+    private final Trigger hangModeToggle = specialist.povUp();
 
     /* Subsystems */
     public static final Swerve s_Swerve = new Swerve();
@@ -99,6 +106,12 @@ public class RobotContainer {
         ejectButton.onTrue(s_Index.startEject()).onFalse(s_Index.stop());
 
         shooterToggle.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(s_Shooter.toggleShooter())));
+        autoShootToggle.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new ConditionalCommand(new AutoShoot(s_Shooter, s_Pivot), new ParallelCommandGroup(s_Shooter.stop(), s_Pivot.goToBottom()), s_Shooter::getShooting))));
+
+        shootNoteButton.and(s_Shooter::isAtSpeed).onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(s_Index.indexUntilShot())));
+
+        // ampModeToggle TODO
+        // hangModeToggle TODO
     }
 
     /**
