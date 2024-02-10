@@ -13,15 +13,14 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
   private CANSparkMax primaryIntake;
   private CANSparkMax helperIntake;
-
-  private double primaryIntakeSpeed = 0.0;
-  private double helperIntakeSpeed = 0.0;
 
   /** Creates a new Intake. */
   public Intake() {
@@ -30,14 +29,19 @@ public class Intake extends SubsystemBase {
   }
 
   public void setIntakeSpeed(double speed){
-    primaryIntakeSpeed = speed;
-    helperIntakeSpeed = speed;
+    primaryIntake.set(speed);
+    helperIntake.set(speed);
+  }
+
+  public InstantCommand start(){
+    return new InstantCommand(() -> setIntakeSpeed(0.5), this);
+  }
+  public InstantCommand stop(){
+    return new InstantCommand(() -> setIntakeSpeed(0.0), this);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    primaryIntake.set(primaryIntakeSpeed);
-    helperIntake.set(helperIntakeSpeed);
   }
 }
