@@ -12,19 +12,25 @@ import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.BangBangController;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.FlywheelRamp;
 
 public class Shooter extends SubsystemBase {
   private CANSparkFlex propMotor;
   private CANSparkFlex topMotor;
   private CANSparkFlex bottomMotor;
 
-  private double propMotorSpeed = 0.0;
-  private double topMotorSpeed = 0.0;
-  private double bottomMotorSpeed = 0.0;
+  public static final double maxRPM = 6500;
 
-  public static final double maxRPM = 5000;
+  private static final double EJECT_SPEED = 0.5; // TODO
+  private static final double SHOOTING_SPEED = 0.5; // TODO
+
+  private boolean shooting = false;
 
   /** Creates a new Shooter. */
   public Shooter() {
@@ -32,39 +38,58 @@ public class Shooter extends SubsystemBase {
     topMotor = new CANSparkFlex(Constants.Shooter.propCAN, MotorType.kBrushless);
     bottomMotor = new CANSparkFlex(Constants.Shooter.propCAN, MotorType.kBrushless);
 
-    propMotor.setIdleMode(IdleMode.kBrake);
-    topMotor.setIdleMode(IdleMode.kBrake);
-    bottomMotor.setIdleMode(IdleMode.kBrake);
+    propMotor.setIdleMode(IdleMode.kCoast);
+    topMotor.setIdleMode(IdleMode.kCoast);
+    bottomMotor.setIdleMode(IdleMode.kCoast);
   }
 
-  private void setPropMotor(double speed){
-    propMotorSpeed = speed;
+  public void setPropSpeed(double speed){
+    propMotor.set(speed);
   }
-  private void setTopMotor(double speed){
-    topMotorSpeed = speed;
+  public void setTopSpeed(double speed){
+    topMotor.set(speed);
   }
-  private void setBottomMotor(double speed){
-    bottomMotorSpeed = speed;
+  public void setBottomSpeed(double speed){
+    bottomMotor.set(speed);
   }
-  public void setAll(double speed, Mode mode){
-    setPropMotor(speed);
-    setTopMotor(mode==Mode.EJECT_TOP?-speed:speed);
-    setBottomMotor(mode==Mode.EJECT_BOTTOM?-speed:speed);
+
+  public void setAll(double speed, boolean shooting){
+    setPropSpeed(speed);
+    setBottomSpeed(speed);
+    setTopSpeed(shooting?speed:-speed);
   }
+
   public double getVelocity(){
     return propMotor.getEncoder().getVelocity();
   }
-  public double getSetSpeed(){
-    return propMotorSpeed;
+
+  public boolean getShooting(){
+    return shooting;
+  }
+
+  public ConditionalCommand toggleShooter(){
+    return new ConditionalCommand(startShooter(), stop(), this::getShooting);
+  }
+  
+  public SequentialCommandGroup startShooter(){
+    shooting = true;
+    return new SequentialCommandGroup(
+      new FlywheelRamp(this, SHOOTING_SPEED*maxRPM),
+      new InstantCommand(() -> setAll(SHOOTING_SPEED, true), this)
+    );
+  }
+
+  public InstantCommand startEjecting(){
+    return new InstantCommand(() -> setAll(EJECT_SPEED, false), this);
+  }
+
+  public InstantCommand stop(){
+    shooting = false;
+    return new InstantCommand(() -> setAll(0, true), this);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    propMotor.set(propMotorSpeed);
-    topMotor.set(topMotorSpeed);
-    bottomMotor.set(bottomMotorSpeed);
   }
-
-  public static enum Mode{SHOOT, EJECT_TOP, EJECT_BOTTOM}
 }
