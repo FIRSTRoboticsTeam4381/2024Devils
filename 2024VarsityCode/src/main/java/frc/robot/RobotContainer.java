@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.lib.util.LogOrDash;
 import frc.robot.autos.Autos;
+import frc.robot.commands.Compositions;
 import frc.robot.commands.ManualPivot;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Intake;
@@ -44,12 +45,17 @@ public class RobotContainer {
 
     /* Operator Buttons */
     private final Supplier<Double> pivotAxis = specialist::getLeftY;
+    private final Trigger toggleIntakeButton = specialist.cross();
+    private final Trigger ejectButton = specialist.circle();
 
     /* Subsystems */
     public static final Swerve s_Swerve = new Swerve();
     public static final Intake s_Intake = new Intake();
     public static final Index s_Index = new Index();
     public static final Pivot s_Pivot = new Pivot();
+
+    /* Commands */
+    public static final Compositions commands = new Compositions(s_Intake, s_Index, s_Pivot);
 
     //Auto Chooser
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -85,6 +91,9 @@ public class RobotContainer {
         zeroSwerve
             .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro(0))
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
+
+        toggleIntakeButton.onTrue(new InstantCommand(()-> CommandScheduler.getInstance().schedule(commands.toggleIntaking())));
+        ejectButton.onTrue(s_Index.startEject()).onFalse(s_Index.stop());
     }
 
     /**

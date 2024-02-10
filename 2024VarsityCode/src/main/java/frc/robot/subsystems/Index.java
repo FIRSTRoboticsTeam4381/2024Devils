@@ -57,11 +57,15 @@ public class Index extends SubsystemBase {
   /* COMMANDS */
 
   public InstantCommand start(){
-    return new InstantCommand(() -> setIndexSpeed(0.5), this);
+    return new InstantCommand(() -> setIndexSpeed(INDEX_SPEED), this);
   }
 
   public InstantCommand stop(){
     return new InstantCommand(() -> setIndexSpeed(0.0), this);
+  }
+
+  public InstantCommand startEject(){
+    return new InstantCommand(() -> setIndexSpeed(-INDEX_SPEED), this);
   }
 
   public FunctionalCommand indexUntilIn(){

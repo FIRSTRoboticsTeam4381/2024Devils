@@ -37,6 +37,7 @@ public class Pivot extends SubsystemBase {
   private static final int AMP_POS = 0; // TODO
   private static final int CLIMB_POS = 0; // TODO
   private static final int BOTTOM_POS = 0; // TODO
+  private static final int INTAKE_POS = 0; // TODO
 
   /* CONSTRUCTORS */
 
@@ -91,6 +92,10 @@ public class Pivot extends SubsystemBase {
 
   public Command goToBottom(){
     return goTo(BOTTOM_POS);
+  }
+
+  public Command goToIntake(){
+    return goTo(INTAKE_POS);
   }
 
 

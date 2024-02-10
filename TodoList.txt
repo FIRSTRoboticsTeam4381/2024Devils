@@ -1,14 +1,8 @@
-Systems
-
 To do
- - LEDs
- - Index
- - Shooter
- - pivot
- - climb
+Pivot - 
+ - Find positions & error values
 
-Done
- - Intake
+Find speeds for all subsystems
 
 How the robot should work - 
 Intake - 
