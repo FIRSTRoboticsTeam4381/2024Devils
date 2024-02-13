@@ -13,6 +13,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -46,6 +47,17 @@ public class Intake extends SubsystemBase {
 
   /* COMMANDS */
 
+  public Command run(){
+    return new FunctionalCommand(
+      ()->setIntakeSpeed(INTAKE_SPEED),
+      ()->{},
+      (interrupt)->setIntakeSpeed(0.0),
+      ()->{return false;},
+      this
+    ).withName("intakeRun");
+  }
+  /* Starts running the intake at a good speed. Doesn't need anything fancy, so this
+  * just runs it on power output */
   public InstantCommand start(){
     return new InstantCommand(() -> setIntakeSpeed(INTAKE_SPEED), this);
   }

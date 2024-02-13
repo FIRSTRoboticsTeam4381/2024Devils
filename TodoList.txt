@@ -1,6 +1,25 @@
+Done
+Intake subsystem should be completely done, besides finding a good speed to run the intake at
+Index subsystem should be completely done, with the full suite of commands, but again, find good speeds
+Pivot should be done logic-wise, with instant positions, changable positions, and manual power. Manual pivot command should also work
+
 To do
+Intake - 
+ - Find good speeds
+Index - 
+ - Find good speed
 Pivot - 
  - Find positions & error values
+ - PID tuning
+Shooter - 
+Climb - 
+ - Everything
+
+Combination commands - 
+Auto shooting - 
+Swerve - 
+ - PID tuning
+
 
 Find speeds for all subsystems
 

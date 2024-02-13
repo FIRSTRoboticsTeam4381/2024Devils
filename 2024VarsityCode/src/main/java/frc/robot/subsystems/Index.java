@@ -45,10 +45,6 @@ public class Index extends SubsystemBase {
     return !indexEye.get();
   }
 
-  public boolean noteShot(){
-    return indexEye.get();
-  }
-
   public void setIndexSpeed(double speed){
     indexMotor.set(speed);
   }
@@ -83,7 +79,7 @@ public class Index extends SubsystemBase {
       ()->setIndexSpeed(INDEX_SPEED),
       ()->{},
       (interrupted)->setIndexSpeed(0.0),
-      this::noteShot,
+      ()->{return !noteStored();},
       this
     );
   }

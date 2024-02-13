@@ -21,6 +21,9 @@ import frc.robot.Constants;
 import frc.robot.commands.FlywheelRamp;
 
 public class Shooter extends SubsystemBase {
+  
+  /* ATTRIBUTES */
+
   private CANSparkFlex propMotor;
   private CANSparkFlex topMotor;
   private CANSparkFlex bottomMotor;
@@ -32,6 +35,9 @@ public class Shooter extends SubsystemBase {
 
   private boolean shooting = false;
 
+
+  /* CONSTRUCTOR */
+
   /** Creates a new Shooter. */
   public Shooter() {
     propMotor = new CANSparkFlex(Constants.Shooter.propCAN, MotorType.kBrushless);
@@ -42,6 +48,9 @@ public class Shooter extends SubsystemBase {
     topMotor.setIdleMode(IdleMode.kCoast);
     bottomMotor.setIdleMode(IdleMode.kCoast);
   }
+
+
+  /* METHODS */
 
   public void setPropSpeed(double speed){
     propMotor.set(speed);
@@ -74,6 +83,9 @@ public class Shooter extends SubsystemBase {
     return (Math.abs(SHOOTING_SPEED*maxRPM-propMotor.getEncoder().getVelocity()) < 200);
   }
 
+
+  /* COMMANDS */
+
   public ConditionalCommand toggleShooter(){
     return new ConditionalCommand(startShooter(), stop(), this::getShooting);
   }
@@ -95,6 +107,9 @@ public class Shooter extends SubsystemBase {
     return new InstantCommand(() -> setAll(0, true), this);
   }
 
+
+  /* PERIODIC */
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

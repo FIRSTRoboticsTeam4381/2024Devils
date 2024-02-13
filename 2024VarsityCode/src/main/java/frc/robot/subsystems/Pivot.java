@@ -27,6 +27,7 @@ import frc.robot.commands.SparkMaxPosition;
 public class Pivot extends SubsystemBase {
 
   /* ATTRIBUTES */
+  
   private CANSparkFlex rightPivot;
   private CANSparkFlex leftPivot;
 
@@ -62,15 +63,19 @@ public class Pivot extends SubsystemBase {
     pivotController.setI(0);
     pivotController.setD(0);
     pivotController.setOutputRange(-1, 1);
+    pivotController.setFeedbackDevice(absoluteEncoder);
   }
 
 
   /* METHODS */
-
+  /*
+   * The way I want these to work is setSpeed will only be called by manual control, and
+   * set position will only be called by auto control, and the single set positions (see
+   * COMMANDS) should only be called by instant commands by button presses.
+   */
   public void setSpeed(double speed){
     rightPivot.set(speed);
   }
-
   public void setPosition(double position){
     pivotController.setReference(position, ControlType.kPosition);
   }
@@ -78,22 +83,19 @@ public class Pivot extends SubsystemBase {
 
   /* COMMANDS */
 
+  // Set position commands
   public Command goTo(double position){
     return new SparkMaxPosition(rightPivot, position, 0, /*TODO*/10, this);
   }
-
   public Command goToAmp(){
     return goTo(AMP_POS);
   }
-
   public Command goToClimb(){
     return goTo(CLIMB_POS);
   }
-
   public Command goToBottom(){
     return goTo(BOTTOM_POS);
   }
-
   public Command goToIntake(){
     return goTo(INTAKE_POS);
   }
