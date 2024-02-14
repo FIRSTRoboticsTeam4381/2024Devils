@@ -14,7 +14,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Climb extends SubsystemBase {
-  private CANSparkMax basePivot;
+  private CANSparkMax rightPivot;
+  private CANSparkMax leftPivot;
   private CANSparkMax midPivot;
 
   private double basePivotSpeed = 0.0;
@@ -22,11 +23,15 @@ public class Climb extends SubsystemBase {
 
   /** Creates a new Climb. */
   public Climb() {
-    basePivot = new CANSparkMax(Constants.Climb.basePivotCAN, MotorType.kBrushless);
-    midPivot = new CANSparkMax(Constants.Climb.midPivotCAN, MotorType.kBrushless);
+    rightPivot = new CANSparkMax(Constants.Climb.rightClimbCAN, MotorType.kBrushless);
+    leftPivot = new CANSparkMax(Constants.Climb.leftClimbCAN, MotorType.kBrushless);
+    midPivot = new CANSparkMax(Constants.Climb.midClimbCAN, MotorType.kBrushless);
 
-    basePivot.setIdleMode(IdleMode.kBrake);
+    rightPivot.setIdleMode(IdleMode.kBrake);
+    leftPivot.setIdleMode(IdleMode.kBrake);
     midPivot.setIdleMode(IdleMode.kBrake);
+
+    leftPivot.follow(rightPivot, true);
   }
 
   public void setBaseSpeed(double speed){
@@ -39,7 +44,7 @@ public class Climb extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    basePivot.set(basePivotSpeed);
+    rightPivot.set(basePivotSpeed);
     midPivot.set(midPivotSpeed);
   }
 }

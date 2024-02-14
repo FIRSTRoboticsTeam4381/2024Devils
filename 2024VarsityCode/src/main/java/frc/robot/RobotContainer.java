@@ -52,6 +52,7 @@ public class RobotContainer {
     private final Trigger ejectTop = specialist.triangle();
     private final Trigger ejectBottom = specialist.square();
     private final Supplier<Double> leftYAxis = specialist::getLeftY;
+    private final Supplier<Double> rightYAxis = specialist::getRightY;
     private final Supplier<Double> r2Axis = specialist::getR2Axis;
     private final Supplier<Double> l2Axis = specialist::getL2Axis;
 
@@ -68,8 +69,8 @@ public class RobotContainer {
         s_Intake.setDefaultCommand(new IntakeDefault(s_Intake, intake, eject));
         s_Index.setDefaultCommand(new IndexDefault(s_Index, intake, eject));
         s_Shooter.setDefaultCommand(new ShooterDefault(s_Shooter, shoot, ejectTop, ejectBottom));
-        s_Pivot.setDefaultCommand(new ShooterPivotDefault(s_Pivot, leftYAxis));
-        s_Climb.setDefaultCommand(new ClimbDefault(s_Climb, r2Axis, l2Axis));;
+        s_Pivot.setDefaultCommand(new ShooterPivotDefault(s_Pivot, r2Axis, l2Axis));
+        s_Climb.setDefaultCommand(new ClimbDefault(s_Climb, leftYAxis, rightYAxis));
 
 
         // Configure the button bindings

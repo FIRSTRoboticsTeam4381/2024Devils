@@ -12,12 +12,14 @@ import frc.robot.subsystems.ShooterPivot;
 
 public class ShooterPivotDefault extends Command {
   private ShooterPivot s_Pivot;
-  private Supplier<Double> pivotInput;
+  private Supplier<Double> positive;
+  private Supplier<Double> negative;
 
   /** Creates a new ShooterPivotDefault. */
-  public ShooterPivotDefault(ShooterPivot pivot, Supplier<Double> pivotInput) {
+  public ShooterPivotDefault(ShooterPivot pivot, Supplier<Double> positiveInput, Supplier<Double> negativeInput) {
     s_Pivot = pivot;
-    this.pivotInput = pivotInput;
+    this.positive = positiveInput;
+    this.negative = negativeInput;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(pivot);
@@ -30,8 +32,8 @@ public class ShooterPivotDefault extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double pivotInput = this.pivotInput.get();
-
+    double pivotInput = positive.get()-negative.get();
+    
     pivotInput = Math.abs(pivotInput) < Constants.stickDeadband ? 0 : pivotInput;
     
     s_Pivot.setPivotSpeed(pivotInput*0.25);

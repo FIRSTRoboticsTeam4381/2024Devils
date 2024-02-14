@@ -45,8 +45,9 @@ public final class Constants {
         public static final int leftPivotCAN = 52;
     }
     public static final class Climb{
-        public static final int basePivotCAN = 53;
-        public static final int midPivotCAN = 54;
+        public static final int rightClimbCAN = 53;
+        public static final int leftClimbCAN = 54;
+        public static final int midClimbCAN = 55;
     }
 
     public static final class Swerve{
