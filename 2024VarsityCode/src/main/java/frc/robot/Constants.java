@@ -29,8 +29,9 @@ public final class Constants {
     public static final int NEO_TICKS_PER_REV = 42; //TODO
 
     public static final class Climb{
-        public static final int baseMotorCAN = 53; // TODO
-        public static final int elbowMotorCAN = 54; // TODO
+        public static final int rightClimbCAN = 53;
+        public static final int leftClimbCAN = 54; 
+        public static final int midClimbCAN = 55;
     }
 
     public static final class Swerve{
