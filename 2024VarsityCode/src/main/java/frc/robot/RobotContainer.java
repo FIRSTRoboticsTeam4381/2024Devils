@@ -6,7 +6,6 @@ package frc.robot;
 
 import frc.lib.util.LogOrDash;
 import frc.robot.autos.Autos;
-import frc.robot.commands.AutoShoot;
 import frc.robot.commands.Compositions;
 import frc.robot.commands.ManualPivot;
 import frc.robot.commands.TeleopSwerve;

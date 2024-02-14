@@ -5,6 +5,7 @@ Pivot should be done logic-wise, with instant positions, changable positions, an
 Shooter should have all of the necessary stuff, but idk if the array of PID controllers is a great idea,
     I just don't know how to control all of them together, without making them follow each other, because I can't do
     that due to needing to eject. I'll just have to test and see
+Intake/Index combination commands should work
 
 To do
 Intake - 
@@ -15,11 +16,17 @@ Pivot -
  - Find positions & error values
  - PID tuning
 Shooter - 
+ - See if my way of doing things works
+ - Get regression based on position
 Climb - 
+ - Everything
+Limelight implementation - 
  - Everything
 
 Combination commands - 
+ - 
 Auto shooting - 
+ - Everything
 Swerve - 
  - PID tuning
 
