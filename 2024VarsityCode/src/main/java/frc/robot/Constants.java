@@ -49,6 +49,12 @@ public final class Constants {
         public static final int bottomCAN = 50; // TODO
     }
 
+    public static final class Climb{
+        public static final int rightClimbCAN = 53;
+        public static final int leftClimbCAN = 54; 
+        public static final int midClimbCAN = 55;
+    }
+
     public static final class Swerve{
         public static final int pigeonID = 1; // TODO are we removing the pigeon?
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-

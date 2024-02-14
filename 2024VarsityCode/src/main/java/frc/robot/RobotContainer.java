@@ -13,6 +13,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Swerve;
 
 import java.util.function.Supplier;
@@ -62,6 +63,7 @@ public class RobotContainer {
     public static final Index s_Index = new Index();
     public static final Pivot s_Pivot = new Pivot();
     public static final Shooter s_Shooter = new Shooter();
+    public static final Climb s_Climb = new Climb();
 
     /* Commands */
     public static final Compositions commands = new Compositions(s_Intake, s_Index, s_Pivot);
