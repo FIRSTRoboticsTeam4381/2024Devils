@@ -9,11 +9,15 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkFlex;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.BangBangController;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,89 +31,109 @@ public class Shooter extends SubsystemBase {
   private CANSparkFlex propMotor;
   private CANSparkFlex topMotor;
   private CANSparkFlex bottomMotor;
+  private SparkPIDController[] controllers; // TODO idk if this way of doing it will work
 
   public static final double maxRPM = 6500;
 
-  private static final double EJECT_SPEED = 0.5; // TODO
+  private static final double EJECT_SPEED = 0.25; // TODO
   private static final double SHOOTING_SPEED = 0.5; // TODO
-
-  private boolean shooting = false;
 
 
   /* CONSTRUCTOR */
 
   /** Creates a new Shooter. */
   public Shooter() {
+    controllers = new SparkPIDController[3];
     propMotor = new CANSparkFlex(Constants.Shooter.propCAN, MotorType.kBrushless);
     topMotor = new CANSparkFlex(Constants.Shooter.propCAN, MotorType.kBrushless);
     bottomMotor = new CANSparkFlex(Constants.Shooter.propCAN, MotorType.kBrushless);
 
+    controllers[0] = propMotor.getPIDController();
+    controllers[1] = topMotor.getPIDController();
+    controllers[2] = bottomMotor.getPIDController();
+
     propMotor.setIdleMode(IdleMode.kCoast);
     topMotor.setIdleMode(IdleMode.kCoast);
     bottomMotor.setIdleMode(IdleMode.kCoast);
+
+    for(int i = 0; i < controllers.length; i++){
+      controllers[i].setP(0);
+      controllers[i].setI(0);
+      controllers[i].setD(0);
+      controllers[i].setFF(0);
+      controllers[i].setOutputRange(-1, 1);
+    }
   }
 
 
   /* METHODS */
-
-  public void setPropSpeed(double speed){
+  public void setTopMotorSpeed(double speed){
+    topMotor.set(speed); // TODO invert?
+  }
+  public void setBottomMotorSpeed(double speed){
+    bottomMotor.set(speed); // TODO invert?
+  }
+  public void setPropMotorSpeed(double speed){
+    propMotor.set(speed); // TODO invert?
+  }
+  public void shootAtSpeed(double speed){
     propMotor.set(speed);
-  }
-  public void setTopSpeed(double speed){
     topMotor.set(speed);
-  }
-  public void setBottomSpeed(double speed){
     bottomMotor.set(speed);
   }
-
-  public void setAll(double speed, boolean shooting){
-    setPropSpeed(speed);
-    setBottomSpeed(speed);
-    setTopSpeed(shooting?speed:-speed);
+  public void ejectAtSpeed(double speed){
+    propMotor.set(speed);
+    topMotor.set(-speed);
+    bottomMotor.set(speed);
+  }
+  public void setVelocity(double velocity){
+    for(int i = 0; i < controllers.length; i++){
+      controllers[i].setReference(velocity, ControlType.kVelocity);
+    }
   }
 
   public double getVelocity(){
     return propMotor.getEncoder().getVelocity();
   }
 
-  public boolean getShooting(){
-    return shooting;
-  }
-  public void setShooting(boolean s){
-    shooting = s;
-  }
-
-  public boolean isAtSpeed(){
-    return (Math.abs(SHOOTING_SPEED*maxRPM-propMotor.getEncoder().getVelocity()) < 200);
-  }
-
 
   /* COMMANDS */
 
-  public ConditionalCommand toggleShooter(){
-    return new ConditionalCommand(startShooter(), stop(), this::getShooting);
+  // Instant commands
+  public InstantCommand startEject(){
+    return new InstantCommand(()->ejectAtSpeed(EJECT_SPEED), this);
   }
-  
-  public SequentialCommandGroup startShooter(){
-    setShooting(true);
-    return new SequentialCommandGroup(
-      new FlywheelRamp(this, SHOOTING_SPEED*maxRPM),
-      new InstantCommand(() -> setAll(SHOOTING_SPEED, true), this)
-    );
+  public InstantCommand startShoot(){
+    return new InstantCommand(()->shootAtSpeed(SHOOTING_SPEED), this);
   }
-
-  public InstantCommand startEjecting(){
-    return new InstantCommand(() -> setAll(EJECT_SPEED, false), this);
+  public InstantCommand stopAll(){
+    return new InstantCommand(()->shootAtSpeed(0.0), this);
   }
 
-  public InstantCommand stop(){
-    setShooting(false);
-    return new InstantCommand(() -> setAll(0, true), this);
+  // Functional commands
+  public Command eject(){
+    return new FunctionalCommand(
+      ()->ejectAtSpeed(EJECT_SPEED),
+      ()->{},
+      (interrupted)->ejectAtSpeed(0.0),
+      ()->{return false;},
+      this
+    ).withName("Ejecting");
+  }
+
+  public Command shoot(){
+    return new FunctionalCommand(
+      ()->shootAtSpeed(SHOOTING_SPEED),
+      ()->{},
+      (interrupted)->shootAtSpeed(0.0),
+      ()->{return false;},
+      this
+    ).withName("Shooting");
   }
 
 
   /* PERIODIC */
-  
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

@@ -15,6 +15,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -52,36 +53,46 @@ public class Index extends SubsystemBase {
 
   /* COMMANDS */
 
+  // Instant Commands
   public InstantCommand start(){
     return new InstantCommand(() -> setIndexSpeed(INDEX_SPEED), this);
   }
-
   public InstantCommand stop(){
     return new InstantCommand(() -> setIndexSpeed(0.0), this);
   }
-
   public InstantCommand startEject(){
     return new InstantCommand(() -> setIndexSpeed(-INDEX_SPEED), this);
   }
 
-  public FunctionalCommand indexUntilIn(){
+  // Full Commands
+  public Command indexUntilIn(){
     return new FunctionalCommand(
       ()->setIndexSpeed(INDEX_SPEED),
       ()->{},
       (interrupted)->setIndexSpeed(0.0),
       this::noteStored,
       this
-    );
+    ).withName("IndexUntilIn");
   }
 
-  public FunctionalCommand indexUntilShot(){
+  public Command indexUntilShot(){
     return new FunctionalCommand(
       ()->setIndexSpeed(INDEX_SPEED),
       ()->{},
       (interrupted)->setIndexSpeed(0.0),
       ()->{return !noteStored();},
       this
-    );
+    ).withName("IndexUntilShot");
+  }
+
+  public Command eject(){
+    return new FunctionalCommand(
+      ()->setIndexSpeed(-INDEX_SPEED),
+      ()->{},
+      (interrupted)->setIndexSpeed(0.0),
+      ()->{return false;},
+      this
+    ).withName("Ejecting");
   }
 
 

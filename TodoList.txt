@@ -2,6 +2,9 @@ Done
 Intake subsystem should be completely done, besides finding a good speed to run the intake at
 Index subsystem should be completely done, with the full suite of commands, but again, find good speeds
 Pivot should be done logic-wise, with instant positions, changable positions, and manual power. Manual pivot command should also work
+Shooter should have all of the necessary stuff, but idk if the array of PID controllers is a great idea,
+    I just don't know how to control all of them together, without making them follow each other, because I can't do
+    that due to needing to eject. I'll just have to test and see
 
 To do
 Intake - 
