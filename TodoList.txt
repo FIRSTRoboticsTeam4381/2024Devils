@@ -1,3 +1,10 @@
+/* IDEAS */
+Use limelight data to get the horizontal position from the target
+    to the crosshair, and adjust the rotation of the robot
+Trapezoid motion control for the pivots
+Make the pivot adjustment take into account not only the current
+    robot position, but also its velocity to adjust for the current velocity
+
 Done
 Intake subsystem should be completely done, besides finding a good speed to run the intake at
 Index subsystem should be completely done, with the full suite of commands, but again, find good speeds

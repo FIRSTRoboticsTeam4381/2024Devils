@@ -8,6 +8,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
+
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
@@ -15,12 +17,15 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.BangBangController;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.LimelightHelpers;
 import frc.robot.Constants;
 import frc.robot.commands.FlywheelRamp;
 
@@ -94,6 +99,16 @@ public class Shooter extends SubsystemBase {
 
   public double getVelocity(){
     return propMotor.getEncoder().getVelocity();
+  }
+
+  // TODO TEST
+  public double getDistanceFromGoal(){
+    boolean isBlue = DriverStation.getAlliance().get() == Alliance.Blue;
+
+    double[] position = isBlue ? LimelightHelpers.getBlueRelativePosition() : LimelightHelpers.getRedRelativePosition();
+    double[] goalPosition = {isBlue?0:0,isBlue?0:0}; // TODO get goal positions relative to origins (idk what the origins are);
+    double distance = Math.sqrt(Math.pow(position[0]-goalPosition[0],2)+Math.pow(position[1]-goalPosition[1],2));
+    return distance;
   }
 
 
