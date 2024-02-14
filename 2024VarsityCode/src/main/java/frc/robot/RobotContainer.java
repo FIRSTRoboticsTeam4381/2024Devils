@@ -102,13 +102,13 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro(0))
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
 
-        toggleIntakeButton.onTrue(new InstantCommand(()-> CommandScheduler.getInstance().schedule(commands.toggleIntaking())));
-        ejectButton.whileTrue(s_Index.eject()); // TODO does this work
+        toggleIntakeButton.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(commands.toggleIntaking())));
+        ejectButton.whileTrue(s_Index.eject());
 
         shooterToggle.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(s_Shooter.toggleShooter())));
-        autoShootToggle.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new ConditionalCommand(new AutoShoot(s_Shooter, s_Pivot), new ParallelCommandGroup(s_Shooter.stop(), s_Pivot.goToBottom()), s_Shooter::getShooting))));
+        //autoShootToggle.onTrue TODO
 
-        shootNoteButton.and(s_Shooter::isAtSpeed).onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(s_Index.indexUntilShot())));
+        //shootNoteButton TODO
 
         // ampModeToggle TODO
         // hangModeToggle TODO

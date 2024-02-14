@@ -20,13 +20,10 @@ public class Compositions {
         this.pivot = pivot;
     }
 
-    private boolean isIntaking(){
-        return intaking;
-    }
     public ConditionalCommand toggleIntaking(){
-        return new ConditionalCommand(stopIntaking(), intakeNote(), this::isIntaking);
+        return new ConditionalCommand(startIntaking(), stopIntaking(), ()->{return !intake.running;});
     }
-    public SequentialCommandGroup intakeNote(){
+    public SequentialCommandGroup startIntaking(){
         return new SequentialCommandGroup(
             pivot.goToIntake(),
             intake.start(),
@@ -34,9 +31,8 @@ public class Compositions {
             stopIntaking()
         );
     }
-    public ParallelCommandGroup stopIntaking(){
-        return new ParallelCommandGroup(
-            index.stop(),
+    public SequentialCommandGroup stopIntaking(){
+        return new SequentialCommandGroup(
             intake.stop(),
             pivot.goToBottom()
         );

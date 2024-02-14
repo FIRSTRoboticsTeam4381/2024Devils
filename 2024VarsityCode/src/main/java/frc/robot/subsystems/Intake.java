@@ -26,6 +26,7 @@ public class Intake extends SubsystemBase {
   private CANSparkMax primaryIntake;
   private CANSparkMax helperIntake;
   public static final double INTAKE_SPEED = 0.5;
+  public boolean running = false;
 
 
   /* CONSTRUCTORS */
@@ -59,9 +60,11 @@ public class Intake extends SubsystemBase {
   /* Starts running the intake at a good speed. Doesn't need anything fancy, so this
   * just runs it on power output */
   public InstantCommand start(){
+    running = true;
     return new InstantCommand(() -> setIntakeSpeed(INTAKE_SPEED), this);
   }
   public InstantCommand stop(){
+    running = false;
     return new InstantCommand(() -> setIntakeSpeed(0.0), this);
   }
 

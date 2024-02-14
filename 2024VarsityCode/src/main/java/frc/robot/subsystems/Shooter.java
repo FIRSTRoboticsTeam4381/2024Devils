@@ -121,6 +121,9 @@ public class Shooter extends SubsystemBase {
     ).withName("Ejecting");
   }
 
+  public ConditionalCommand toggleShooter(){
+    return new ConditionalCommand(shoot(), stopAll(), ()->{return propMotor.get()==0;});
+  }
   public Command shoot(){
     return new FunctionalCommand(
       ()->shootAtSpeed(SHOOTING_SPEED),
