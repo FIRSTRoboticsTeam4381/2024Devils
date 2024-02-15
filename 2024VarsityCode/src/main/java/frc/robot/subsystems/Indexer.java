@@ -18,16 +18,22 @@ public class Indexer extends SubsystemBase {
   private double indexSpeed = 0.0;
 
   private RelativeEncoder indexEncoder;
+  private DigitalInput indexEye;
 
   /** Creates a new Indexer. */
   public Indexer() {
     indexMotor = new CANSparkMax(Constants.Index.indexCAN, MotorType.kBrushless);
 
     indexEncoder = indexMotor.getEncoder();
+    indexEye = new DigitalInput(Constants.Index.indexDIO);
   }
 
   public void setSpeed(double speed){
     indexSpeed = speed;
+  }
+
+  public boolean noteStored(){
+    return !indexEye.get();
   }
 
   @Override
@@ -36,6 +42,6 @@ public class Indexer extends SubsystemBase {
     indexMotor.set(indexSpeed);
 
     SmartDashboard.putNumber("Index Power", indexMotor.get());
-    SmartDashboard.putNumber("Index Velocity", indexEncoder.getVelocity());
+    SmartDashboard.putBoolean("Note Inside", noteStored());
   }
 }

@@ -34,6 +34,7 @@ public final class Constants {
     }
     public static final class Index{
         public static final int indexCAN = 47;
+        public static final int indexDIO = 0;
     }
     public static final class Shooter{
         public static final int propMotorCAN = 48;

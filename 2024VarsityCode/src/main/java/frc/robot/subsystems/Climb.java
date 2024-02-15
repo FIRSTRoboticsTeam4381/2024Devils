@@ -5,33 +5,43 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase;
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkRelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Climb extends SubsystemBase {
   private CANSparkMax rightPivot;
   private CANSparkMax leftPivot;
-  private CANSparkMax midPivot;
+  private CANSparkFlex midPivot;
 
   private double basePivotSpeed = 0.0;
   private double midPivotSpeed = 0.0;
+
+  private RelativeEncoder baseEncoder;
+  private RelativeEncoder midEncoder;
 
   /** Creates a new Climb. */
   public Climb() {
     rightPivot = new CANSparkMax(Constants.Climb.rightClimbCAN, MotorType.kBrushless);
     leftPivot = new CANSparkMax(Constants.Climb.leftClimbCAN, MotorType.kBrushless);
-    midPivot = new CANSparkMax(Constants.Climb.midClimbCAN, MotorType.kBrushless);
+    midPivot = new CANSparkFlex(Constants.Climb.midClimbCAN, MotorType.kBrushless);
 
     rightPivot.setIdleMode(IdleMode.kBrake);
     leftPivot.setIdleMode(IdleMode.kBrake);
     midPivot.setIdleMode(IdleMode.kBrake);
 
     leftPivot.follow(rightPivot, true);
+
+    baseEncoder = rightPivot.getEncoder();
+    midEncoder = midPivot.getEncoder();
+
   }
 
   public void setBaseSpeed(double speed){
@@ -46,5 +56,8 @@ public class Climb extends SubsystemBase {
     // This method will be called once per scheduler run
     rightPivot.set(basePivotSpeed);
     midPivot.set(midPivotSpeed);
+
+    SmartDashboard.putNumber("Base Pivot Position", baseEncoder.getPosition());
+    SmartDashboard.putNumber("Mid Pivot Position", midEncoder.getPosition());
   }
 }
