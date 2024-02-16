@@ -22,7 +22,7 @@ public class ShooterPivot extends SubsystemBase {
   private double pivotSpeed = 0.0;
 
   private RelativeEncoder pivotEncoder;
-  private SparkAbsoluteEncoder absoluteEncoder;
+  //private SparkAbsoluteEncoder absoluteEncoder;
 
   /** Creates a new ShooterPivot. */
   public ShooterPivot() {
@@ -32,7 +32,7 @@ public class ShooterPivot extends SubsystemBase {
     leftPivot.follow(rightPivot);
 
     pivotEncoder = rightPivot.getEncoder();
-    absoluteEncoder = rightPivot.getAbsoluteEncoder(Type.kDutyCycle);
+    //absoluteEncoder = rightPivot.getAbsoluteEncoder(Type.kDutyCycle);
   }
 
   public void setPivotSpeed(double speed){
@@ -45,6 +45,6 @@ public class ShooterPivot extends SubsystemBase {
     rightPivot.set(pivotSpeed);
 
     SmartDashboard.putNumber("Pivot Relative Position", pivotEncoder.getPosition());
-    SmartDashboard.putNumber("Pivot Absolute Position", absoluteEncoder.getPosition());
+    //SmartDashboard.putNumber("Pivot Absolute Position", absoluteEncoder.getPosition());
   }
 }

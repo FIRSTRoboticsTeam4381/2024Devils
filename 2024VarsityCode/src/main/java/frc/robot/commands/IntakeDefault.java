@@ -34,6 +34,8 @@ public class IntakeDefault extends Command {
   public void execute() {
     if(intakeButton.getAsBoolean()){
       s_Intake.setIntakeSpeed(INTAKE_SPEED);
+    }else if(ejectButton.getAsBoolean()){ // CHANGE Added eject back in because we may need to spit out notes that are partially in
+      s_Intake.setIntakeSpeed(-INTAKE_SPEED);
     }else{
       s_Intake.setIntakeSpeed(0);
     }

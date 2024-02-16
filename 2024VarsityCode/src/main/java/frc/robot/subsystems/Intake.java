@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void setIntakeSpeed(double speed){
-        intakeSpeed = speed;
+        intakeSpeed = -speed; // CHANGE reversed intake speed
     }
 
     @Override

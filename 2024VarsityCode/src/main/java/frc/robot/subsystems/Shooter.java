@@ -45,10 +45,10 @@ public class Shooter extends SubsystemBase {
     propSpeed = -speed;
   }
   private void setTopSpeed(double speed){
-    topSpeed = speed;
+    topSpeed = -speed; // CHANGE flipped to the correct direction
   }
   private void setBottomSpeed(double speed){
-    bottomSpeed = -speed;
+    bottomSpeed = speed; // CHANGE flipped to the correct direction
   }
 
   public void shoot(double speed){

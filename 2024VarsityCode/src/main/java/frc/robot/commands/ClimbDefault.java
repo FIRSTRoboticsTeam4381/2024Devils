@@ -38,12 +38,12 @@ public class ClimbDefault extends Command {
     baseInput = Math.abs(baseInput) < Constants.stickDeadband ? 0 : baseInput;
     midInput = Math.abs(midInput) < Constants.stickDeadband ? 0 : midInput;
 
-    baseInput *= 0.25;
-    midInput *= 0.25;
+    // CHANGE Good speeds to run these at
+    baseInput *= 0.5;
+    midInput *= 0.75;
 
-
-
-    s_Climb.setBaseSpeed(baseInput);
+    // CHANGE Flipped direction to be correct
+    s_Climb.setBaseSpeed(-baseInput);
     s_Climb.setMidSpeed(midInput);
   }
 

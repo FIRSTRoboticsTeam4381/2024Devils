@@ -57,7 +57,7 @@ public class RobotContainer {
     private final Supplier<Double> l2Axis = specialist::getL2Axis;
 
     /* Subsystems */
-    public static final Swerve s_Swerve = new Swerve();
+    //public static final Swerve s_Swerve = new Swerve();
     public static final Intake s_Intake = new Intake();
     public static final Indexer s_Index = new Indexer();
     public static final Shooter s_Shooter = new Shooter();
