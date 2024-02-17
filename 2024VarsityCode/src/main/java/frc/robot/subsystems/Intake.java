@@ -41,8 +41,8 @@ public class Intake extends SubsystemBase {
   /* METHODS */
 
   public void setIntakeSpeed(double speed){
-    primaryIntake.set(speed);
-    helperIntake.set(speed);
+    primaryIntake.set(-speed);
+    helperIntake.set(-speed);
   }
 
 
@@ -66,6 +66,16 @@ public class Intake extends SubsystemBase {
   public InstantCommand stop(){
     running = false;
     return new InstantCommand(() -> setIntakeSpeed(0.0), this);
+  }
+
+  public Command eject(){
+    return new FunctionalCommand(
+      ()->setIntakeSpeed(-INTAKE_SPEED),
+      ()->{},
+      (interrupted)->setIntakeSpeed(0.0),
+      ()->{return false;},
+      this
+    ).withName("Ejecting");
   }
 
 

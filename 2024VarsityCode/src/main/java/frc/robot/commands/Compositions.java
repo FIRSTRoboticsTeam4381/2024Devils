@@ -38,4 +38,11 @@ public class Compositions {
         );
     }
 
+    public ParallelCommandGroup eject(){
+        return new ParallelCommandGroup(
+            intake.eject(),
+            index.eject()
+        );
+    }
+
 }

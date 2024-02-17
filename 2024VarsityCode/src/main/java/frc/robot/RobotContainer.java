@@ -106,7 +106,7 @@ public class RobotContainer {
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
 
         toggleIntakeButton.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(commands.toggleIntaking())));
-        ejectButton.whileTrue(s_Index.eject());
+        ejectButton.whileTrue(commands.eject());
 
         shooterToggle.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(s_Shooter.toggleShooter())));
         //autoShootToggle.onTrue TODO

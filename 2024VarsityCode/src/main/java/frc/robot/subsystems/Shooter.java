@@ -73,7 +73,7 @@ public class Shooter extends SubsystemBase {
 
   /* METHODS */
   public void setTopMotorSpeed(double speed){
-    topMotor.set(speed); // TODO invert?
+    topMotor.set(-speed); // TODO invert?
   }
   public void setBottomMotorSpeed(double speed){
     bottomMotor.set(speed); // TODO invert?
