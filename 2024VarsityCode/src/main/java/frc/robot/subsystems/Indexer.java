@@ -24,7 +24,7 @@ public class Indexer extends SubsystemBase {
   private RelativeEncoder indexEncoder;
   private DigitalInput indexEye;
 
-  public static final double INDEX_SPEED = 1.0;
+  public static final double INDEX_SPEED = 0.5;
 
   /** Creates a new Indexer. */
   public Indexer(Intake intake, Shooter shooter) {
@@ -54,7 +54,7 @@ public class Indexer extends SubsystemBase {
     return new InstantCommand(() -> {intake.setIntakeSpeed(Intake.INTAKE_SPEED); setSpeed(INDEX_SPEED);});
   }
   public InstantCommand startEject(){
-    return new InstantCommand(() -> {intake.setIntakeSpeed(-Intake.INTAKE_SPEED); setSpeed(INDEX_SPEED);});
+    return new InstantCommand(() -> {intake.setIntakeSpeed(-Intake.INTAKE_SPEED); setSpeed(-INDEX_SPEED);});
   }
   public InstantCommand stopIntake(){
     return new InstantCommand(() -> {intake.setIntakeSpeed(0.0); setSpeed(0.0);});

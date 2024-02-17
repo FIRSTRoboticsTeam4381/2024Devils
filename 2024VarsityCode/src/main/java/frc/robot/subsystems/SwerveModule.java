@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveModule {
     public int moduleNumber;
@@ -54,6 +55,10 @@ public class SwerveModule {
         mAngleMotor.getPIDController().setPositionPIDWrappingMaxInput(360);
         mAngleMotor.getPIDController().setPositionPIDWrappingEnabled(true);
 
+        mAngleMotor.getPIDController().setP(Constants.Swerve.angleKP);
+        mAngleMotor.getPIDController().setI(Constants.Swerve.angleKI);
+        mAngleMotor.getPIDController().setD(Constants.Swerve.angleKD);
+
         distanceEncoder = mDriveMotor.getEncoder();
         // Set to m/s for speed and m for distance
         distanceEncoder.setPositionConversionFactor(Constants.Swerve.wheelDiameter / Constants.Swerve.driveGearRatio);
@@ -64,7 +69,9 @@ public class SwerveModule {
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop)
     {
+        //SmartDashboard.putNumber("Mod "+moduleNumber+" desired angle", desiredState.angle.getDegrees());
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle); //TODO does this need to be update for Rev?
+        //SmartDashboard.putNumber("Mod "+moduleNumber+" desired angle", desiredState.angle.getDegrees());
 
         if(isOpenLoop){
             double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
@@ -76,6 +83,7 @@ public class SwerveModule {
         }
 
         double angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01)) ? lastAngle : desiredState.angle.getDegrees(); //Prevent rotating module if speed is less than 1%. Prevents jittering.
+        //SmartDashboard.putNumber("Mod "+moduleNumber+" desired angle", desiredState.angle.getDegrees());
         mAngleMotor.getPIDController().setReference(angle+180, ControlType.kPosition);
         desiredAngle = angle;
         lastAngle = angle;

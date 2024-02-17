@@ -94,24 +94,24 @@ public final class Constants {
         public static final boolean driveEnableCurrentLimit = true;
 
         /* Angle Motor PID Values */
-        public static final double angleKP = 0.6;
+        public static final double angleKP = 0.005;//0.06;
         public static final double angleKI = 0.0;
-        public static final double angleKD = 12.0;
+        public static final double angleKD = 0.0;//0.25;
         public static final double angleKF = 0.0;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.10;
+        public static final double driveKP = 0.000005;//3.1534E-05; //From SysID, may not be converted right!
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values */
-        public static final double driveKS = (0.667 / 12); // divide by 122 to convert from volts to percent output for CTRE TODO?
-        public static final double driveKV = (2.44 / 12);
-        public static final double driveKA = (0.27 / 12);
+        public static final double driveKS = 0.018231;//(0.667 / 12); // divide by 122 to convert from volts to percent output for CTRE TODO?
+        public static final double driveKV = 1.9676;//(2.44 / 12);
+        public static final double driveKA = 0.68184;//(0.27 / 12);
 
         /* Swerve Profiling Values */
-        public static final double maxSpeed = 4.97; //meters per second
+        public static final double maxSpeed = 6; //meters per second
         public static final double maxAngularVelocity = 11.5;
 
         /* Neutral Modes */

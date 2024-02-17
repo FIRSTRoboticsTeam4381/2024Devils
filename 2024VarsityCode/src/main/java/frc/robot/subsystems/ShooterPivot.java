@@ -34,14 +34,15 @@ public class ShooterPivot extends SubsystemBase {
   }
 
   public void setPivotSpeed(double speed){
-    leftPivot.set(speed);
+    leftPivot.set(-speed);
   }
   public double getPivotSpeed(){
     return leftPivot.get();
   }
 
   public double getAngle(){
-    return absoluteEncoder.getPosition();//*some conversion factor
+    //return absoluteEncoder.getPosition();//*some conversion factor
+    return 0.0;
   }
 
   @Override
@@ -50,5 +51,6 @@ public class ShooterPivot extends SubsystemBase {
 
     SmartDashboard.putNumber("Pivot Relative Position", pivotEncoder.getPosition());
     SmartDashboard.putNumber("Pivot Absolute Position", absoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Pivot Speed", leftPivot.get());
   }
 }

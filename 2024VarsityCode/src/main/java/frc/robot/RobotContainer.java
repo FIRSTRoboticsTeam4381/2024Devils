@@ -41,13 +41,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
     /* Controllers */
-    private final CommandPS4Controller specialist = new CommandPS4Controller(0);
-    //private final CommandPS4Controller driver = new CommandPS4Controller(1);
+    //private final CommandPS4Controller specialist = new CommandPS4Controller(0);
+    private final CommandPS4Controller driver = new CommandPS4Controller(0);
 
     /* Driver Buttons */
-    //private final Trigger zeroSwerve = driver.options();
+    private final Trigger zeroSwerve = driver.options();
 
     /* Operator Buttons */
+    /*
     private final Trigger intake = specialist.cross();
     private final Trigger eject = specialist.circle();
     private final Trigger shoot = specialist.R1();
@@ -57,20 +58,23 @@ public class RobotContainer {
     private final Supplier<Double> rightYAxis = specialist::getRightY;
     private final Supplier<Double> r2Axis = specialist::getR2Axis;
     private final Supplier<Double> l2Axis = specialist::getL2Axis;
+    */
 
     /* Subsystems */
-    //public static final Swerve s_Swerve = new Swerve();
+    public static final Swerve s_Swerve = new Swerve();
+    /*
     public static final Intake s_Intake = new Intake();
     public static final Shooter s_Shooter = new Shooter();
     public static final Indexer s_Index = new Indexer(s_Intake, s_Shooter);
     public static final ShooterPivot s_Pivot = new ShooterPivot();
     public static final Climb s_Climb = new Climb();
+    */
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
-        //s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true));
-        s_Pivot.setDefaultCommand(new ShooterPivotDefault(s_Pivot, r2Axis, l2Axis));
-        s_Climb.setDefaultCommand(new ClimbDefault(s_Climb, leftYAxis, rightYAxis));
+        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true));
+        //s_Pivot.setDefaultCommand(new ShooterPivotDefault(s_Pivot, r2Axis, l2Axis));
+        //s_Climb.setDefaultCommand(new ClimbDefault(s_Climb, leftYAxis, rightYAxis));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -84,14 +88,16 @@ public class RobotContainer {
    */
     private void configureButtonBindings(){
         // Button to reset swerve odometry and angle
-        //zeroSwerve.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()).alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
+        zeroSwerve.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()).alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
 
+        /*
         intake.whileTrue(s_Index.intake());
         eject.onTrue(s_Index.startEject()).onFalse(s_Index.stopIntake());
 
         shoot.onTrue(s_Shooter.startShooter()).onFalse(s_Shooter.stopShooter());
         ejectTop.onTrue(s_Shooter.startTopEject()).onFalse(s_Shooter.stopShooter());
         feedNote.whileTrue(s_Index.feedNote());
+        */
     }
 
     /**

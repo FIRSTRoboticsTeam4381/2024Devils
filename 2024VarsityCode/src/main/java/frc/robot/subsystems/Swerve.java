@@ -32,9 +32,9 @@ public class Swerve extends SubsystemBase{
 
         mSwerveMods = new SwerveModule[]{
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
-            new SwerveModule(1, Constants.Swerve.Mod0.constants),
-            new SwerveModule(2, Constants.Swerve.Mod0.constants),
-            new SwerveModule(3, Constants.Swerve.Mod0.constants)
+            new SwerveModule(1, Constants.Swerve.Mod1.constants),
+            new SwerveModule(2, Constants.Swerve.Mod2.constants),
+            new SwerveModule(3, Constants.Swerve.Mod3.constants)
         };
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getPositions());
@@ -168,6 +168,11 @@ public class Swerve extends SubsystemBase{
             targetSpeeds[mod.moduleNumber] = mod.getDesiredSpeed();
             targetAngles[mod.moduleNumber] = mod.getDesiredAngle();
             absoluteAngles[mod.moduleNumber] = mod.getAngle().getDegrees();
+        }
+
+        for(int i = 0; i < mSwerveMods.length; i++){
+            SmartDashboard.putNumber("Mod "+i+" desired angle", targetAngles[i]);
+            SmartDashboard.putNumber("Mod "+i+" angle", absoluteAngles[i]);
         }
 
         // Compile swerve status for AdvantageScope

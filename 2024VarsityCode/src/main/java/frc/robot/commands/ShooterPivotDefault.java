@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.ShooterPivot;
@@ -32,13 +33,23 @@ public class ShooterPivotDefault extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double pivotInput = positive.get()-negative.get();
+    double positive = (this.positive.get()+1)/2.0;
+    double negative = (this.negative.get()+1)/2.0;
+    double pivotInput = positive-negative;
     
-    pivotInput = Math.abs(pivotInput) < Constants.stickDeadband ? 0 : pivotInput;
-    
+    pivotInput = (Math.abs(pivotInput) < Constants.stickDeadband) ? 0 : pivotInput;
+
+    SmartDashboard.putNumber("Positive Input", positive);
+    SmartDashboard.putNumber("Negative Input", negative);
+    SmartDashboard.putNumber("Total Input", pivotInput);
+
+    s_Pivot.setPivotSpeed(pivotInput*0.5);
+
+    /*
     if(!(pivotInput==0.0&&s_Pivot.getPivotSpeed()==0.0)){
       s_Pivot.setPivotSpeed(pivotInput*0.5+basicFeedforward());
     }
+    */
   }
 
   private double basicFeedforward(){
