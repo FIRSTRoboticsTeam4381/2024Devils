@@ -42,11 +42,16 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
     /* Controllers */
     private final CommandPS4Controller specialist = new CommandPS4Controller(0);
+    //private final CommandPS4Controller driver = new CommandPS4Controller(1);
+
+    /* Driver Buttons */
+    //private final Trigger zeroSwerve = driver.options();
 
     /* Operator Buttons */
     private final Trigger intake = specialist.cross();
     private final Trigger eject = specialist.circle();
     private final Trigger shoot = specialist.R1();
+    private final Trigger feedNote = specialist.L1();
     private final Trigger ejectTop = specialist.triangle();
     private final Supplier<Double> leftYAxis = specialist::getLeftY;
     private final Supplier<Double> rightYAxis = specialist::getRightY;
@@ -56,8 +61,8 @@ public class RobotContainer {
     /* Subsystems */
     //public static final Swerve s_Swerve = new Swerve();
     public static final Intake s_Intake = new Intake();
-    public static final Indexer s_Index = new Indexer(s_Intake);
     public static final Shooter s_Shooter = new Shooter();
+    public static final Indexer s_Index = new Indexer(s_Intake, s_Shooter);
     public static final ShooterPivot s_Pivot = new ShooterPivot();
     public static final Climb s_Climb = new Climb();
 
@@ -79,14 +84,14 @@ public class RobotContainer {
    */
     private void configureButtonBindings(){
         // Button to reset swerve odometry and angle
-        zeroSwerve
-            .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())
-            .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
-        intake.onTrue(s_Index.startIntake()).onFalse(s_Index.stopIntake());
+        //zeroSwerve.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()).alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
+
+        intake.whileTrue(s_Index.intake());
         eject.onTrue(s_Index.startEject()).onFalse(s_Index.stopIntake());
 
         shoot.onTrue(s_Shooter.startShooter()).onFalse(s_Shooter.stopShooter());
         ejectTop.onTrue(s_Shooter.startTopEject()).onFalse(s_Shooter.stopShooter());
+        feedNote.whileTrue(s_Index.feedNote());
     }
 
     /**

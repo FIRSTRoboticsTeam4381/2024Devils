@@ -45,6 +45,10 @@ public class Shooter extends SubsystemBase {
     bottomEncoder = bottomMotor.getEncoder();
   }
 
+  public boolean isRunning(){
+    return !(propMotor.get()==0.0);
+  }
+
   private void setPropSpeed(double speed){
     propMotor.set(-speed);
   }

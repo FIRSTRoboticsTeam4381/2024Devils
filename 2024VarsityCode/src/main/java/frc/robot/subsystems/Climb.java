@@ -55,14 +55,6 @@ public class Climb extends SubsystemBase {
     return midPivot.get();
   }
 
-  /* TODO ONLY FOR TESTING */
-  public void setBaseSpeed(double speed){
-    rightMotor.set(speed);
-  }
-  public void setMiddleSpeed(double speed){
-    midMotor.set(speed);
-  }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
