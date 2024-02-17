@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -62,6 +63,7 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
+        //s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true));
         s_Pivot.setDefaultCommand(new ShooterPivotDefault(s_Pivot, r2Axis, l2Axis));
         s_Climb.setDefaultCommand(new ClimbDefault(s_Climb, leftYAxis, rightYAxis));
 
@@ -77,6 +79,9 @@ public class RobotContainer {
    */
     private void configureButtonBindings(){
         // Button to reset swerve odometry and angle
+        zeroSwerve
+            .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())
+            .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
         intake.onTrue(s_Index.startIntake()).onFalse(s_Index.stopIntake());
         eject.onTrue(s_Index.startEject()).onFalse(s_Index.stopIntake());
 
