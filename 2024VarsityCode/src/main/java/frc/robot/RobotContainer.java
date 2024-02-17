@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -43,6 +44,7 @@ public class RobotContainer {
     /* Controllers */
     private final CommandPS4Controller driver = new CommandPS4Controller(0);
     private final CommandPS4Controller specialist = new CommandPS4Controller(1);
+    //private final CommandJoystick testingJoystick = new CommandJoystick(0);
 
     /* Driver Buttons */
     private final Trigger zeroSwerve = driver.options();
@@ -73,8 +75,8 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
-        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true));
-        s_Pivot.setDefaultCommand(new ManualPivot(pivotAxis, s_Pivot));
+        //s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true));
+        //s_Pivot.setDefaultCommand(new ManualPivot(pivotAxis, s_Pivot));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -100,7 +102,7 @@ public class RobotContainer {
     private void configureButtonBindings(){
         // Button to reset swerve odometry and angle
         zeroSwerve
-            .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro(0))
+            .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
 
         toggleIntakeButton.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(commands.toggleIntaking())));

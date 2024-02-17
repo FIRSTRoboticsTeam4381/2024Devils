@@ -48,14 +48,13 @@ public class SwerveModule {
         /* Angle Encoder Config */
         absoluteEncoder = mAngleMotor.getAbsoluteEncoder(com.revrobotics.SparkAbsoluteEncoder.Type.kDutyCycle);
         absoluteEncoder.setPositionConversionFactor(360);
-        absoluteEncoder.setZeroOffset(-180);
 
         mAngleMotor.getPIDController().setFeedbackDevice(absoluteEncoder);
-        mAngleMotor.getPIDController().setPositionPIDWrappingMinInput(-180);
-        mAngleMotor.getPIDController().setPositionPIDWrappingMaxInput(180);
+        mAngleMotor.getPIDController().setPositionPIDWrappingMinInput(0);
+        mAngleMotor.getPIDController().setPositionPIDWrappingMaxInput(360);
         mAngleMotor.getPIDController().setPositionPIDWrappingEnabled(true);
 
-        distanceEncoder = mDriveMotor.getEncoder(Type.kHallSensor, Constants.NEO_TICKS_PER_REV);
+        distanceEncoder = mDriveMotor.getEncoder();
         // Set to m/s for speed and m for distance
         distanceEncoder.setPositionConversionFactor(Constants.Swerve.wheelDiameter / Constants.Swerve.driveGearRatio);
         distanceEncoder.setVelocityConversionFactor(Constants.Swerve.wheelDiameter / Constants.Swerve.driveGearRatio / 60.0);
@@ -77,7 +76,7 @@ public class SwerveModule {
         }
 
         double angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01)) ? lastAngle : desiredState.angle.getDegrees(); //Prevent rotating module if speed is less than 1%. Prevents jittering.
-        mAngleMotor.getPIDController().setReference(angle, ControlType.kPosition);
+        mAngleMotor.getPIDController().setReference(angle+180, ControlType.kPosition);
         desiredAngle = angle;
         lastAngle = angle;
     }
@@ -167,7 +166,7 @@ public class SwerveModule {
     }
 
     public Rotation2d getAngle(){
-        return Rotation2d.fromDegrees(absoluteEncoder.getPosition());
+        return Rotation2d.fromDegrees(absoluteEncoder.getPosition()-180);
     }
 
     /**
