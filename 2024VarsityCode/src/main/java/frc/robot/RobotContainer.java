@@ -7,9 +7,6 @@ package frc.robot;
 import frc.lib.util.LogOrDash;
 //import frc.robot.autos.Autos;
 import frc.robot.commands.ClimbDefault;
-import frc.robot.commands.IndexDefault;
-import frc.robot.commands.IntakeDefault;
-import frc.robot.commands.ShooterDefault;
 import frc.robot.commands.ShooterPivotDefault;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Climb;
@@ -50,7 +47,6 @@ public class RobotContainer {
     private final Trigger eject = specialist.circle();
     private final Trigger shoot = specialist.R1();
     private final Trigger ejectTop = specialist.triangle();
-    private final Trigger ejectBottom = specialist.square();
     private final Supplier<Double> leftYAxis = specialist::getLeftY;
     private final Supplier<Double> rightYAxis = specialist::getRightY;
     private final Supplier<Double> r2Axis = specialist::getR2Axis;
@@ -59,19 +55,15 @@ public class RobotContainer {
     /* Subsystems */
     //public static final Swerve s_Swerve = new Swerve();
     public static final Intake s_Intake = new Intake();
-    public static final Indexer s_Index = new Indexer();
+    public static final Indexer s_Index = new Indexer(s_Intake);
     public static final Shooter s_Shooter = new Shooter();
     public static final ShooterPivot s_Pivot = new ShooterPivot();
     public static final Climb s_Climb = new Climb();
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
-        s_Intake.setDefaultCommand(new IntakeDefault(s_Intake, intake, eject));
-        s_Index.setDefaultCommand(new IndexDefault(s_Index, intake, eject));
-        s_Shooter.setDefaultCommand(new ShooterDefault(s_Shooter, shoot, ejectTop, ejectBottom));
         s_Pivot.setDefaultCommand(new ShooterPivotDefault(s_Pivot, r2Axis, l2Axis));
         s_Climb.setDefaultCommand(new ClimbDefault(s_Climb, leftYAxis, rightYAxis));
-
 
         // Configure the button bindings
         configureButtonBindings();
@@ -85,6 +77,11 @@ public class RobotContainer {
    */
     private void configureButtonBindings(){
         // Button to reset swerve odometry and angle
+        intake.onTrue(s_Index.startIntake()).onFalse(s_Index.stopIntake());
+        eject.onTrue(s_Index.startEject()).onFalse(s_Index.stopIntake());
+
+        shoot.onTrue(s_Shooter.startShooter()).onFalse(s_Shooter.stopShooter());
+        ejectTop.onTrue(s_Shooter.startTopEject()).onFalse(s_Shooter.stopShooter());
     }
 
     /**

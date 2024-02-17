@@ -42,9 +42,13 @@ public class ClimbDefault extends Command {
     baseInput *= 0.5;
     midInput *= 0.75;
 
-    // CHANGE Flipped direction to be correct
-    s_Climb.setBaseSpeed(-baseInput);
-    s_Climb.setMidSpeed(midInput);
+    if(!(baseInput==0.0&&s_Climb.getBaseSpeed()==0.0)){
+      s_Climb.setBaseSpeed(baseInput);
+    }
+
+    if(!(midInput==0.0&&s_Climb.getMidSpeed()==0.0)){
+      s_Climb.setMidSpeed(midInput);
+    }
   }
 
   // Called once the command ends or is interrupted.

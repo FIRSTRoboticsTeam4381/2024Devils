@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -21,6 +22,9 @@ public class Shooter extends SubsystemBase {
   private double propSpeed = 0.0;
   private double topSpeed = 0.0;
   private double bottomSpeed = 0.0;
+
+  private static final double SHOOT_SPEED = 0.5;
+  private static final double EJECT_SPEED = 0.2;
 
   private RelativeEncoder propEncoder;
   private RelativeEncoder topEncoder;
@@ -42,13 +46,13 @@ public class Shooter extends SubsystemBase {
   }
 
   private void setPropSpeed(double speed){
-    propSpeed = -speed;
+    propMotor.set(-speed);
   }
   private void setTopSpeed(double speed){
-    topSpeed = -speed; // CHANGE flipped to the correct direction
+    topMotor.set(-speed);
   }
   private void setBottomSpeed(double speed){
-    bottomSpeed = speed; // CHANGE flipped to the correct direction
+    bottomMotor.set(speed);
   }
 
   public void shoot(double speed){
@@ -72,12 +76,19 @@ public class Shooter extends SubsystemBase {
     setBottomSpeed(0);
   }
 
+  public InstantCommand startShooter(){
+    return new InstantCommand(() -> shoot(SHOOT_SPEED));
+  }
+  public InstantCommand startTopEject(){
+    return new InstantCommand(() -> ejectTop(EJECT_SPEED));
+  }
+  public InstantCommand stopShooter(){
+    return new InstantCommand(() -> shoot(0.0));
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    propMotor.set(propSpeed);
-    topMotor.set(topSpeed);
-    bottomMotor.set(bottomSpeed);
 
     SmartDashboard.putNumber("Propellor Power", propMotor.get());
     SmartDashboard.putNumber("Propellor Velocity", propEncoder.getVelocity());

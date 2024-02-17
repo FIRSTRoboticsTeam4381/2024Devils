@@ -36,8 +36,9 @@ public class ShooterPivotDefault extends Command {
     
     pivotInput = Math.abs(pivotInput) < Constants.stickDeadband ? 0 : pivotInput;
     
-    // CHANGE reversed input and got a better speed
-    s_Pivot.setPivotSpeed(-pivotInput*0.5);
+    if(!(pivotInput==0.0&&s_Pivot.getPivotSpeed()==0.0)){
+      s_Pivot.setPivotSpeed(pivotInput*0.5);
+    }
   }
 
   // Called once the command ends or is interrupted.

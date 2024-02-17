@@ -19,8 +19,6 @@ public class ShooterPivot extends SubsystemBase {
   private CANSparkMax rightPivot;
   private CANSparkMax leftPivot;
 
-  private double pivotSpeed = 0.0;
-
   private RelativeEncoder pivotEncoder;
   //private SparkAbsoluteEncoder absoluteEncoder;
 
@@ -36,13 +34,15 @@ public class ShooterPivot extends SubsystemBase {
   }
 
   public void setPivotSpeed(double speed){
-    pivotSpeed = speed;
+    rightPivot.set(-speed);
+  }
+  public double getPivotSpeed(){
+    return rightPivot.get();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    rightPivot.set(pivotSpeed);
 
     SmartDashboard.putNumber("Pivot Relative Position", pivotEncoder.getPosition());
     //SmartDashboard.putNumber("Pivot Absolute Position", absoluteEncoder.getPosition());

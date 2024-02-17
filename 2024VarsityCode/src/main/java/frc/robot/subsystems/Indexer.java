@@ -10,19 +10,24 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Indexer extends SubsystemBase {
   private CANSparkMax indexMotor;
   private double indexSpeed = 0.0;
+  private Intake intake;
 
   private RelativeEncoder indexEncoder;
   private DigitalInput indexEye;
 
+  public static final double INDEX_SPEED = 1.0;
+
   /** Creates a new Indexer. */
-  public Indexer() {
+  public Indexer(Intake intake) {
     indexMotor = new CANSparkMax(Constants.Index.indexCAN, MotorType.kBrushless);
+    this.intake = intake;
 
     indexEncoder = indexMotor.getEncoder();
     indexEye = new DigitalInput(Constants.Index.indexDIO);
@@ -34,6 +39,16 @@ public class Indexer extends SubsystemBase {
 
   public boolean noteStored(){
     return !indexEye.get();
+  }
+
+  public InstantCommand startIntake(){
+    return new InstantCommand(() -> {intake.setIntakeSpeed(Intake.INTAKE_SPEED); setSpeed(Indexer.INDEX_SPEED);});
+  }
+  public InstantCommand startEject(){
+    return new InstantCommand(() -> {intake.setIntakeSpeed(-Intake.INTAKE_SPEED); setSpeed(-Indexer.INDEX_SPEED);});
+  }
+  public InstantCommand stopIntake(){
+    return new InstantCommand(() -> {intake.setIntakeSpeed(0.0); setSpeed(0.0);});
   }
 
   @Override

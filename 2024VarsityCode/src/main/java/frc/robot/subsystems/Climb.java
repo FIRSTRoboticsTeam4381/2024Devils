@@ -21,9 +21,6 @@ public class Climb extends SubsystemBase {
   private CANSparkMax leftPivot;
   private CANSparkFlex midPivot;
 
-  private double basePivotSpeed = 0.0;
-  private double midPivotSpeed = 0.0;
-
   private RelativeEncoder baseEncoder;
   private RelativeEncoder midEncoder;
 
@@ -45,17 +42,22 @@ public class Climb extends SubsystemBase {
   }
 
   public void setBaseSpeed(double speed){
-    basePivotSpeed = speed;
+    rightPivot.set(-speed);
   }
   public void setMidSpeed(double speed){
-    midPivotSpeed = speed;
+    midPivot.set(speed);
+  }
+
+  public double getBaseSpeed(){
+    return rightPivot.get();
+  }
+  public double getMidSpeed(){
+    return midPivot.get();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    rightPivot.set(basePivotSpeed);
-    midPivot.set(midPivotSpeed);
 
     SmartDashboard.putNumber("Base Pivot Position", baseEncoder.getPosition());
     SmartDashboard.putNumber("Mid Pivot Position", midEncoder.getPosition());

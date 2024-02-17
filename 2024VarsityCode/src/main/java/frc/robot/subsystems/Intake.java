@@ -14,7 +14,7 @@ public class Intake extends SubsystemBase {
     private CANSparkMax intake;
     private CANSparkMax helper;
 
-    private double intakeSpeed = 0.0;
+    public static final double INTAKE_SPEED = 0.5;
 
     /** Creates a new Intake. */
     public Intake() {
@@ -23,15 +23,14 @@ public class Intake extends SubsystemBase {
     }
 
     public void setIntakeSpeed(double speed){
-        intakeSpeed = -speed; // CHANGE reversed intake speed
+        intake.set(-speed);
+        helper.set(-speed);
     }
 
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        intake.set(intakeSpeed);
-        helper.set(intakeSpeed);
 
-        SmartDashboard.putNumber("Intake Speed", intakeSpeed);
+        SmartDashboard.putNumber("Intake Speed", intake.get());
     }
 }
