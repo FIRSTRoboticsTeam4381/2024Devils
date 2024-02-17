@@ -20,24 +20,28 @@ public class ShooterPivot extends SubsystemBase {
   private CANSparkMax leftPivot;
 
   private RelativeEncoder pivotEncoder;
-  //private SparkAbsoluteEncoder absoluteEncoder;
+  private SparkAbsoluteEncoder absoluteEncoder;
 
   /** Creates a new ShooterPivot. */
   public ShooterPivot() {
     rightPivot = new CANSparkMax(Constants.Pivot.rightPivotCAN, MotorType.kBrushless);
     leftPivot = new CANSparkMax(Constants.Pivot.leftPivotCAN, MotorType.kBrushless);
 
-    leftPivot.follow(rightPivot);
+    rightPivot.follow(leftPivot);
 
-    pivotEncoder = rightPivot.getEncoder();
-    //absoluteEncoder = rightPivot.getAbsoluteEncoder(Type.kDutyCycle);
+    pivotEncoder = leftPivot.getEncoder();
+    absoluteEncoder = leftPivot.getAbsoluteEncoder(Type.kDutyCycle);
   }
 
   public void setPivotSpeed(double speed){
-    rightPivot.set(-speed);
+    leftPivot.set(speed);
   }
   public double getPivotSpeed(){
-    return rightPivot.get();
+    return leftPivot.get();
+  }
+
+  public double getAngle(){
+    return absoluteEncoder.getPosition();//*some conversion factor
   }
 
   @Override
@@ -45,6 +49,6 @@ public class ShooterPivot extends SubsystemBase {
     // This method will be called once per scheduler run
 
     SmartDashboard.putNumber("Pivot Relative Position", pivotEncoder.getPosition());
-    //SmartDashboard.putNumber("Pivot Absolute Position", absoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Pivot Absolute Position", absoluteEncoder.getPosition());
   }
 }

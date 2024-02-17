@@ -37,8 +37,15 @@ public class ShooterPivotDefault extends Command {
     pivotInput = Math.abs(pivotInput) < Constants.stickDeadband ? 0 : pivotInput;
     
     if(!(pivotInput==0.0&&s_Pivot.getPivotSpeed()==0.0)){
-      s_Pivot.setPivotSpeed(pivotInput*0.5);
+      s_Pivot.setPivotSpeed(pivotInput*0.5+basicFeedforward());
     }
+  }
+
+  private double basicFeedforward(){
+    // DO NOT use until you've calculate a conversion factor from absolute encoder position to angle
+    return 0.0;
+    //final double ffSpeed = 0.05;
+    //return Math.cos(s_Pivot.getAngle()*(Math.PI/180.0)*ffSpeed); 
   }
 
   // Called once the command ends or is interrupted.
