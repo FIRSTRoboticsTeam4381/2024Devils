@@ -52,20 +52,20 @@ public final class Constants {
     }
 
     public static final class Swerve{
-        public static final int pigeonID = 1; // TODO are we removing the pigeon?
+        public static final int pigeonID = 1; // Using navx instead
         public static final boolean invertGyro = true; // Always ensure Gyro is CCW+ CW-
 
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(21.25); //TODO
-        public static final double wheelBase = Units.inchesToMeters(21.25); //TODO
+        public static final double trackWidth = Units.inchesToMeters(21.25);
+        public static final double wheelBase = Units.inchesToMeters(21.25);
         public static final double wheelDiameter = Units.inchesToMeters(4);
         public static final double wheelCircumference = wheelDiameter * Math.PI;
 
         public static final double openLoopRamp = 0.25;
         public static final double closedLoopRamp = 0.0;
 
-        public static final double driveGearRatio = (425.0 / 72.0); //TODO
-        public static final double angleGearRatio = (150.0/7.0 / 1.0); //TODO
+        public static final double driveGearRatio = (425.0 / 72.0);
+        public static final double angleGearRatio = (150.0/7.0 / 1.0);
 
         public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
             new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
@@ -75,10 +75,10 @@ public final class Constants {
         
         // TODO check - auto - PIDs need to be configured
         public static final HolonomicPathFollowerConfig holonomicConfig = new HolonomicPathFollowerConfig(
-            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-            4.5, // Max module speed, in m/s
-            0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+            new PIDConstants(5.0, 0.0, 0.0), // TODO Translation PID constants
+            new PIDConstants(5.0, 0.0, 0.0), // TODO Rotation PID constants
+            6, // Max module speed, in m/s
+            0.4, // TODO Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
         );
 
@@ -118,7 +118,6 @@ public final class Constants {
         public static final IdleMode angleNeutralMode = IdleMode.kCoast;
         public static final IdleMode driveNeutralMode = IdleMode.kBrake;
 
-        // TODO check - teleop
         /* Motor Inverts */
         public static final boolean driveMotorInvert = true;
         public static final boolean angleMotorInvert = true;
@@ -131,8 +130,8 @@ public final class Constants {
         public static final class Mod0{
             public static final int driveMotorID = 10;
             public static final int angleMotorID = 11;
-            public static final int canCoderID = 12; //TODO remove?
-            public static final double angleOffset = 0; // TODO
+            public static final int canCoderID = 12;
+            public static final double angleOffset = 0;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -141,8 +140,8 @@ public final class Constants {
         public static final class Mod1{
             public static final int driveMotorID = 20;
             public static final int angleMotorID = 21;
-            public static final int canCoderID = 22; //TODO remove?
-            public static final double angleOffset = 0; // TODO
+            public static final int canCoderID = 22;
+            public static final double angleOffset = 0;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -151,18 +150,18 @@ public final class Constants {
         public static final class Mod3{
             public static final int driveMotorID = 30;
             public static final int angleMotorID = 31;
-            public static final int canCoderID = 32; //TODO remove?
-            public static final double angleOffset = 0; // TODO
+            public static final int canCoderID = 32;
+            public static final double angleOffset = 0;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
-        /* Back Right Module - Module 2 */
+        /* Back Left Module - Module 4 */
         public static final class Mod2{
             public static final int driveMotorID = 40;
             public static final int angleMotorID = 41;
-            public static final int canCoderID = 42; //TODO remove?
-            public static final double angleOffset = 0; //TODO
+            public static final int canCoderID = 42;
+            public static final double angleOffset = 0;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }

@@ -21,19 +21,23 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveModule {
+
+    /* ATTRIBUTES */
     public int moduleNumber;
     private CANSparkMax mAngleMotor;
     private CANSparkFlex mDriveMotor;
 
-    private SparkAbsoluteEncoder absoluteEncoder;
+    private RelativeEncoder mDriveEncoder;
+    private SparkAbsoluteEncoder mAngleEncoder;
 
-    private RelativeEncoder distanceEncoder;
-
-    private double lastAngle;
-    private double desiredAngle;
-    private double lastSpeed;
+    private double mLastAngle;
+    private double mDesiredAngle;
+    private double mLastSpeed;
 
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
+
+
+    /* CONSTRUCTOR */
 
     public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
         this.moduleNumber = moduleNumber;
@@ -47,10 +51,10 @@ public class SwerveModule {
         //configDriveMotor();
 
         /* Angle Encoder Config */
-        absoluteEncoder = mAngleMotor.getAbsoluteEncoder(com.revrobotics.SparkAbsoluteEncoder.Type.kDutyCycle);
-        absoluteEncoder.setPositionConversionFactor(360);
+        mAngleEncoder = mAngleMotor.getAbsoluteEncoder(com.revrobotics.SparkAbsoluteEncoder.Type.kDutyCycle);
+        mAngleEncoder.setPositionConversionFactor(360);
 
-        mAngleMotor.getPIDController().setFeedbackDevice(absoluteEncoder);
+        mAngleMotor.getPIDController().setFeedbackDevice(mAngleEncoder);
         mAngleMotor.getPIDController().setPositionPIDWrappingMinInput(0);
         mAngleMotor.getPIDController().setPositionPIDWrappingMaxInput(360);
         mAngleMotor.getPIDController().setPositionPIDWrappingEnabled(true);
@@ -59,36 +63,92 @@ public class SwerveModule {
         mAngleMotor.getPIDController().setI(Constants.Swerve.angleKI);
         mAngleMotor.getPIDController().setD(Constants.Swerve.angleKD);
 
-        distanceEncoder = mDriveMotor.getEncoder();
+        mDriveEncoder = mDriveMotor.getEncoder();
         // Set to m/s for speed and m for distance
-        distanceEncoder.setPositionConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio);
-        distanceEncoder.setVelocityConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio / 60.0);
+        mDriveEncoder.setPositionConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio);
+        mDriveEncoder.setVelocityConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio / 60.0);
 
-        lastAngle = getState().angle.getDegrees();
+        mLastAngle = getState().angle.getDegrees();
     }
+
+
+    /* METHODS */
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop)
     {
-        //SmartDashboard.putNumber("Mod "+moduleNumber+" desired angle", desiredState.angle.getDegrees());
-        //desiredState = SwerveModuleState.optimize(desiredState, getState().angle); //TODO does this need to be update for Rev?
-        //SmartDashboard.putNumber("Mod "+moduleNumber+" desired angle", desiredState.angle.getDegrees());
+        //desiredState = SwerveModuleState.optimize(desiredState, getState().angle); //TODO this breaks stuff
 
-        if(isOpenLoop){
+        if(isOpenLoop){ // TELEOP
             double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
             mDriveMotor.set(percentOutput);
         }
-        else{
+        else{ // AUTO
             double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio); //TODO update for neos?
             mDriveMotor.getPIDController().setReference(velocity, ControlType.kVelocity, 0, feedforward.calculate(desiredState.speedMetersPerSecond));
         }
 
-        double angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01)) ? lastAngle : desiredState.angle.getDegrees(); //Prevent rotating module if speed is less than 1%. Prevents jittering.
-        //SmartDashboard.putNumber("Mod "+moduleNumber+" desired angle", desiredState.angle.getDegrees());
+        double angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01)) ? mLastAngle : desiredState.angle.getDegrees(); //Prevent rotating module if speed is less than 1%. Prevents jittering.
         mAngleMotor.getPIDController().setReference(angle+180, ControlType.kPosition);
-        desiredAngle = angle;
-        lastAngle = angle;
+        mDesiredAngle = angle;
+        mLastAngle = angle;
     }
-    
+
+
+    /* CURRENT STATE */
+
+    public SwerveModuleState getState(){
+        double velocity = mDriveEncoder.getVelocity(); //Units configured to m/s
+        Rotation2d angle = getAngle();
+        return new SwerveModuleState(velocity, angle);
+    }
+
+    public SwerveModulePosition getPosition(){
+        double distance = mDriveEncoder.getPosition(); //Units configured to m
+        Rotation2d angle = getAngle();
+        return new SwerveModulePosition(distance, angle);
+    }
+
+    public Rotation2d getAngle(){
+        return Rotation2d.fromDegrees(mAngleEncoder.getPosition()-180);
+    }
+
+
+    /* OTHER ACCESSORS */
+
+    /**
+     * Get temp of a motor in this swerve module
+     * @param motor motor index 1 is drive motor, any other number is angle motor
+     * @return
+     */
+    public Double getTemp(int motor){
+        return (motor == 1)?mDriveMotor.getMotorTemperature():mAngleMotor.getMotorTemperature();
+    }
+
+    public double getDesiredAngle(){
+        return mDesiredAngle;
+    }
+
+    public double getDesiredSpeed(){
+        return mLastSpeed;
+    }
+
+
+    /* LOGGING AND SAVING */
+
+    public void sendTelemetry(){
+        //LogOrDash.logNumber("swerve/m" + moduleNumber + "/cancoder", getAngle().getDegrees());
+        LogOrDash.logNumber("swerve/m" + moduleNumber + "/angle/position", getState().angle.getDegrees());
+        LogOrDash.logNumber("swerve/m" + moduleNumber + "/drive/velocity", getState().speedMetersPerSecond);
+        LogOrDash.logNumber("swerve/m" + moduleNumber + "/drive/velocity", getPosition().distanceMeters);
+        LogOrDash.logNumber("swerve/m" + moduleNumber + "/angle/setpoint", mDesiredAngle);
+        LogOrDash.logNumber("swerve/m" + moduleNumber + "/drive/setpoint", mLastSpeed);
+        
+        LogOrDash.sparkMaxDiagnostics("swerve/m" + moduleNumber + "/angle", mAngleMotor);
+        LogOrDash.sparkMaxDiagnostics("swerve/m" + moduleNumber + "/drive", mDriveMotor);
+
+        LogOrDash.logNumber("swerve/m"+moduleNumber+"/angle/raw_analog", mAngleEncoder.getPosition());
+    }
+
     /**
      * Set settings for this motor controller and save tham to its flash memory.
      * 
@@ -161,7 +221,7 @@ public class SwerveModule {
 
             // This doesn't return a RevLibError apparently
             mAngleMotor.setInverted(Constants.Swerve.angleMotorInvert);
-
+ 
             Thread.sleep(1000);
             LogOrDash.checkRevError("angle motor "+moduleNumber+" BURN",
                 mAngleMotor.burnFlash());
@@ -171,52 +231,5 @@ public class SwerveModule {
         {
             DriverStation.reportError("Main thread interrupted while flashing swerve module!", e.getStackTrace());
         }
-    }
-
-    public Rotation2d getAngle(){
-        return Rotation2d.fromDegrees(absoluteEncoder.getPosition()-180);
-    }
-
-    /**
-     * Get temp of a motor in this swerve module
-     * @param motor motor index 1 is drive motor, any other number is angle motor
-     * @return
-     */
-    public Double getTemp(int motor){
-        return (motor == 1)?mDriveMotor.getMotorTemperature():mAngleMotor.getMotorTemperature();
-    }
-
-    public double getDesiredAngle(){
-        return desiredAngle;
-    }
-
-    public double getDesiredSpeed(){
-        return lastSpeed;
-    }
-
-    public SwerveModuleState getState(){
-        double velocity = distanceEncoder.getVelocity(); //Units configured to m/s
-        Rotation2d angle = getAngle();
-        return new SwerveModuleState(velocity, angle);
-    }
-
-    public SwerveModulePosition getPosition(){
-        double distance = distanceEncoder.getPosition(); //Units configured to m
-        Rotation2d angle = getAngle();
-        return new SwerveModulePosition(distance, angle);
-    }
-
-    public void sendTelemetry(){
-        //LogOrDash.logNumber("swerve/m" + moduleNumber + "/cancoder", getAngle().getDegrees());
-        LogOrDash.logNumber("swerve/m" + moduleNumber + "/angle/position", getState().angle.getDegrees());
-        LogOrDash.logNumber("swerve/m" + moduleNumber + "/drive/velocity", getState().speedMetersPerSecond);
-        LogOrDash.logNumber("swerve/m" + moduleNumber + "/drive/velocity", getPosition().distanceMeters);
-        LogOrDash.logNumber("swerve/m" + moduleNumber + "/angle/setpoint", desiredAngle);
-        LogOrDash.logNumber("swerve/m" + moduleNumber + "/drive/setpoint", lastSpeed);
-        
-        LogOrDash.sparkMaxDiagnostics("swerve/m" + moduleNumber + "/angle", mAngleMotor);
-        LogOrDash.sparkMaxDiagnostics("swerve/m" + moduleNumber + "/drive", mDriveMotor);
-
-        LogOrDash.logNumber("swerve/m"+moduleNumber+"/angle/raw_analog", absoluteEncoder.getPosition());
     }
 }

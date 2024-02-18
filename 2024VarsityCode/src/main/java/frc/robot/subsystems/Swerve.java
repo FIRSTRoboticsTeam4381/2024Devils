@@ -22,9 +22,9 @@ import frc.lib.util.LogOrDash;
 import frc.robot.Constants;
 
 public class Swerve extends SubsystemBase{
-    public SwerveDriveOdometry swerveOdometry;
+    public SwerveDriveOdometry mSwerveOdemetry;
     public SwerveModule[] mSwerveMods;
-    public AHRS gyro; //TODO may not use
+    public AHRS gyro;
 
     public Swerve(){
         gyro = new AHRS(Port.kUSB);
@@ -37,7 +37,7 @@ public class Swerve extends SubsystemBase{
             new SwerveModule(3, Constants.Swerve.Mod3.constants)
         };
 
-        swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getPositions());
+        mSwerveOdemetry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getPositions());
 
         // TODO check - auto
         AutoBuilder.configureHolonomic(
@@ -53,7 +53,7 @@ public class Swerve extends SubsystemBase{
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop){
         SwerveModuleState[] swerveModuleStates = 
-            Constants.Swerve.swerveKinematics.toSwerveModuleStates(DriftCorrection.driftCorrection(
+            Constants.Swerve.swerveKinematics.toSwerveModuleStates(/*DriftCorrection.driftCorrection TODO*/(
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
                     translation.getX(),
                     translation.getY(),
@@ -63,9 +63,9 @@ public class Swerve extends SubsystemBase{
                 : new ChassisSpeeds(
                     translation.getX(),
                     translation.getY(),
-                    rotation),
-                swerveOdometry.getPoseMeters(),
-                gyro)
+                    rotation)
+                )//mSwerveOdemetry.getPoseMeters(),
+                //gyro)
                 );
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
 
@@ -105,7 +105,7 @@ public class Swerve extends SubsystemBase{
      * @return XY of robot on field
      */
     public Pose2d getPose(){
-        return swerveOdometry.getPoseMeters();
+        return mSwerveOdemetry.getPoseMeters();
     }
 
     /**
@@ -113,11 +113,11 @@ public class Swerve extends SubsystemBase{
      * @param pose Desired new pose
      */
     public void resetOdometry(Pose2d pose){
-        swerveOdometry.resetPosition(getYaw(), getPositions(), pose);
+        mSwerveOdemetry.resetPosition(getYaw(), getPositions(), pose);
     }
 
     public void resetOdometry(Pose2d pose, Rotation2d yaw){
-        swerveOdometry.resetPosition(yaw, getPositions(), pose);
+        mSwerveOdemetry.resetPosition(yaw, getPositions(), pose);
     }
 
     public SwerveModuleState[] getStates(){
@@ -153,7 +153,7 @@ public class Swerve extends SubsystemBase{
 
     @Override
     public void periodic(){
-        swerveOdometry.update(getYaw(), getPositions());
+        mSwerveOdemetry.update(getYaw(), getPositions());
 
         LogOrDash.logNumber("Gyro Angle", getYaw().getDegrees());
 
