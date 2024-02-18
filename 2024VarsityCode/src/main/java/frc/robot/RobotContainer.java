@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.lib.util.LogOrDash;
+import frc.robot.autos.Autos;
 //import frc.robot.autos.Autos;
 import frc.robot.commands.ClimbDefault;
 import frc.robot.commands.ShooterPivotDefault;
@@ -48,7 +49,7 @@ public class RobotContainer {
     private final Trigger zeroSwerve = driver.options();
 
     /* Operator Buttons */
-    private final Trigger intake = specialist.cross();
+    private final Trigger intake = driver.cross();
     private final Trigger eject = specialist.circle();
     private final Trigger shoot = specialist.R1();
     private final Trigger feedNote = specialist.L1();
@@ -92,6 +93,10 @@ public class RobotContainer {
         shoot.onTrue(s_Shooter.startShooter()).onFalse(s_Shooter.stopShooter());
         ejectTop.onTrue(s_Shooter.startTopEject()).onFalse(s_Shooter.stopShooter());
         feedNote.whileTrue(s_Index.feedNote());
+
+        specialist.povUp().onTrue(s_Pivot.goToPosition(90));
+        specialist.povDown().onTrue(s_Pivot.goToPosition(48));
+        specialist.povRight().onTrue(new InstantCommand(() -> s_Pivot.getCurrentCommand().cancel()));
     }
 
     /**
@@ -100,6 +105,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand(){
-        return Commands.none();
+        return Autos.testAuto();
     }
 }

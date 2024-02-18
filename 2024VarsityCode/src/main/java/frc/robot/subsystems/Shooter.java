@@ -105,5 +105,6 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Top Velocity", topEncoder.getVelocity());
     SmartDashboard.putNumber("Bottom Power", bottomMotor.get());
     SmartDashboard.putNumber("Bottom Velocity", bottomEncoder.getVelocity());
+    SmartDashboard.putBoolean("Shooter Shooting", isRunning());
   }
 }

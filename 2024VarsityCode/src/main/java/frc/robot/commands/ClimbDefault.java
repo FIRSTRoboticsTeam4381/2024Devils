@@ -39,7 +39,7 @@ public class ClimbDefault extends Command {
     midInput = Math.abs(midInput) < Constants.stickDeadband ? 0 : midInput;
 
     // CHANGE Good speeds to run these at
-    baseInput *= 0.5;
+    baseInput *= 0.75;
     midInput *= 0.75;
 
     if(!(baseInput==0.0&&s_Climb.getBaseSpeed()==0.0)){

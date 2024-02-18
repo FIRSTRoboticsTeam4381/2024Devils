@@ -41,22 +41,15 @@ public class ShooterPivotDefault extends Command {
 
     SmartDashboard.putNumber("Positive Input", positive);
     SmartDashboard.putNumber("Negative Input", negative);
-    SmartDashboard.putNumber("Total Input", pivotInput);
+    SmartDashboard.putNumber("Total Input", pivotInput*0.1);
 
-    s_Pivot.setPivotSpeed(pivotInput*0.5);
-
-    /*
-    if(!(pivotInput==0.0&&s_Pivot.getPivotSpeed()==0.0)){
-      s_Pivot.setPivotSpeed(pivotInput*0.5+basicFeedforward());
-    }
-    */
+    s_Pivot.setPivotSpeed(pivotInput*0.1+basicFeedforward());
+    SmartDashboard.putNumber("Basic Feedforward Power", basicFeedforward());
   }
 
   private double basicFeedforward(){
-    // DO NOT use until you've calculate a conversion factor from absolute encoder position to angle
-    return 0.0;
-    //final double ffSpeed = 0.05;
-    //return Math.cos(s_Pivot.getAngle()*(Math.PI/180.0)*ffSpeed); 
+    final double ffSpeed = 0.015;
+    return Math.cos(s_Pivot.getAngle()*(Math.PI/180.0))*ffSpeed;
   }
 
   // Called once the command ends or is interrupted.

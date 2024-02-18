@@ -75,8 +75,8 @@ public final class Constants {
         
         // TODO check - auto - PIDs need to be configured
         public static final HolonomicPathFollowerConfig holonomicConfig = new HolonomicPathFollowerConfig(
-            new PIDConstants(5.0, 0.0, 0.0), // TODO Translation PID constants
-            new PIDConstants(5.0, 0.0, 0.0), // TODO Rotation PID constants
+            new PIDConstants(1.0, 0.0, 0.0), // TODO Translation PID constants
+            new PIDConstants(1.0, 0.0, 0.0), // TODO Rotation PID constants
             6, // Max module speed, in m/s
             0.4, // TODO Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -94,9 +94,9 @@ public final class Constants {
         public static final boolean driveEnableCurrentLimit = true;
 
         /* Angle Motor PID Values */
-        public static final double angleKP = 0.005;//0.06;
+        public static final double angleKP = 0.06;//0.06;
         public static final double angleKI = 0.0;
-        public static final double angleKD = 0.0;//0.25;
+        public static final double angleKD = 0.25;//0.25;
         public static final double angleKF = 0.0;
 
         /* Drive Motor PID Values */
@@ -123,7 +123,7 @@ public final class Constants {
         public static final boolean angleMotorInvert = true;
 
         /* Angle Encoder Invert */
-        public static final boolean canCoderInvert = false;
+        public static final boolean canCoderInvert = true;
 
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */

@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkRelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -36,6 +37,8 @@ public class Climb extends SubsystemBase {
     midPivot.setIdleMode(IdleMode.kBrake);
 
     leftPivot.follow(rightPivot, true);
+
+
 
     baseEncoder = rightPivot.getEncoder();
     midEncoder = midPivot.getEncoder();

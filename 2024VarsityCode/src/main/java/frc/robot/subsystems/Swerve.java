@@ -46,7 +46,7 @@ public class Swerve extends SubsystemBase{
             this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             this::drive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
             Constants.Swerve.holonomicConfig,
-            () -> {return DriverStation.getAlliance().get() == DriverStation.Alliance.Blue;},
+            () -> {return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;},
             this // Reference to this subsystem to set requirements
         );
     }

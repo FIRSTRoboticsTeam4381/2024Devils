@@ -63,6 +63,7 @@ public class SwerveModule {
         mAngleMotor.getPIDController().setP(Constants.Swerve.angleKP);
         mAngleMotor.getPIDController().setI(Constants.Swerve.angleKI);
         mAngleMotor.getPIDController().setD(Constants.Swerve.angleKD);
+        mAngleMotor.setInverted(Constants.Swerve.canCoderInvert);
 
         mDriveEncoder = mDriveMotor.getEncoder();
         // Set to m/s for speed and m for distance
@@ -81,7 +82,7 @@ public class SwerveModule {
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop)
     {
-        //desiredState = SwerveModuleState.optimize(desiredState, getState().angle); //TODO this breaks stuff
+        desiredState = SwerveModuleState.optimize(desiredState, getState().angle); //TODO this breaks stuff
 
         if(isOpenLoop){ // TELEOP
             double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;

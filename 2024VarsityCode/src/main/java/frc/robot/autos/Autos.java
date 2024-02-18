@@ -21,7 +21,7 @@ public final class Autos {
 
     // TODO test of full auto
     public static Command testAuto(){
-        return new PathPlannerAuto("TestAuto");
+        return new PathPlannerAuto("New Auto");
     }
 
     // TODO test of a single path
