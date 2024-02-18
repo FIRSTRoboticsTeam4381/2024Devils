@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.SparkOptimizer;
 import frc.robot.Constants;
 
 public class Climb extends SubsystemBase {
@@ -39,6 +40,9 @@ public class Climb extends SubsystemBase {
     baseEncoder = rightPivot.getEncoder();
     midEncoder = midPivot.getEncoder();
 
+    SparkOptimizer.optimizeFrames(leftPivot, true, false, true, false, false, false);
+    SparkOptimizer.optimizeFrames(rightPivot, false, false, false, false, false, false);
+    SparkOptimizer.optimizeFrames(midPivot, false, false, true, false, false, false);
   }
 
   public void setBaseSpeed(double speed){

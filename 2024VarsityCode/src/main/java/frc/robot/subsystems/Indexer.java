@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.SparkOptimizer;
 import frc.robot.Constants;
 
 public class Indexer extends SubsystemBase {
@@ -34,6 +35,8 @@ public class Indexer extends SubsystemBase {
 
     indexEncoder = indexMotor.getEncoder();
     indexEye = new DigitalInput(Constants.Index.indexDIO);
+
+    SparkOptimizer.optimizeFrames(indexMotor, false, false, false, false, false, false);
   }
 
   public void setSpeed(double speed){

@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.SparkOptimizer;
 import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
@@ -43,6 +44,10 @@ public class Shooter extends SubsystemBase {
     propEncoder = propMotor.getEncoder();
     topEncoder = topMotor.getEncoder();
     bottomEncoder = bottomMotor.getEncoder();
+
+    SparkOptimizer.optimizeFrames(propMotor, false, true, false, false, false, false);
+    SparkOptimizer.optimizeFrames(topMotor, false, true, false, false, false, false);
+    SparkOptimizer.optimizeFrames(bottomMotor, false, true, false, false, false, false);
   }
 
   public boolean isRunning(){

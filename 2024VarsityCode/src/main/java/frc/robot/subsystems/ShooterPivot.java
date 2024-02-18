@@ -13,6 +13,7 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.SparkOptimizer;
 import frc.robot.Constants;
 
 public class ShooterPivot extends SubsystemBase {
@@ -31,6 +32,9 @@ public class ShooterPivot extends SubsystemBase {
 
     pivotEncoder = leftPivot.getEncoder();
     absoluteEncoder = leftPivot.getAbsoluteEncoder(Type.kDutyCycle);
+
+    SparkOptimizer.optimizeFrames(leftPivot, true, false, true, false, false, true);
+    SparkOptimizer.optimizeFrames(rightPivot, false, false, false, false, false, false);
   }
 
   public void setPivotSpeed(double speed){

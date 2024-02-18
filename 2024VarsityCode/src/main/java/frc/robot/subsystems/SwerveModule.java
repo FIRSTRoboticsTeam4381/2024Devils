@@ -11,6 +11,7 @@ import com.revrobotics.SparkRelativeEncoder.Type;
 
 import frc.lib.math.Conversions;
 import frc.lib.util.LogOrDash;
+import frc.lib.util.SparkOptimizer;
 import frc.lib.util.SwerveModuleConstants;
 import frc.robot.Constants;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -69,6 +70,10 @@ public class SwerveModule {
         mDriveEncoder.setVelocityConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio / 60.0);
 
         mLastAngle = getState().angle.getDegrees();
+
+        // Optimize CAN usage
+        SparkOptimizer.optimizeFrames(mDriveMotor, false, true, true, false, false, false);
+        SparkOptimizer.optimizeFrames(mAngleMotor, false, false, false, false, false, true);
     }
 
 

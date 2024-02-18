@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import frc.lib.util.SparkOptimizer;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,11 +22,15 @@ public class Intake extends SubsystemBase {
     public Intake() {
         intake = new CANSparkMax(Constants.Intake.primaryCAN, MotorType.kBrushless);
         helper = new CANSparkMax(Constants.Intake.helperCAN, MotorType.kBrushless);
+
+        helper.follow(intake);
+
+        SparkOptimizer.optimizeFrames(intake, true, false, false, false, false, false);
+        SparkOptimizer.optimizeFrames(helper, false, false, false, false, false, false);
     }
 
     public void setIntakeSpeed(double speed){
         intake.set(-speed);
-        helper.set(-speed);
     }
 
     @Override
