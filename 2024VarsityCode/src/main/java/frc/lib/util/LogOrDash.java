@@ -6,6 +6,7 @@ package frc.lib.util;
 
 import java.util.HashMap;
 
+import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.CANSparkBase.FaultID;
@@ -147,7 +148,7 @@ public class LogOrDash {
      * @param prefix Prefix string for this motor, ex: "arm/motor1"
      * @param s The CAN SPARK MAX to log diagnostics of
      */
-    public static void sparkMaxDiagnostics(String prefix, CANSparkMax s)
+    public static void sparkMaxDiagnostics(String prefix, CANSparkBase s)
     {
         // Motor temperature
         // Brushed motors won't have a connected internal thermister

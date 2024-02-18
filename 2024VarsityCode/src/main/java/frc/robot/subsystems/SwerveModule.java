@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class SwerveModule {
     public int moduleNumber;
     private CANSparkMax mAngleMotor;
-    private CANSparkMax mDriveMotor;
+    private CANSparkFlex mDriveMotor;
 
     private SparkAbsoluteEncoder absoluteEncoder;
 
@@ -43,7 +43,7 @@ public class SwerveModule {
         //configAngleMotor();
 
         /* Drive Motor Config */
-        mDriveMotor = new CANSparkMax(moduleConstants.driveMotorID, MotorType.kBrushless);
+        mDriveMotor = new CANSparkFlex(moduleConstants.driveMotorID, MotorType.kBrushless);
         //configDriveMotor();
 
         /* Angle Encoder Config */
@@ -61,8 +61,8 @@ public class SwerveModule {
 
         distanceEncoder = mDriveMotor.getEncoder();
         // Set to m/s for speed and m for distance
-        distanceEncoder.setPositionConversionFactor(Constants.Swerve.wheelDiameter / Constants.Swerve.driveGearRatio);
-        distanceEncoder.setVelocityConversionFactor(Constants.Swerve.wheelDiameter / Constants.Swerve.driveGearRatio / 60.0);
+        distanceEncoder.setPositionConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio);
+        distanceEncoder.setVelocityConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio / 60.0);
 
         lastAngle = getState().angle.getDegrees();
     }
@@ -70,7 +70,7 @@ public class SwerveModule {
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop)
     {
         //SmartDashboard.putNumber("Mod "+moduleNumber+" desired angle", desiredState.angle.getDegrees());
-        desiredState = SwerveModuleState.optimize(desiredState, getState().angle); //TODO does this need to be update for Rev?
+        //desiredState = SwerveModuleState.optimize(desiredState, getState().angle); //TODO does this need to be update for Rev?
         //SmartDashboard.putNumber("Mod "+moduleNumber+" desired angle", desiredState.angle.getDegrees());
 
         if(isOpenLoop){
