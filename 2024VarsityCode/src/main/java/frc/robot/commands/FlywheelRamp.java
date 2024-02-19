@@ -17,7 +17,7 @@ import frc.robot.subsystems.Shooter;
 
 public class FlywheelRamp extends Command {
   private Shooter s_Shooter;
-  private double speed;
+  private double velocity;
   private double error;
 
   /**
@@ -29,7 +29,7 @@ public class FlywheelRamp extends Command {
    */
   public FlywheelRamp(Shooter shooter, double targetVelocity, double err) {
     s_Shooter = shooter;
-    speed = targetVelocity;
+    velocity = targetVelocity;
     error = err;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -39,7 +39,7 @@ public class FlywheelRamp extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    s_Shooter.shootAtSpeed(1.0);
+    s_Shooter.setPercOutput(1.0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -53,6 +53,6 @@ public class FlywheelRamp extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(s_Shooter.getVelocity()-speed)<=error;
+    return Math.abs(s_Shooter.getVelocity()-velocity)<=error;
   }
 }

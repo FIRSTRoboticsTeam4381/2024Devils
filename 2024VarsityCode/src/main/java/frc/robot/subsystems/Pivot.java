@@ -37,6 +37,11 @@ public class Pivot extends SubsystemBase {
 
   private SparkPIDController pivotController;
 
+  // Tested Positions
+  public static final double INTAKE_POS = 60;
+  public static final double HUMAN_POS = 60; // TODO
+  public static final double AMP_POS = 90;
+
 
   /* CONSTRUCTORS */
 

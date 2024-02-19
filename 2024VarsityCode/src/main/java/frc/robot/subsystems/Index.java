@@ -69,9 +69,9 @@ public class Index extends SubsystemBase {
   }
 
   // Full Commands
-  public Command indexUntilIn(){
+  public Command indexUntilIn(int direction){
     return new FunctionalCommand(
-      ()->setPercOutput(INDEX_SPEED),
+      ()->setPercOutput(INDEX_SPEED*direction),
       ()->{},
       (interrupted)->setPercOutput(0.0),
       this::noteStored,

@@ -50,6 +50,9 @@ public class Shooter extends SubsystemBase {
   private static final double EJECT_SPEED = 0.2;
   private static final double SHOOTING_SPEED = 0.5;
 
+  private boolean velocityMode = false;
+  private double setpoint = 0.0;
+
 
   /* CONSTRUCTOR */
 
@@ -76,6 +79,7 @@ public class Shooter extends SubsystemBase {
     // PID Setup
     controllers = new SparkPIDController[] {propMotor.getPIDController(), topMotor.getPIDController(), bottomMotor.getPIDController()};
 
+    // TODO configure
     for(int i = 0; i < controllers.length; i++){
       controllers[i].setP(0);
       controllers[i].setI(0);
@@ -88,6 +92,7 @@ public class Shooter extends SubsystemBase {
 
   /* METHODS */
   public void setTopMotorPercOutput(double speed){
+    velocityMode = false;
     topMotor.set(-speed); // TODO invert?
   }
   public void setBottomMotorPercOutput(double speed){
@@ -108,12 +113,18 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setVelocity(double velocity){
+    velocityMode = true;
+    setpoint = velocity;
     for(int i = 0; i < controllers.length; i++){
       controllers[i].setReference(velocity, ControlType.kVelocity);
     }
   }
   public double getVelocity(){
     return propMotor.getEncoder().getVelocity();
+  }
+
+  public boolean withinError(){
+    return (!velocityMode || velocityMode&&propEncoder.getVelocity()-setpoint<50);
   }
 
   // TODO TEST
@@ -140,15 +151,24 @@ public class Shooter extends SubsystemBase {
     return new InstantCommand(()->setPercOutput(0.0), this);
   }
 
-  // Functional commands
   public Command eject(){
+    return new FunctionalCommand(
+      ()->setPercOutput(-0.1), 
+      ()->{}, 
+      (interrupted)->setPercOutput(0.0), 
+      ()->{return false;}, 
+      this).withName("Ejecting");
+  }
+
+  // Functional commands
+  public Command ampShoot(){
     return new FunctionalCommand(
       ()->ejectPercOutput(EJECT_SPEED),
       ()->{},
       (interrupted)->ejectPercOutput(0.0),
       ()->{return false;},
       this
-    ).withName("Ejecting");
+    ).withName("Amp");
   }
 
   public ConditionalCommand toggleShooter(){

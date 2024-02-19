@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.lib.util.LogOrDash;
 import frc.robot.autos.Autos;
+import frc.robot.commands.ComposedCommands;
 import frc.robot.commands.ManualPivot;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Intake;
@@ -48,16 +49,6 @@ public class RobotContainer {
     /* Driver Buttons */
     private final Trigger zeroSwerve = driver.options();
 
-    /* Operator Buttons */
-    private final Supplier<Double> pivotAxis = specialist::getLeftY;
-    private final Trigger toggleIntakeButton = specialist.cross();
-    private final Trigger ejectButton = specialist.circle();
-    private final Trigger shooterToggle = specialist.square();
-    private final Trigger autoShootToggle = specialist.triangle();
-    private final Trigger shootNoteButton = specialist.R1();
-    private final Trigger ampModeToggle = specialist.povRight();
-    private final Trigger hangModeToggle = specialist.povUp();
-
     /* Subsystems */
     public static final Swerve s_Swerve = new Swerve();
     public static final Intake s_Intake = new Intake();
@@ -67,14 +58,15 @@ public class RobotContainer {
     public static final Climb s_Climb = new Climb();
 
     /* Commands */
+    ComposedCommands commands = new ComposedCommands(s_Intake, s_Index, s_Shooter, s_Pivot);
 
     //Auto Chooser
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
-        //s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true));
-        //s_Pivot.setDefaultCommand(new ManualPivot(pivotAxis, s_Pivot));
+        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true));
+        s_Pivot.setDefaultCommand(new ManualPivot(specialist::getLeftY, s_Pivot));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -103,16 +95,15 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
 
-        //toggleIntakeButton.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(commands.toggleIntaking())));
-        //ejectButton.whileTrue(commands.eject());
+        specialist.cross().onTrue(commands.toggleGroundIntake());
+        specialist.square().onTrue(commands.humanPlayerIntake());
+        specialist.circle().whileTrue(commands.eject());
+        specialist.L1().onTrue(commands.toggleShooter());
+        specialist.R1().and(s_Shooter::withinError).onTrue(s_Index.indexUntilShot());
+        specialist.povRight().onTrue(commands.toggleAmp());
+        specialist.triangle().onTrue(commands.toggleAutoAim());
 
-        shooterToggle.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(s_Shooter.toggleShooter())));
-        //autoShootToggle.onTrue TODO
-
-        //shootNoteButton TODO
-
-        // ampModeToggle TODO
-        // hangModeToggle TODO
+        specialist.povUp(); // Unfold climb
     }
 
     /**

@@ -31,8 +31,8 @@ public class ManualPivot extends Command {
   public void execute() {
     double axis = joystick.get();
     axis = Math.abs(axis)<Constants.stickDeadband ? 0 : axis;
-    axis *= -0.5;
-    pivot.setSpeed(axis);
+    axis *= -0.25;
+    pivot.setPercOutput(axis);
   }
 
   // Called once the command ends or is interrupted.
