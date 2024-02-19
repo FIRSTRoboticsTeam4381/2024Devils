@@ -114,4 +114,9 @@ public class Conversions {
         double ticks =  degrees / (360.0 / (gearRatio * 4096.0));
         return ticks;
     }
+
+    public static double dpsToRpm(double dps){
+        double rpm = dps*60/360;
+        return rpm;
+    }
 }

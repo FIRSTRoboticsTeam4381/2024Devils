@@ -40,7 +40,7 @@ public class Pivot extends SubsystemBase {
 
   private SparkPIDController pivotController;
 
-  private Constraints pivotConstraints = new Constraints(getCurrentAngle(), getCurrentAngle())
+  private TrapezoidProfile motionProfile;
 
   // Tested Positions
   public static final double INTAKE_POS = 60;
@@ -76,6 +76,8 @@ public class Pivot extends SubsystemBase {
     pivotController.setI(0.0);
     pivotController.setD(0.0);
     pivotController.setFF(0.0);
+
+    motionProfile = new TrapezoidProfile(new Constraints(Conversions.dpsToRpm(30), Conversions.dpsToRpm(30)));
   }
 
 
@@ -96,6 +98,13 @@ public class Pivot extends SubsystemBase {
     return pivotEncoder.getPosition();
   }
 
+  public void useState(TrapezoidProfile.State state){
+
+  }
+  public TrapezoidProfile.State getState(){
+    return new TrapezoidProfile.State(pivotEncoder.getPosition(), pivotEncoder.getVelocity());
+  }
+
 
   /* COMMANDS */
 
@@ -106,8 +115,13 @@ public class Pivot extends SubsystemBase {
   }
   */
 
-  public TrapezoidProfileCommand goTo(double position){
-    return new TrapezoidProfileCommand(new TrapezoidProfile(null), null, null, null, null)
+  public Command profiledMove(double position){
+    return new TrapezoidProfileCommand(
+      motionProfile, 
+      this::useState, 
+      () -> new TrapezoidProfile.State(position, 0),
+      this::getState,
+      this).withName("Profiled Movement to "+position);
   }
 
 
@@ -119,5 +133,6 @@ public class Pivot extends SubsystemBase {
 
     SmartDashboard.putNumber("Pivot Absolute Angle", pivotEncoder.getPosition());
     SmartDashboard.putNumber("Pivot Speed", leftPivot.get());
+    SmartDashboard.putString("Pivot Command", this.getCurrentCommand().getName());
   }
 }

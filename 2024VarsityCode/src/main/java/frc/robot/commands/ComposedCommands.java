@@ -44,6 +44,7 @@ public class ComposedCommands {
         return new ConditionalCommand(new ParallelCommandGroup(stopAll(), new InstantCommand(()->pivot.setDesiredAngle(0.0))), setupAmp(), () -> {return condition==Condition.AMP;});
     }
     public Command toggleAutoAim(){
+        condition = condition==Condition.AUTO_AIM ? Condition.NONE : Condition.AUTO_AIM;
         return new ConditionalCommand(stopAll(), new AutoAim(shooter, pivot), () -> {return condition==Condition.AUTO_AIM;});
     }
 
@@ -104,11 +105,20 @@ public class ComposedCommands {
     }
 
     public Command setupAmp(){
-        condition = Condition.AUTO_AIM;
         condition = Condition.AMP;
         return new ParallelCommandGroup(
             shooter.ampShoot(),
             new InstantCommand(() -> pivot.setDesiredAngle(Pivot.AMP_POS), pivot)
+        );
+    }
+
+    public Command cancelAll(){
+        condition = Condition.NONE;
+        return new ParallelCommandGroup(
+            new SequentialCommandGroup(pivot.profiledMove(0), pivot.getDefaultCommand()),
+            shooter.stopAll(),
+            index.stop(),
+            intake.stop()
         );
     }
 

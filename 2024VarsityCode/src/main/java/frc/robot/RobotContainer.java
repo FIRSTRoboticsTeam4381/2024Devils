@@ -44,7 +44,7 @@ public class RobotContainer {
     /* Controllers */
     private final CommandPS4Controller driver = new CommandPS4Controller(0);
     private final CommandPS4Controller specialist = new CommandPS4Controller(1);
-    //private final CommandJoystick testingJoystick = new CommandJoystick(0);
+    private final CommandJoystick testingJoystick = new CommandJoystick(3);
 
     /* Driver Buttons */
     private final Trigger zeroSwerve = driver.options();
@@ -65,8 +65,8 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
-        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true));
-        s_Pivot.setDefaultCommand(new ManualPivot(specialist::getLeftY, s_Pivot));
+        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true).withName("Teleop"));
+        s_Pivot.setDefaultCommand(new ManualPivot(specialist::getLeftY, s_Pivot).withName("Manual Pivot"));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -103,7 +103,14 @@ public class RobotContainer {
         specialist.povRight().onTrue(commands.toggleAmp());
         specialist.triangle().onTrue(commands.toggleAutoAim());
 
+        specialist.touchpad().onTrue(commands.cancelAll());
+
         specialist.povUp(); // Unfold climb
+
+
+        /* TESTING BUTTONS */
+        testingJoystick.button(7).onTrue(s_Pivot.profiledMove(60));
+        testingJoystick.button(8).onTrue(s_Pivot.profiledMove(20));
     }
 
     /**

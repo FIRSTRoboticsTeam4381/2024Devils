@@ -18,6 +18,7 @@ public class ManualPivot extends Command {
   public ManualPivot(Supplier<Double> joystickAxis, Pivot pivot) {
     this.joystick = joystickAxis;
     this.pivot = pivot;
+    
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(pivot);
   }
