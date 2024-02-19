@@ -50,7 +50,7 @@ public class Shooter extends SubsystemBase {
   private static final double EJECT_SPEED = 0.2;
   private static final double SHOOTING_SPEED = 0.5;
 
-  private boolean velocityMode = false;
+  private boolean ampMode = false;
   private double setpoint = 0.0;
 
 
@@ -92,7 +92,6 @@ public class Shooter extends SubsystemBase {
 
   /* METHODS */
   public void setTopMotorPercOutput(double speed){
-    velocityMode = false;
     topMotor.set(-speed); // TODO invert?
   }
   public void setBottomMotorPercOutput(double speed){
@@ -113,7 +112,6 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setVelocity(double velocity){
-    velocityMode = true;
     setpoint = velocity;
     for(int i = 0; i < controllers.length; i++){
       controllers[i].setReference(velocity, ControlType.kVelocity);
@@ -123,8 +121,8 @@ public class Shooter extends SubsystemBase {
     return propMotor.getEncoder().getVelocity();
   }
 
-  public boolean withinError(){
-    return (!velocityMode || velocityMode&&propEncoder.getVelocity()-setpoint<50);
+  public boolean readyForNote(){
+    return (ampMode || Math.abs(setpoint-propEncoder.getVelocity())<50);
   }
 
   // TODO TEST
@@ -141,11 +139,9 @@ public class Shooter extends SubsystemBase {
   /* COMMANDS */
 
   // Instant commands
-  public InstantCommand startEject(){
-    return new InstantCommand(()->ejectPercOutput(EJECT_SPEED), this);
-  }
-  public InstantCommand startShoot(){
-    return new InstantCommand(()->setPercOutput(SHOOTING_SPEED), this);
+  public InstantCommand setVelocityReference(double velocity){
+    ampMode = false;
+    return new InstantCommand(() -> setVelocity(velocity), this);
   }
   public InstantCommand stopAll(){
     return new InstantCommand(()->setPercOutput(0.0), this);
@@ -162,6 +158,7 @@ public class Shooter extends SubsystemBase {
 
   // Functional commands
   public Command ampShoot(){
+    ampMode = true;
     return new FunctionalCommand(
       ()->ejectPercOutput(EJECT_SPEED),
       ()->{},
@@ -171,17 +168,17 @@ public class Shooter extends SubsystemBase {
     ).withName("Amp");
   }
 
-  public ConditionalCommand toggleShooter(){
-    return new ConditionalCommand(shoot(), stopAll(), ()->{return propMotor.get()==0;});
-  }
-  public Command shoot(){
-    return new FunctionalCommand(
-      ()->setPercOutput(SHOOTING_SPEED),
-      ()->{},
-      (interrupted)->setPercOutput(0.0),
-      ()->{return false;},
-      this
-    ).withName("Shooting");
+  public Command shootWithRamp(){
+    ampMode = false;
+    return new SequentialCommandGroup(
+      new FlywheelRamp(this, 1400, 0).withName("Shooter Ramp"), // Stops when cancelled, doesn't otherwise
+      new FunctionalCommand(
+        () -> setVelocity(1500), 
+        () -> {}, 
+        interrupted->setVelocity(0), 
+        ()->{return false;}, 
+        this).withName("Holding Velocity") // Stops when cancelled
+    );
   }
 
 

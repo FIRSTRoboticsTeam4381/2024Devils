@@ -22,6 +22,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import frc.lib.math.Conversions;
@@ -122,6 +124,28 @@ public class Pivot extends SubsystemBase {
       () -> new TrapezoidProfile.State(position, 0),
       this::getState,
       this).withName("Profiled Movement to "+position);
+  }
+
+  public Command setIntakePosition(){
+    return new InstantCommand(() -> setDesiredAngle(INTAKE_POS), this);
+  }
+  public Command setDownPosition(){
+    return new InstantCommand(() -> setDesiredAngle(2), this);
+  }
+  public Command setHumanIntakePosition(){
+    return new InstantCommand(() -> setDesiredAngle(HUMAN_POS), this);
+  }
+  public Command setAmpPosition(){
+    return new InstantCommand(() -> setDesiredAngle(AMP_POS), this);
+  }
+
+  public Command holdPosition(double position){
+    return new FunctionalCommand(
+      ()->setDesiredAngle(position), 
+      ()->{}, 
+      (interrupted)->setDesiredAngle(2.0), 
+      ()->{return false;}, 
+      this).withName("Holding Position - "+position);
   }
 
 

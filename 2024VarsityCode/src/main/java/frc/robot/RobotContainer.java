@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.lib.util.LogOrDash;
 import frc.robot.autos.Autos;
+import frc.robot.commands.AutoAim;
 import frc.robot.commands.ComposedCommands;
 import frc.robot.commands.ManualPivot;
 import frc.robot.commands.TeleopSwerve;
@@ -95,15 +96,16 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
 
-        specialist.cross().onTrue(commands.toggleGroundIntake());
-        specialist.square().onTrue(commands.humanPlayerIntake());
-        specialist.circle().whileTrue(commands.eject());
-        specialist.L1().onTrue(commands.toggleShooter());
-        specialist.R1().and(s_Shooter::withinError).onTrue(s_Index.indexUntilShot());
-        specialist.povRight().onTrue(commands.toggleAmp());
-        specialist.triangle().onTrue(commands.toggleAutoAim());
+        specialist.cross().toggleOnTrue(commands.groundIntake());
+        specialist.square().toggleOnTrue(commands.humanIntake());
+        specialist.circle().whileTrue(commands.ejectNote());
+        specialist.L1().toggleOnTrue(s_Shooter.shootWithRamp());
+        specialist.povRight().toggleOnTrue(commands.ampMode());
+        specialist.R1().whileTrue(commands.feedNote());
+        specialist.triangle().toggleOnTrue(new AutoAim(s_Shooter, s_Pivot));
 
         specialist.touchpad().onTrue(commands.cancelAll());
+
 
         specialist.povUp(); // Unfold climb
 
@@ -111,6 +113,7 @@ public class RobotContainer {
         /* TESTING BUTTONS */
         testingJoystick.button(7).onTrue(s_Pivot.profiledMove(60));
         testingJoystick.button(8).onTrue(s_Pivot.profiledMove(20));
+        // button to test shooter PID, then test shooter ramp
     }
 
     /**

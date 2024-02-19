@@ -52,7 +52,6 @@ public class AutoAim extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.setPercOutput(0);
-    CommandScheduler.getInstance().schedule(pivot.getDefaultCommand());
   }
 
   // Returns true when the command should end.
