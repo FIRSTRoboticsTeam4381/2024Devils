@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -48,6 +49,13 @@ public class Intake extends SubsystemBase {
 
   /* COMMANDS */
 
+  public InstantCommand start(){
+    return new InstantCommand(() -> CommandScheduler.getInstance().schedule(run()));
+  }
+  public InstantCommand stop(){
+    return new InstantCommand(() -> this.getCurrentCommand().cancel());
+  }
+
   public Command run(){
     return new FunctionalCommand(
       ()->setPercOutput(INTAKE_SPEED),
@@ -55,14 +63,14 @@ public class Intake extends SubsystemBase {
       (interrupt)->setPercOutput(0.0),
       ()->{return false;},
       this
-    ).withName("intakeRun");
+    ).withName("Intaking");
   }
   /* Starts running the intake at a good speed. Doesn't need anything fancy, so this
   * just runs it on power output */
-  public InstantCommand start(){
+  public InstantCommand on(){
     return new InstantCommand(() -> setPercOutput(INTAKE_SPEED), this);
   }
-  public InstantCommand stop(){
+  public InstantCommand off(){
     return new InstantCommand(() -> setPercOutput(0.0), this);
   }
 

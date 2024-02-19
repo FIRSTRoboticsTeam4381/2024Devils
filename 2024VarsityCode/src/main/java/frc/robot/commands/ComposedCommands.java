@@ -22,11 +22,23 @@ public class ComposedCommands {
     private Pivot pivot;
     private Condition condition = Condition.NONE;
 
+    // TODO change pivot commands over to profiled motion once that's done
+
     public ComposedCommands(Intake intake, Index index, Shooter shooter, Pivot pivot){
         this.intake = intake;
         this.index = index;
         this.shooter = shooter;
         this.pivot = pivot;
+    }
+
+
+    /* INTAKE */
+    public Command groundIntake(){
+        return new ParallelCommandGroup(
+            new InstantCommand(()->pivot.setDesiredAngle(60), pivot),
+            intake.start(),
+            index.indexUntilIn(1)
+        );
     }
 
     /* TOGGLE COMMANDS */
