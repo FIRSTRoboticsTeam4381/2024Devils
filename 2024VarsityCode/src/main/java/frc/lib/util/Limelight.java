@@ -4,7 +4,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-public class LimelightHelpers {
+public class Limelight {
     private static NetworkTable limelightTable(){
         return NetworkTableInstance.getDefault().getTable("limelight");
     }

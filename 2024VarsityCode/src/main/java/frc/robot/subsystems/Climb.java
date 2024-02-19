@@ -10,37 +10,53 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.SparkUtilities;
 import frc.robot.Constants;
 
 public class Climb extends SubsystemBase {
 
   /* ATTRIBUTES */
-  private CANSparkMax rightMotor;
-  private CANSparkMax leftMotor;
+  private CANSparkMax rightBaseMotor;
+  private CANSparkMax leftBaseMotor;
   private CANSparkMax midMotor;
 
   private SparkPIDController baseController;
   private SparkPIDController middleController;
+
+  private RelativeEncoder baseEncoder;
+  private RelativeEncoder midEncoder;
 
 
   /* CONSTRUCTOR */
 
   /** Creates a new Climb. */
   public Climb() {
-    rightMotor = new CANSparkMax(Constants.Climb.rightClimbCAN, MotorType.kBrushless);
-    leftMotor = new CANSparkMax(Constants.Climb.leftClimbCAN, MotorType.kBrushless);
+    // Motor Setup
+    rightBaseMotor = new CANSparkMax(Constants.Climb.rightClimbCAN, MotorType.kBrushless);
+    leftBaseMotor = new CANSparkMax(Constants.Climb.leftClimbCAN, MotorType.kBrushless);
     midMotor = new CANSparkMax(Constants.Climb.midClimbCAN, MotorType.kBrushless);
 
-    leftMotor.follow(rightMotor, true);
+    leftBaseMotor.follow(rightBaseMotor, true);
 
-    baseController = rightMotor.getPIDController();
+    SparkUtilities.optimizeFrames(rightBaseMotor, true, false, true, false, false, false);
+    SparkUtilities.optimizeFrames(leftBaseMotor, false, false, false, false, false, false);
+    SparkUtilities.optimizeFrames(midMotor, false, false, true, false, false, false);
+
+    // Encoder Setup
+    baseEncoder = rightBaseMotor.getEncoder();
+    midEncoder = midMotor.getEncoder();
+
+    baseController = rightBaseMotor.getPIDController();
     middleController = midMotor.getPIDController();
 
+    // PID Setup
     // TODO Base controller configuration
     baseController.setP(0);
     baseController.setI(0);
@@ -56,23 +72,25 @@ public class Climb extends SubsystemBase {
     middleController.setOutputRange(-1, 1);
   }
 
-  public void setBasePosition(double position){
-    baseController.setReference(position, ControlType.kPosition);
+  public void setBasePercOutput(double speed){
+    rightBaseMotor.set(speed);
   }
-  public void setMiddlePosition(double position){
-    middleController.setReference(position, ControlType.kPosition);
+  public void setMidPercOutput(double speed){
+    midMotor.set(speed);
   }
 
-  /* TODO ONLY FOR TESTING */
-  public void setBaseSpeed(double speed){
-    rightMotor.set(speed);
+  public void setBaseReference(double position){
+    baseController.setReference(position, ControlType.kPosition);
   }
-  public void setMiddleSpeed(double speed){
-    midMotor.set(speed);
+  public void setMiddleReference(double position){
+    middleController.setReference(position, ControlType.kPosition);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    SmartDashboard.putNumber("Base Pivot Position", baseEncoder.getPosition());
+    SmartDashboard.putNumber("Mid Pivot Position", midEncoder.getPosition());
   }
 }

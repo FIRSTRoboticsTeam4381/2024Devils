@@ -26,27 +26,25 @@ import frc.lib.util.SwerveModuleConstants;
 public final class Constants {
     public static final double stickDeadband = 0.1;
 
-    //public static final int NEO_TICKS_PER_REV = 42; //TODO
-
     public static final class Intake{
-        public static final int primaryIntakeCAN = 45; // TODO
-        public static final int helperIntakeCAN = 46; // TODO
+        public static final int primaryIntakeCAN = 45;
+        public static final int helperIntakeCAN = 46;
     }
 
     public static final class Index{
-        public static final int indexCAN = 47; // TODO
-        public static final int indexDIO = 0; // TODO
+        public static final int indexCAN = 47;
+        public static final int indexDIO = 0;
     }
 
     public static final class Pivot{
-        public static final int rightPivotCAN = 51; // TODO
-        public static final int leftPivotCAN = 52; // TODO
+        public static final int rightPivotCAN = 51;
+        public static final int leftPivotCAN = 52;
     }
 
     public static final class Shooter{
-        public static final int propCAN = 48; // TODO
-        public static final int topCAN = 49; // TODO
-        public static final int bottomCAN = 50; // TODO
+        public static final int propCAN = 48;
+        public static final int topCAN = 49;
+        public static final int bottomCAN = 50;
     }
 
     public static final class Climb{
@@ -56,12 +54,12 @@ public final class Constants {
     }
 
     public static final class Swerve{
-        public static final int pigeonID = 1; // TODO are we removing the pigeon?
+        //public static final int pigeonID = 1; // Using navx instead
         public static final boolean invertGyro = true; // Always ensure Gyro is CCW+ CW-
 
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(21.25); //TODO
-        public static final double wheelBase = Units.inchesToMeters(21.25); //TODO
+        public static final double trackWidth = Units.inchesToMeters(21.25);
+        public static final double wheelBase = Units.inchesToMeters(21.25);
         public static final double wheelDiameter = Units.inchesToMeters(4);
         public static final double wheelCircumference = wheelDiameter * Math.PI;
 
@@ -79,10 +77,10 @@ public final class Constants {
         
         // TODO check - auto - PIDs need to be configured
         public static final HolonomicPathFollowerConfig holonomicConfig = new HolonomicPathFollowerConfig(
-            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-            4.5, // Max module speed, in m/s
-            0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+            new PIDConstants(1.0, 0.0, 0.0), // TODO Translation PID constants
+            new PIDConstants(1.0, 0.0, 0.0), // TODO Rotation PID constants
+            6, // TODO Max module speed, in m/s
+            0.4, // TODO 
             new ReplanningConfig() // Default path replanning config. See the API for the options here
         );
 
@@ -98,28 +96,30 @@ public final class Constants {
         public static final boolean driveEnableCurrentLimit = true;
 
         /* Angle Motor PID Values */
-        public static final double angleKP = 0.6;
+        public static final double angleKP = 0.06;
         public static final double angleKI = 0.0;
-        public static final double angleKD = 12.0;
+        public static final double angleKD = 0.25;
         public static final double angleKF = 0.0;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.10;
+        // TODO
+        public static final double driveKP = 0.000005;
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values */
-        public static final double driveKS = (0.667 / 12); // divide by 122 to convert from volts to percent output for CTRE TODO?
-        public static final double driveKV = (2.44 / 12);
-        public static final double driveKA = (0.27 / 12);
+        // From SysId
+        public static final double driveKS = 0.018231;
+        public static final double driveKV = 1.9676;
+        public static final double driveKA = 0.68184;
 
         /* Swerve Profiling Values */
-        public static final double maxSpeed = 4.97; //meters per second
+        public static final double maxSpeed = 6.0; //meters per second
         public static final double maxAngularVelocity = 11.5;
 
         /* Neutral Modes */
-        public static final IdleMode angleNeutralMode = IdleMode.kCoast;
+        public static final IdleMode angleNeutralMode = IdleMode.kBrake;
         public static final IdleMode driveNeutralMode = IdleMode.kBrake;
 
         // TODO check - teleop
@@ -128,15 +128,15 @@ public final class Constants {
         public static final boolean angleMotorInvert = true;
 
         /* Angle Encoder Invert */
-        public static final boolean canCoderInvert = false;
+        public static final boolean canCoderInvert = true;
 
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
         public static final class Mod0{
             public static final int driveMotorID = 10;
             public static final int angleMotorID = 11;
-            public static final int canCoderID = 12; //TODO remove?
-            public static final double angleOffset = 0; // TODO
+            public static final int canCoderID = 12;
+            public static final double angleOffset = 0;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -145,8 +145,8 @@ public final class Constants {
         public static final class Mod1{
             public static final int driveMotorID = 20;
             public static final int angleMotorID = 21;
-            public static final int canCoderID = 22; //TODO remove?
-            public static final double angleOffset = 0; // TODO
+            public static final int canCoderID = 22;
+            public static final double angleOffset = 0;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -155,8 +155,8 @@ public final class Constants {
         public static final class Mod3{
             public static final int driveMotorID = 30;
             public static final int angleMotorID = 31;
-            public static final int canCoderID = 32; //TODO remove?
-            public static final double angleOffset = 0; // TODO
+            public static final int canCoderID = 32;
+            public static final double angleOffset = 0;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -165,14 +165,15 @@ public final class Constants {
         public static final class Mod2{
             public static final int driveMotorID = 40;
             public static final int angleMotorID = 41;
-            public static final int canCoderID = 42; //TODO remove?
-            public static final double angleOffset = 0; //TODO
+            public static final int canCoderID = 42;
+            public static final double angleOffset = 0;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
     }
 
     public static final class AutoConstants{
+        // TODO use maybe?
         public static final double kMaxSpeedMetersPerSecond = 3;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         public static final double kMaxAngularSpeedRadiansPerSecond = 2*Math.PI;

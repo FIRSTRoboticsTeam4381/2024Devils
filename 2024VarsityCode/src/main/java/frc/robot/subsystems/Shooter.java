@@ -11,6 +11,7 @@ package frc.robot.subsystems;
 import java.util.Optional;
 
 import com.revrobotics.CANSparkFlex;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -19,13 +20,15 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.LimelightHelpers;
+import frc.lib.util.Limelight;
+import frc.lib.util.SparkUtilities;
 import frc.robot.Constants;
 import frc.robot.commands.FlywheelRamp;
 
@@ -36,30 +39,42 @@ public class Shooter extends SubsystemBase {
   private CANSparkFlex propMotor;
   private CANSparkFlex topMotor;
   private CANSparkFlex bottomMotor;
-  private SparkPIDController[] controllers; // TODO idk if this way of doing it will work
+  private SparkPIDController[] controllers;
+
+  private RelativeEncoder propEncoder;
+  private RelativeEncoder topEncoder;
+  private RelativeEncoder bottomEncoder;
 
   public static final double maxRPM = 6500;
 
-  private static final double EJECT_SPEED = 0.25; // TODO
-  private static final double SHOOTING_SPEED = 0.5; // TODO
+  private static final double EJECT_SPEED = 0.2;
+  private static final double SHOOTING_SPEED = 0.5;
 
 
   /* CONSTRUCTOR */
 
   /** Creates a new Shooter. */
   public Shooter() {
-    controllers = new SparkPIDController[3];
+    // Motor Setup
     propMotor = new CANSparkFlex(Constants.Shooter.propCAN, MotorType.kBrushless);
     topMotor = new CANSparkFlex(Constants.Shooter.propCAN, MotorType.kBrushless);
     bottomMotor = new CANSparkFlex(Constants.Shooter.propCAN, MotorType.kBrushless);
 
-    controllers[0] = propMotor.getPIDController();
-    controllers[1] = topMotor.getPIDController();
-    controllers[2] = bottomMotor.getPIDController();
-
     propMotor.setIdleMode(IdleMode.kCoast);
     topMotor.setIdleMode(IdleMode.kCoast);
     bottomMotor.setIdleMode(IdleMode.kCoast);
+
+    SparkUtilities.optimizeFrames(propMotor, false, true, false, false, false, false);
+    SparkUtilities.optimizeFrames(topMotor, false, true, false, false, false, false);
+    SparkUtilities.optimizeFrames(bottomMotor, false, true, false, false, false, false);
+
+    // Encoder Setup
+    propEncoder = propMotor.getEncoder();
+    topEncoder = topMotor.getEncoder();
+    bottomEncoder = bottomMotor.getEncoder();
+
+    // PID Setup
+    controllers = new SparkPIDController[] {propMotor.getPIDController(), topMotor.getPIDController(), bottomMotor.getPIDController()};
 
     for(int i = 0; i < controllers.length; i++){
       controllers[i].setP(0);
@@ -72,31 +87,31 @@ public class Shooter extends SubsystemBase {
 
 
   /* METHODS */
-  public void setTopMotorSpeed(double speed){
+  public void setTopMotorPercOutput(double speed){
     topMotor.set(-speed); // TODO invert?
   }
-  public void setBottomMotorSpeed(double speed){
+  public void setBottomMotorPercOutput(double speed){
     bottomMotor.set(speed); // TODO invert?
   }
-  public void setPropMotorSpeed(double speed){
+  public void setPropMotorPercOutput(double speed){
     propMotor.set(speed); // TODO invert?
   }
-  public void shootAtSpeed(double speed){
-    propMotor.set(speed);
-    topMotor.set(speed);
-    bottomMotor.set(speed);
+  public void setPercOutput(double speed){
+    setPropMotorPercOutput(speed);
+    setTopMotorPercOutput(speed);
+    setBottomMotorPercOutput(speed);
   }
-  public void ejectAtSpeed(double speed){
-    propMotor.set(speed);
-    topMotor.set(-speed);
-    bottomMotor.set(speed);
+  public void ejectPercOutput(double speed){
+    setPropMotorPercOutput(speed);
+    setTopMotorPercOutput(-speed);
+    setBottomMotorPercOutput(speed);
   }
+
   public void setVelocity(double velocity){
     for(int i = 0; i < controllers.length; i++){
       controllers[i].setReference(velocity, ControlType.kVelocity);
     }
   }
-
   public double getVelocity(){
     return propMotor.getEncoder().getVelocity();
   }
@@ -105,7 +120,7 @@ public class Shooter extends SubsystemBase {
   public double getDistanceFromGoal(){
     boolean isBlue = DriverStation.getAlliance().get() == Alliance.Blue;
 
-    double[] position = isBlue ? LimelightHelpers.getBlueRelativePosition() : LimelightHelpers.getRedRelativePosition();
+    double[] position = isBlue ? Limelight.getBlueRelativePosition() : Limelight.getRedRelativePosition();
     double[] goalPosition = {isBlue?0:0,isBlue?0:0}; // TODO get goal positions relative to origins (idk what the origins are);
     double distance = Math.sqrt(Math.pow(position[0]-goalPosition[0],2)+Math.pow(position[1]-goalPosition[1],2));
     return distance;
@@ -116,21 +131,21 @@ public class Shooter extends SubsystemBase {
 
   // Instant commands
   public InstantCommand startEject(){
-    return new InstantCommand(()->ejectAtSpeed(EJECT_SPEED), this);
+    return new InstantCommand(()->ejectPercOutput(EJECT_SPEED), this);
   }
   public InstantCommand startShoot(){
-    return new InstantCommand(()->shootAtSpeed(SHOOTING_SPEED), this);
+    return new InstantCommand(()->setPercOutput(SHOOTING_SPEED), this);
   }
   public InstantCommand stopAll(){
-    return new InstantCommand(()->shootAtSpeed(0.0), this);
+    return new InstantCommand(()->setPercOutput(0.0), this);
   }
 
   // Functional commands
   public Command eject(){
     return new FunctionalCommand(
-      ()->ejectAtSpeed(EJECT_SPEED),
+      ()->ejectPercOutput(EJECT_SPEED),
       ()->{},
-      (interrupted)->ejectAtSpeed(0.0),
+      (interrupted)->ejectPercOutput(0.0),
       ()->{return false;},
       this
     ).withName("Ejecting");
@@ -141,9 +156,9 @@ public class Shooter extends SubsystemBase {
   }
   public Command shoot(){
     return new FunctionalCommand(
-      ()->shootAtSpeed(SHOOTING_SPEED),
+      ()->setPercOutput(SHOOTING_SPEED),
       ()->{},
-      (interrupted)->shootAtSpeed(0.0),
+      (interrupted)->setPercOutput(0.0),
       ()->{return false;},
       this
     ).withName("Shooting");
@@ -155,5 +170,12 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    SmartDashboard.putNumber("Propellor Power", propMotor.get());
+    SmartDashboard.putNumber("Propellor Velocity", propEncoder.getVelocity());
+    SmartDashboard.putNumber("Top Power", topMotor.get());
+    SmartDashboard.putNumber("Top Velocity", topEncoder.getVelocity());
+    SmartDashboard.putNumber("Bottom Power", bottomMotor.get());
+    SmartDashboard.putNumber("Bottom Velocity", bottomEncoder.getVelocity());
   }
 }

@@ -6,7 +6,6 @@ package frc.robot;
 
 import frc.lib.util.LogOrDash;
 import frc.robot.autos.Autos;
-import frc.robot.commands.Compositions;
 import frc.robot.commands.ManualPivot;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Intake;
@@ -68,7 +67,6 @@ public class RobotContainer {
     public static final Climb s_Climb = new Climb();
 
     /* Commands */
-    public static final Compositions commands = new Compositions(s_Intake, s_Index, s_Pivot);
 
     //Auto Chooser
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -105,8 +103,8 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
 
-        toggleIntakeButton.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(commands.toggleIntaking())));
-        ejectButton.whileTrue(commands.eject());
+        //toggleIntakeButton.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(commands.toggleIntaking())));
+        //ejectButton.whileTrue(commands.eject());
 
         shooterToggle.onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(s_Shooter.toggleShooter())));
         //autoShootToggle.onTrue TODO

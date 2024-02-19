@@ -15,10 +15,12 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.SparkUtilities;
 import frc.robot.Constants;
 
 public class Index extends SubsystemBase {
@@ -28,7 +30,7 @@ public class Index extends SubsystemBase {
   private CANSparkMax indexMotor;
   private DigitalInput indexEye;
 
-  public static final double INDEX_SPEED = 0.5;
+  public static final double INDEX_SPEED = 0.3;
 
 
   /* CONSTRUCTORS */
@@ -37,6 +39,8 @@ public class Index extends SubsystemBase {
   public Index() {
     indexMotor = new CANSparkMax(Constants.Index.indexCAN, MotorType.kBrushless);
     indexEye = new DigitalInput(Constants.Index.indexDIO);
+
+    SparkUtilities.optimizeFrames(indexMotor, false, false, false, false, false, false);
   }
 
 
@@ -46,7 +50,7 @@ public class Index extends SubsystemBase {
     return !indexEye.get();
   }
 
-  public void setIndexSpeed(double speed){
+  public void setPercOutput(double speed){
     indexMotor.set(speed);
   }
 
@@ -55,21 +59,21 @@ public class Index extends SubsystemBase {
 
   // Instant Commands
   public InstantCommand start(){
-    return new InstantCommand(() -> setIndexSpeed(INDEX_SPEED), this);
+    return new InstantCommand(() -> setPercOutput(INDEX_SPEED), this);
   }
   public InstantCommand stop(){
-    return new InstantCommand(() -> setIndexSpeed(0.0), this);
+    return new InstantCommand(() -> setPercOutput(0.0), this);
   }
   public InstantCommand startEject(){
-    return new InstantCommand(() -> setIndexSpeed(-INDEX_SPEED), this);
+    return new InstantCommand(() -> setPercOutput(-INDEX_SPEED), this);
   }
 
   // Full Commands
   public Command indexUntilIn(){
     return new FunctionalCommand(
-      ()->setIndexSpeed(INDEX_SPEED),
+      ()->setPercOutput(INDEX_SPEED),
       ()->{},
-      (interrupted)->setIndexSpeed(0.0),
+      (interrupted)->setPercOutput(0.0),
       this::noteStored,
       this
     ).withName("IndexUntilIn");
@@ -77,9 +81,9 @@ public class Index extends SubsystemBase {
 
   public Command indexUntilShot(){
     return new FunctionalCommand(
-      ()->setIndexSpeed(INDEX_SPEED),
+      ()->setPercOutput(INDEX_SPEED),
       ()->{},
-      (interrupted)->setIndexSpeed(0.0),
+      (interrupted)->setPercOutput(0.0),
       ()->{return !noteStored();},
       this
     ).withName("IndexUntilShot");
@@ -87,9 +91,9 @@ public class Index extends SubsystemBase {
 
   public Command eject(){
     return new FunctionalCommand(
-      ()->setIndexSpeed(-INDEX_SPEED),
+      ()->setPercOutput(-INDEX_SPEED),
       ()->{},
-      (interrupted)->setIndexSpeed(0.0),
+      (interrupted)->setPercOutput(0.0),
       ()->{return false;},
       this
     ).withName("Ejecting");
@@ -101,5 +105,8 @@ public class Index extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    SmartDashboard.putNumber("Index Power", indexMotor.get());
+    SmartDashboard.putBoolean("Note Inside", noteStored());
   }
 }

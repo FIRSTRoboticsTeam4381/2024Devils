@@ -18,9 +18,11 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.math.Conversions;
+import frc.lib.util.SparkUtilities;
 import frc.robot.Constants;
 import frc.robot.commands.SparkMaxPosition;
 
@@ -31,39 +33,39 @@ public class Pivot extends SubsystemBase {
   private CANSparkFlex rightPivot;
   private CANSparkFlex leftPivot;
 
-  private RelativeEncoder pivotEncoder;
-  private AbsoluteEncoder absoluteEncoder;
+  private AbsoluteEncoder pivotEncoder;
+
   private SparkPIDController pivotController;
 
-  private static final int AMP_POS = 0; // TODO
-  private static final int CLIMB_POS = 0; // TODO
-  private static final int BOTTOM_POS = 0; // TODO
-  private static final int INTAKE_POS = 0; // TODO
 
   /* CONSTRUCTORS */
 
   /** Creates a new Pivot. */
   public Pivot() {
+    // Motor Setup
     rightPivot = new CANSparkFlex(Constants.Pivot.rightPivotCAN, MotorType.kBrushless);
     leftPivot = new CANSparkFlex(Constants.Pivot.leftPivotCAN, MotorType.kBrushless);
 
-    absoluteEncoder = rightPivot.getAbsoluteEncoder(Type.kDutyCycle);
-
-    leftPivot.follow(rightPivot);
+    rightPivot.follow(leftPivot);
+    leftPivot.setInverted(true);
 
     leftPivot.setIdleMode(IdleMode.kBrake);
     rightPivot.setIdleMode(IdleMode.kBrake);
 
-    pivotEncoder = rightPivot.getEncoder();
-    pivotController = rightPivot.getPIDController();
+    SparkUtilities.optimizeFrames(rightPivot, true, false, true, false, false, true);
+    SparkUtilities.optimizeFrames(leftPivot, false, false, false, false, false, false);
 
-    // TODO configure
-    pivotController.setFF(0);
-    pivotController.setP(0);
-    pivotController.setI(0);
-    pivotController.setD(0);
+    // Encoder Setup
+    pivotEncoder = leftPivot.getAbsoluteEncoder(Type.kDutyCycle);
+
+    // PID Setup
+    pivotController = leftPivot.getPIDController();
+    pivotController.setFeedbackDevice(pivotEncoder);
     pivotController.setOutputRange(-1, 1);
-    pivotController.setFeedbackDevice(absoluteEncoder);
+    pivotController.setP(0.01);
+    pivotController.setI(0.0);
+    pivotController.setD(0.0);
+    pivotController.setFF(0.0);
   }
 
 
@@ -73,11 +75,15 @@ public class Pivot extends SubsystemBase {
    * set position will only be called by auto control, and the single set positions (see
    * COMMANDS) should only be called by instant commands by button presses.
    */
-  public void setSpeed(double speed){
+  public void setPercOutput(double speed){
     rightPivot.set(speed);
   }
-  public void setPosition(double position){
+  public void setDesiredAngle(double position){
     pivotController.setReference(position, ControlType.kPosition);
+  }
+
+  public double getCurrentAngle(){
+    return pivotEncoder.getPosition();
   }
 
 
@@ -85,19 +91,7 @@ public class Pivot extends SubsystemBase {
 
   // Set position commands
   public Command goTo(double position){
-    return new SparkMaxPosition(rightPivot, position, 0, /*TODO*/10, this);
-  }
-  public Command goToAmp(){
-    return goTo(AMP_POS);
-  }
-  public Command goToClimb(){
-    return goTo(CLIMB_POS);
-  }
-  public Command goToBottom(){
-    return goTo(BOTTOM_POS);
-  }
-  public Command goToIntake(){
-    return goTo(INTAKE_POS);
+    return new SparkMaxPosition(rightPivot, position, 0, 10, this);
   }
 
 
@@ -107,5 +101,7 @@ public class Pivot extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
+    SmartDashboard.putNumber("Pivot Absolute Angle", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Pivot Speed", leftPivot.get());
   }
 }
