@@ -16,6 +16,9 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.SparkUtilities;
 import frc.robot.Constants;
@@ -33,6 +36,7 @@ public class Climb extends SubsystemBase {
   private RelativeEncoder baseEncoder;
   private RelativeEncoder midEncoder;
 
+  private int step = 0;
 
   /* CONSTRUCTOR */
 
@@ -93,4 +97,9 @@ public class Climb extends SubsystemBase {
     SmartDashboard.putNumber("Base Pivot Position", baseEncoder.getPosition());
     SmartDashboard.putNumber("Mid Pivot Position", midEncoder.getPosition());
   }
+
+  private double[][] steps = {
+    {0,0,0},
+    {0,0,70}
+  };
 }

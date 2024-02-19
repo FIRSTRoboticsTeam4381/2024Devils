@@ -30,8 +30,12 @@ public class ManualPivot extends Command {
   @Override
   public void execute() {
     double axis = joystick.get();
-    axis = Math.abs(axis)<Constants.stickDeadband ? 0 : axis;
+    axis = Math.abs(axis)<Constants.stickDeadband ? 0.0 : axis;
     axis *= -0.25;
+
+    if(pivot.getCurrentAngle()>=115&&axis>0.0) axis = 0.0;
+    if(pivot.getCurrentAngle()<=0&&axis<0.0) axis = 0.0;
+
     pivot.setPercOutput(axis);
   }
 
