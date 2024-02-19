@@ -18,9 +18,12 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import frc.lib.math.Conversions;
 import frc.lib.util.SparkUtilities;
 import frc.robot.Constants;
@@ -36,6 +39,8 @@ public class Pivot extends SubsystemBase {
   private AbsoluteEncoder pivotEncoder;
 
   private SparkPIDController pivotController;
+
+  private Constraints pivotConstraints = new Constraints(getCurrentAngle(), getCurrentAngle())
 
   // Tested Positions
   public static final double INTAKE_POS = 60;
@@ -95,8 +100,14 @@ public class Pivot extends SubsystemBase {
   /* COMMANDS */
 
   // Set position commands
+  /*
   public Command goTo(double position){
     return new SparkMaxPosition(rightPivot, position, 0, 10, this);
+  }
+  */
+
+  public TrapezoidProfileCommand goTo(double position){
+    return new TrapezoidProfileCommand(new TrapezoidProfile(null), null, null, null, null)
   }
 
 
