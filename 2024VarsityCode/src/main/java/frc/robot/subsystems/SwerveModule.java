@@ -61,15 +61,15 @@ public class SwerveModule {
  
         if(isOpenLoop){ // TELEOP 
             double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed; 
-            mDriveMotor.set(percentOutput); 
+            mDriveMotor.set(-percentOutput); 
         } 
         else{ // AUTO 
             double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio); //TODO update for neos? 
-            mDriveMotor.getPIDController().setReference(velocity, ControlType.kVelocity, 0, feedforward.calculate(desiredState.speedMetersPerSecond)); 
+            drivePIDController.setReference(-velocity, ControlType.kVelocity, 0, feedforward.calculate(desiredState.speedMetersPerSecond)); 
         } 
  
         double angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01)) ? mLastAngle : desiredState.angle.getDegrees(); //Prevent rotating module if speed is less than 1%. Prevents jittering. 
-        mAngleMotor.getPIDController().setReference(angle+180, ControlType.kPosition); 
+        anglePIDController.setReference(angle+180, ControlType.kPosition); 
         mDesiredAngle = angle; 
         mLastAngle = angle; 
     } 
@@ -141,8 +141,14 @@ public class SwerveModule {
         /* Drive Motor Config */ 
         mDriveMotor = new CANSparkFlex(id, MotorType.kBrushless); 
         SparkUtilities.optimizeFrames(mDriveMotor, false, true, true, false, false, false); 
-        mDriveMotor.setInverted(Constants.Swerve.driveMotorInvert); // Setting this to true breaks it. Manually invert motor sets and encoder reads
-        //configDriveMotor(); 
+        mDriveMotor.setInverted(false); // Setting this to true breaks it. Manually invert motor sets and encoder reads
+        //configDriveMotor();
+
+        drivePIDController = mDriveMotor.getPIDController();
+        drivePIDController.setFeedbackDevice(mDriveEncoder);
+        drivePIDController.setP(Constants.Swerve.driveKP);
+        drivePIDController.setI(Constants.Swerve.angleKI);
+        drivePIDController.setD(Constants.Swerve.driveKD);
         
 
         /* Drive Encoder Config */
