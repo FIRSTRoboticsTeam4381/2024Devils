@@ -61,7 +61,7 @@ public class SwerveModule {
  
         if(isOpenLoop){ // TELEOP 
             double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed; 
-            mDriveMotor.set(-percentOutput); 
+            mDriveMotor.set(-percentOutput); // TODO remove when inverting works
         } 
         else{ // AUTO 
             double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio); //TODO update for neos? 
@@ -78,13 +78,13 @@ public class SwerveModule {
     /* CURRENT STATE */ 
  
     public SwerveModuleState getState(){ 
-        double velocity = mDriveEncoder.getVelocity(); //Units configured to m/s 
+        double velocity = -mDriveEncoder.getVelocity(); //Units configured to m/s TODO change when inverts work
         Rotation2d angle = getAngle(); 
         return new SwerveModuleState(velocity, angle); 
     } 
  
     public SwerveModulePosition getPosition(){ 
-        double distance = mDriveEncoder.getPosition(); //Units configured to m 
+        double distance = -mDriveEncoder.getPosition(); //Units configured to m TODO change when inverts work
         Rotation2d angle = getAngle(); 
         return new SwerveModulePosition(distance, angle); 
     } 
@@ -141,7 +141,7 @@ public class SwerveModule {
         /* Drive Motor Config */ 
         mDriveMotor = new CANSparkFlex(id, MotorType.kBrushless); 
         SparkUtilities.optimizeFrames(mDriveMotor, false, true, true, false, false, false); 
-        mDriveMotor.setInverted(false); // Setting this to true breaks it. Manually invert motor sets and encoder reads
+        mDriveMotor.setInverted(false); // TODO Setting this to true breaks it. Manually invert motor sets and encoder reads
         //configDriveMotor();
 
         drivePIDController = mDriveMotor.getPIDController();
