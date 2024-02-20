@@ -42,9 +42,9 @@ public class TeleopSwerve extends Command{
 
     @Override
     public void execute(){
-        double yAxis = controller.getLeftY();
-        double xAxis = controller.getLeftX();
-        double rAxis = controller.getRightX();
+        double yAxis = -controller.getLeftY();
+        double xAxis = -controller.getLeftX();
+        double rAxis = -controller.getRightX();
 
         /* Deadbands */
         yAxis = (Math.abs(yAxis) < Constants.stickDeadband) ? 0 : yAxis;

@@ -122,13 +122,16 @@ public final class Constants {
         public static final IdleMode angleNeutralMode = IdleMode.kBrake;
         public static final IdleMode driveNeutralMode = IdleMode.kBrake;
 
-        // TODO check - teleop
         /* Motor Inverts */
         public static final boolean driveMotorInvert = true;
+        /*
+         * things to check: if this change causes the drive motors to behave in a weird way,
+         * change it to false and manually flip the outputs to the drive motor
+         */
         public static final boolean angleMotorInvert = true;
 
         /* Angle Encoder Invert */
-        public static final boolean canCoderInvert = true;
+        public static final boolean canCoderInvert = false;
 
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */

@@ -29,7 +29,10 @@ public class SwerveModule {
     private CANSparkFlex mDriveMotor; 
  
     private RelativeEncoder mDriveEncoder; 
-    private SparkAbsoluteEncoder mAngleEncoder; 
+    private SparkAbsoluteEncoder mAngleEncoder;
+
+    private SparkPIDController drivePIDController;
+    private SparkPIDController anglePIDController;
  
     private double mLastAngle; 
     private double mDesiredAngle; 
@@ -42,47 +45,19 @@ public class SwerveModule {
  
     public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){ 
         this.moduleNumber = moduleNumber; 
- 
-        /* Angle Motor Config */ 
-        mAngleMotor = new CANSparkMax(moduleConstants.angleMotorID, MotorType.kBrushless); 
-        //configAngleMotor(); 
- 
-        /* Drive Motor Config */ 
-        mDriveMotor = new CANSparkFlex(moduleConstants.driveMotorID, MotorType.kBrushless); 
-        //configDriveMotor(); 
- 
-        /* Angle Encoder Config */ 
-        mAngleEncoder = mAngleMotor.getAbsoluteEncoder(com.revrobotics.SparkAbsoluteEncoder.Type.kDutyCycle); 
-        mAngleEncoder.setPositionConversionFactor(360); 
- 
-        mAngleMotor.getPIDController().setFeedbackDevice(mAngleEncoder); 
-        mAngleMotor.getPIDController().setPositionPIDWrappingMinInput(0); 
-        mAngleMotor.getPIDController().setPositionPIDWrappingMaxInput(360); 
-        mAngleMotor.getPIDController().setPositionPIDWrappingEnabled(true); 
- 
-        mAngleMotor.getPIDController().setP(Constants.Swerve.angleKP); 
-        mAngleMotor.getPIDController().setI(Constants.Swerve.angleKI); 
-        mAngleMotor.getPIDController().setD(Constants.Swerve.angleKD); 
-        mAngleMotor.setInverted(Constants.Swerve.canCoderInvert); 
- 
-        mDriveEncoder = mDriveMotor.getEncoder(); 
-        // Set to m/s for speed and m for distance 
-        mDriveEncoder.setPositionConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio); 
-        mDriveEncoder.setVelocityConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio / 60.0); 
- 
+
+        configAngleMotor(moduleConstants.angleMotorID);
+        configDriveMotor(moduleConstants.driveMotorID);
+
         mLastAngle = getState().angle.getDegrees(); 
- 
-        // Optimize CAN usage 
-        SparkUtilities.optimizeFrames(mDriveMotor, false, true, true, false, false, false); 
-        SparkUtilities.optimizeFrames(mAngleMotor, false, false, false, false, false, true); 
     } 
  
  
-    /* METHODS */ 
+    /* METHODS */
  
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) 
     { 
-        desiredState = SwerveModuleState.optimize(desiredState, getState().angle); //TODO this breaks stuff 
+        desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
  
         if(isOpenLoop){ // TELEOP 
             double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed; 
@@ -136,7 +111,46 @@ public class SwerveModule {
  
     public double getDesiredSpeed(){ 
         return mLastSpeed; 
-    } 
+    }
+
+
+    /* CONFIGURATION */
+    private void configAngleMotor(int id){
+        mAngleMotor = new CANSparkMax(id, MotorType.kBrushless);
+        SparkUtilities.optimizeFrames(mAngleMotor, false, false, false, false, false, true);
+        mAngleMotor.setInverted(Constants.Swerve.angleMotorInvert);
+
+        anglePIDController = mAngleMotor.getPIDController();
+        anglePIDController.setFeedbackDevice(mAngleEncoder); 
+        anglePIDController.setPositionPIDWrappingMinInput(0); 
+        anglePIDController.setPositionPIDWrappingMaxInput(360); 
+        anglePIDController.setPositionPIDWrappingEnabled(true); 
+        anglePIDController.setP(Constants.Swerve.angleKP); 
+        anglePIDController.setI(Constants.Swerve.angleKI); 
+        anglePIDController.setD(Constants.Swerve.angleKD);
+
+        mAngleEncoder = mAngleMotor.getAbsoluteEncoder(com.revrobotics.SparkAbsoluteEncoder.Type.kDutyCycle); 
+        mAngleEncoder.setPositionConversionFactor(360); 
+        mAngleEncoder.setInverted(Constants.Swerve.canCoderInvert);
+        /*
+         * TODO I know why inverting the encoder fixed it. Because for some reason the encoder invert
+         * was in the motor invert so inverting the encoder ACTUALLY inverted the motor :/
+         */
+    }
+    private void configDriveMotor(int id){
+        /* Drive Motor Config */ 
+        mDriveMotor = new CANSparkFlex(id, MotorType.kBrushless); 
+        SparkUtilities.optimizeFrames(mDriveMotor, false, true, true, false, false, false); 
+        mDriveMotor.setInverted(Constants.Swerve.driveMotorInvert); // Setting this to true breaks it. Manually invert motor sets and encoder reads
+        //configDriveMotor(); 
+        
+
+        /* Drive Encoder Config */
+        mDriveEncoder = mDriveMotor.getEncoder(); 
+        // Set to m/s for speed and m for distance 
+        mDriveEncoder.setPositionConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio); 
+        mDriveEncoder.setVelocityConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio / 60.0); 
+    }
  
  
     /* LOGGING AND SAVING */ 
