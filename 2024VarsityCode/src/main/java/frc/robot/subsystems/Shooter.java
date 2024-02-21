@@ -60,8 +60,8 @@ public class Shooter extends SubsystemBase {
   public Shooter() {
     // Motor Setup
     propMotor = new CANSparkFlex(Constants.Shooter.propCAN, MotorType.kBrushless);
-    topMotor = new CANSparkFlex(Constants.Shooter.propCAN, MotorType.kBrushless);
-    bottomMotor = new CANSparkFlex(Constants.Shooter.propCAN, MotorType.kBrushless);
+    topMotor = new CANSparkFlex(Constants.Shooter.topCAN, MotorType.kBrushless);
+    bottomMotor = new CANSparkFlex(Constants.Shooter.bottomCAN, MotorType.kBrushless);
 
     propMotor.setIdleMode(IdleMode.kCoast);
     topMotor.setIdleMode(IdleMode.kCoast);
@@ -81,10 +81,10 @@ public class Shooter extends SubsystemBase {
 
     // TODO configure
     for(int i = 0; i < controllers.length; i++){
-      controllers[i].setP(0);
-      controllers[i].setI(0);
-      controllers[i].setD(0);
-      controllers[i].setFF(0);
+      controllers[i].setP(0.001);
+      controllers[i].setI(0.0);
+      controllers[i].setD(0.0);
+      controllers[i].setFF(0.000212);
       controllers[i].setOutputRange(-1, 1);
     }
   }
@@ -113,9 +113,9 @@ public class Shooter extends SubsystemBase {
 
   public void setVelocity(double velocity){
     setpoint = velocity;
-    for(int i = 0; i < controllers.length; i++){
-      controllers[i].setReference(velocity, ControlType.kVelocity);
-    }
+    propMotor.getPIDController().setReference(-velocity, ControlType.kVelocity);
+    topMotor.getPIDController().setReference(-velocity, ControlType.kVelocity);
+    bottomMotor.getPIDController().setReference(velocity, ControlType.kVelocity);
   }
   public double getVelocity(){
     return propMotor.getEncoder().getVelocity();
@@ -149,7 +149,7 @@ public class Shooter extends SubsystemBase {
 
   public Command eject(){
     return new FunctionalCommand(
-      ()->setPercOutput(-0.1), 
+      ()->setPercOutput(-0.25), 
       ()->{}, 
       (interrupted)->setPercOutput(0.0), 
       ()->{return false;}, 
@@ -166,6 +166,16 @@ public class Shooter extends SubsystemBase {
       ()->{return false;},
       this
     ).withName("Amp");
+  }
+
+  public Command shootAvg(){
+    ampMode = false;
+    return new FunctionalCommand(
+      () -> setVelocity(1500), 
+      () -> {}, 
+      interrupted->setVelocity(0), 
+      ()->{return false;}, 
+      this).withName("Holding Velocity"+1500);
   }
 
   public Command shootWithRamp(){
@@ -194,5 +204,6 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Top Velocity", topEncoder.getVelocity());
     SmartDashboard.putNumber("Bottom Power", bottomMotor.get());
     SmartDashboard.putNumber("Bottom Velocity", bottomEncoder.getVelocity());
+    SmartDashboard.putString("Shooter Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
   }
 }

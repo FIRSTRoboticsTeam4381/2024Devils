@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -99,7 +100,7 @@ public class RobotContainer {
         specialist.cross().toggleOnTrue(commands.groundIntake());
         specialist.square().toggleOnTrue(commands.humanIntake());
         specialist.circle().whileTrue(commands.ejectNote());
-        specialist.L1().toggleOnTrue(s_Shooter.shootWithRamp());
+        specialist.L1().toggleOnTrue(s_Shooter.shootAvg());
         specialist.povRight().toggleOnTrue(commands.ampMode());
         specialist.R1().whileTrue(commands.feedNote());
         specialist.triangle().toggleOnTrue(new AutoAim(s_Shooter, s_Pivot));
@@ -122,6 +123,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand(){
-        return m_AutoChooser.getSelected();
+        return Autos.testAuto();
     }
 }

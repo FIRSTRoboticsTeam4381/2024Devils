@@ -27,20 +27,22 @@ public final class Autos {
 
     // TODO test of a single path
     public static Command testPath(){
-        PathPlannerPath path = PathPlannerPath.fromPathFile("TestPath1");
+        //PathPlannerPath path = PathPlannerPath.fromPathFile("TestPath1");
 
-        return AutoBuilder.followPath(path);
+        return Commands.none();//AutoBuilder.followPath(path);
     }
 
     // TODO test of a path group
     public static Command testPathGroup(){
+        /*
         List<PathPlannerPath> paths = PathPlannerAuto.getPathGroupFromAutoFile("TestAuto");
         Command[] pathGroup = new Command[paths.size()];
         for(int i = 0; i < pathGroup.length; i++){
             pathGroup[i] = AutoBuilder.followPath(paths.get(i));
         }
+        */
 
-        return new SequentialCommandGroup(pathGroup);
+        return Commands.none();//new SequentialCommandGroup(pathGroup);
     }
 
     /**

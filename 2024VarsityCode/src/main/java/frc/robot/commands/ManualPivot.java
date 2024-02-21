@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Pivot;
@@ -34,10 +35,16 @@ public class ManualPivot extends Command {
     axis = Math.abs(axis)<Constants.stickDeadband ? 0.0 : axis;
     axis *= -0.25;
 
-    if(pivot.getCurrentAngle()>=115&&axis>0.0) axis = 0.0;
-    if(pivot.getCurrentAngle()<=0&&axis<0.0) axis = 0.0;
+    SmartDashboard.putNumber("Pivot Axis", axis);
+    if(axis>0.0 && (pivot.getCurrentAngle()>115&&pivot.getCurrentAngle()<330)) {axis = 0.0;}
+    if(axis<0.0 && (pivot.getCurrentAngle()<=2||pivot.getCurrentAngle()>330)) {axis = 0.0;}
 
-    pivot.setPercOutput(axis);
+    pivot.setPercOutput(axis+basicFeedforward());
+  }
+
+  private double basicFeedforward(){
+    final double ffSpeed = 0.015;
+    return Math.cos(pivot.getCurrentAngle()*(Math.PI/180.0))*ffSpeed;
   }
 
   // Called once the command ends or is interrupted.

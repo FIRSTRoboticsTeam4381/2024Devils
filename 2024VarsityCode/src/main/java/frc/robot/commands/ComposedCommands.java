@@ -39,8 +39,8 @@ public class ComposedCommands {
      */
     public Command groundIntake(){
         return new ParallelCommandGroup(
-            pivot.setIntakePosition(),
-            intake.start(), // Stops when cancelled
+            pivot.holdPosition(Pivot.INTAKE_POS),
+            intake.run(), // Stops when cancelled
             index.indexUntilIn(1) // Stops when cancelled
         );
     }
@@ -51,7 +51,7 @@ public class ComposedCommands {
      */
     public Command humanIntake(){
         return new ParallelCommandGroup(
-            pivot.setHumanIntakePosition(),
+            //pivot.holdPositionThenZero(Pivot.HUMAN_POS),
             index.indexUntilIn(-1), // Stops when cancelled
             shooter.eject() // Stops when cancelled
         );
@@ -72,7 +72,7 @@ public class ComposedCommands {
     /* AMP MODE TOGGLE */
     public Command ampMode(){
         return new ParallelCommandGroup(
-            pivot.holdPosition(Pivot.AMP_POS), // Goes back to 0 when cancelled
+            pivot.holdPositionThenZero(Pivot.AMP_POS), // Goes back to 0 when cancelled
             shooter.ampShoot() // Stops when cancelled
         );
     }

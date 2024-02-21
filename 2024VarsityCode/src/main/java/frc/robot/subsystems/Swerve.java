@@ -14,10 +14,12 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.DriftCorrection;
+import frc.lib.util.Limelight;
 import frc.lib.util.LogOrDash;
 import frc.robot.Constants;
 
@@ -25,10 +27,13 @@ public class Swerve extends SubsystemBase{
     public SwerveDriveOdometry mSwerveOdometry;
     public SwerveModule[] mSwerveMods;
     public AHRS gyro; //TODO may not use
+    public Field2d mField;
 
     public Swerve(){
         gyro = new AHRS(Port.kUSB);
         zeroGyro();
+
+        mField = new Field2d();
 
         mSwerveMods = new SwerveModule[]{
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -193,6 +198,14 @@ public class Swerve extends SubsystemBase{
         SmartDashboard.putNumberArray("swerve/status", currentStateAdv);
         SmartDashboard.putNumberArray("swerve/target", targetStateAdv);
         SmartDashboard.putNumberArray("swerve/absolute", absoluteStateAdv);
+
+        SmartDashboard.putBoolean("Tag In View?", Limelight.tagInView());
+        SmartDashboard.putNumberArray("Bot Position", Limelight.getPosition());
+        SmartDashboard.putNumberArray("Blue Relative Bot", Limelight.getBlueRelativePosition());
+        SmartDashboard.putNumberArray("Red Relative Bot", Limelight.getRedRelativePosition());
+
+        mField.setRobotPose(getPose());
+        SmartDashboard.putData("Field", mField);
 
 
         LogOrDash.logNumber("Gyro Pitch", gyro.getPitch());

@@ -61,11 +61,11 @@ public class SwerveModule {
  
         if(isOpenLoop){ // TELEOP 
             double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed; 
-            mDriveMotor.set(-percentOutput); // TODO remove when inverting works
+            mDriveMotor.set(percentOutput * -1); // TODO remove when inverting works
         } 
         else{ // AUTO 
             double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio); //TODO update for neos? 
-            drivePIDController.setReference(-velocity, ControlType.kVelocity, 0, feedforward.calculate(desiredState.speedMetersPerSecond)); 
+            drivePIDController.setReference(velocity * -1, ControlType.kVelocity, 0, feedforward.calculate(desiredState.speedMetersPerSecond * -1)); // TODO fix when inverts work
         } 
  
         double angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01)) ? mLastAngle : desiredState.angle.getDegrees(); //Prevent rotating module if speed is less than 1%. Prevents jittering. 
@@ -78,13 +78,13 @@ public class SwerveModule {
     /* CURRENT STATE */ 
  
     public SwerveModuleState getState(){ 
-        double velocity = -mDriveEncoder.getVelocity(); //Units configured to m/s TODO change when inverts work
+        double velocity = mDriveEncoder.getVelocity() * -1; //Units configured to m/s TODO change when inverts work
         Rotation2d angle = getAngle(); 
         return new SwerveModuleState(velocity, angle); 
     } 
  
     public SwerveModulePosition getPosition(){ 
-        double distance = -mDriveEncoder.getPosition(); //Units configured to m TODO change when inverts work
+        double distance = mDriveEncoder.getPosition() * -1; //Units configured to m TODO change when inverts work
         Rotation2d angle = getAngle(); 
         return new SwerveModulePosition(distance, angle); 
     } 
@@ -119,6 +119,11 @@ public class SwerveModule {
         mAngleMotor = new CANSparkMax(id, MotorType.kBrushless);
         SparkUtilities.optimizeFrames(mAngleMotor, false, false, false, false, false, true);
         mAngleMotor.setInverted(Constants.Swerve.angleMotorInvert);
+        mAngleMotor.setSmartCurrentLimit(30);
+
+        mAngleEncoder = mAngleMotor.getAbsoluteEncoder(com.revrobotics.SparkAbsoluteEncoder.Type.kDutyCycle); 
+        mAngleEncoder.setPositionConversionFactor(360); 
+        mAngleEncoder.setInverted(Constants.Swerve.canCoderInvert);
 
         anglePIDController = mAngleMotor.getPIDController();
         anglePIDController.setFeedbackDevice(mAngleEncoder); 
@@ -129,9 +134,6 @@ public class SwerveModule {
         anglePIDController.setI(Constants.Swerve.angleKI); 
         anglePIDController.setD(Constants.Swerve.angleKD);
 
-        mAngleEncoder = mAngleMotor.getAbsoluteEncoder(com.revrobotics.SparkAbsoluteEncoder.Type.kDutyCycle); 
-        mAngleEncoder.setPositionConversionFactor(360); 
-        mAngleEncoder.setInverted(Constants.Swerve.canCoderInvert);
         /*
          * TODO I know why inverting the encoder fixed it. Because for some reason the encoder invert
          * was in the motor invert so inverting the encoder ACTUALLY inverted the motor :/
@@ -142,20 +144,20 @@ public class SwerveModule {
         mDriveMotor = new CANSparkFlex(id, MotorType.kBrushless); 
         SparkUtilities.optimizeFrames(mDriveMotor, false, true, true, false, false, false); 
         mDriveMotor.setInverted(false); // TODO Setting this to true breaks it. Manually invert motor sets and encoder reads
+        mDriveMotor.setSmartCurrentLimit(60);
         //configDriveMotor();
-
-        drivePIDController = mDriveMotor.getPIDController();
-        drivePIDController.setFeedbackDevice(mDriveEncoder);
-        drivePIDController.setP(Constants.Swerve.driveKP);
-        drivePIDController.setI(Constants.Swerve.angleKI);
-        drivePIDController.setD(Constants.Swerve.driveKD);
-        
 
         /* Drive Encoder Config */
         mDriveEncoder = mDriveMotor.getEncoder(); 
         // Set to m/s for speed and m for distance 
         mDriveEncoder.setPositionConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio); 
         mDriveEncoder.setVelocityConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio / 60.0); 
+
+        drivePIDController = mDriveMotor.getPIDController();
+        drivePIDController.setFeedbackDevice(mDriveEncoder);
+        drivePIDController.setP(Constants.Swerve.driveKP);
+        drivePIDController.setI(Constants.Swerve.angleKI);
+        drivePIDController.setD(Constants.Swerve.driveKD);
     }
  
  

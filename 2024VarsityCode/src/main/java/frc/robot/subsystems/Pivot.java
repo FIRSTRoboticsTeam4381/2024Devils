@@ -45,7 +45,7 @@ public class Pivot extends SubsystemBase {
   private TrapezoidProfile motionProfile;
 
   // Tested Positions
-  public static final double INTAKE_POS = 60;
+  public static final double INTAKE_POS = 70;
   public static final double HUMAN_POS = 60; // TODO
   public static final double AMP_POS = 90;
 
@@ -64,8 +64,8 @@ public class Pivot extends SubsystemBase {
     leftPivot.setIdleMode(IdleMode.kBrake);
     rightPivot.setIdleMode(IdleMode.kBrake);
 
-    SparkUtilities.optimizeFrames(rightPivot, true, false, true, false, false, true);
-    SparkUtilities.optimizeFrames(leftPivot, false, false, false, false, false, false);
+    SparkUtilities.optimizeFrames(rightPivot, false, false, true, false, false, false);
+    SparkUtilities.optimizeFrames(leftPivot, true, false, true, false, false, true);
 
     // Encoder Setup
     pivotEncoder = leftPivot.getAbsoluteEncoder(Type.kDutyCycle);
@@ -90,7 +90,7 @@ public class Pivot extends SubsystemBase {
    * COMMANDS) should only be called by instant commands by button presses.
    */
   public void setPercOutput(double speed){
-    rightPivot.set(speed);
+    leftPivot.set(speed);
   }
   public void setDesiredAngle(double position){
     pivotController.setReference(position, ControlType.kPosition);
@@ -111,11 +111,9 @@ public class Pivot extends SubsystemBase {
   /* COMMANDS */
 
   // Set position commands
-  /*
   public Command goTo(double position){
-    return new SparkMaxPosition(rightPivot, position, 0, 10, this);
+    return new SparkMaxPosition(leftPivot, position, 0, 2, this);
   }
-  */
 
   public Command profiledMove(double position){
     return new TrapezoidProfileCommand(
@@ -139,13 +137,21 @@ public class Pivot extends SubsystemBase {
     return new InstantCommand(() -> setDesiredAngle(AMP_POS), this);
   }
 
+  public Command holdPositionThenZero(double position){
+    return new FunctionalCommand(
+      ()->setDesiredAngle(position), 
+      ()->{}, 
+      (interrupted)->setDesiredAngle(5.0), 
+      ()->{return false;}, 
+      this).withName("Holding Position - "+position);
+  }
   public Command holdPosition(double position){
     return new FunctionalCommand(
       ()->setDesiredAngle(position), 
       ()->{}, 
-      (interrupted)->setDesiredAngle(2.0), 
+      (interrupted)->{}, 
       ()->{return false;}, 
-      this).withName("Holding Position - "+position);
+      this);
   }
 
 
@@ -157,6 +163,6 @@ public class Pivot extends SubsystemBase {
 
     SmartDashboard.putNumber("Pivot Absolute Angle", pivotEncoder.getPosition());
     SmartDashboard.putNumber("Pivot Speed", leftPivot.get());
-    SmartDashboard.putString("Pivot Command", this.getCurrentCommand().getName());
+    SmartDashboard.putString("Pivot Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
   }
 }
