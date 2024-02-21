@@ -53,7 +53,7 @@ public class Intake extends SubsystemBase {
     return new InstantCommand(() -> CommandScheduler.getInstance().schedule(run()));
   }
   public InstantCommand stop(){
-    return new InstantCommand(() -> this.getCurrentCommand().cancel());
+    return new InstantCommand(() -> setPercOutput(0.0), this);
   }
 
   public Command run(){
@@ -90,7 +90,6 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
-    SmartDashboard.putNumber("Intake Speed", intake.get());
+    SmartDashboard.putString("intake/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
   }
 }

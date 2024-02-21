@@ -89,6 +89,15 @@ public class Index extends SubsystemBase {
     ).withName("IndexUntilShot");
   }
 
+  public Command runIndex(){
+    return new FunctionalCommand(
+      ()->setPercOutput(INDEX_SPEED), 
+      ()->{}, 
+      interrupted->setPercOutput(0.0), 
+      ()->{return false;}, 
+      this).withName("Running Index");
+  }
+
   public Command eject(){
     return new FunctionalCommand(
       ()->setPercOutput(-INDEX_SPEED),
@@ -106,7 +115,7 @@ public class Index extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("Index Power", indexMotor.get());
-    SmartDashboard.putBoolean("Note Inside", noteStored());
+    SmartDashboard.putBoolean("index/Note Stored", noteStored());
+    SmartDashboard.putString("index/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
   }
 }

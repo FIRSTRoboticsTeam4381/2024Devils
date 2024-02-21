@@ -128,7 +128,7 @@ public class Pivot extends SubsystemBase {
     return new InstantCommand(() -> setDesiredAngle(INTAKE_POS), this);
   }
   public Command setDownPosition(){
-    return new InstantCommand(() -> setDesiredAngle(2), this);
+    return new InstantCommand(() -> setDesiredAngle(5), this);
   }
   public Command setHumanIntakePosition(){
     return new InstantCommand(() -> setDesiredAngle(HUMAN_POS), this);

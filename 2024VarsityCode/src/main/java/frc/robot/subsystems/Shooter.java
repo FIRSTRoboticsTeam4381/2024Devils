@@ -198,12 +198,9 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("Propellor Power", propMotor.get());
-    SmartDashboard.putNumber("Propellor Velocity", propEncoder.getVelocity());
-    SmartDashboard.putNumber("Top Power", topMotor.get());
-    SmartDashboard.putNumber("Top Velocity", topEncoder.getVelocity());
-    SmartDashboard.putNumber("Bottom Power", bottomMotor.get());
-    SmartDashboard.putNumber("Bottom Velocity", bottomEncoder.getVelocity());
-    SmartDashboard.putString("Shooter Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
+    SmartDashboard.putNumber("shooter/Propellor Velocity", propEncoder.getVelocity());
+    SmartDashboard.putNumber("shooter/Top Velocity", topEncoder.getVelocity());
+    SmartDashboard.putNumber("shooter/Bottom Velocity", bottomEncoder.getVelocity());
+    SmartDashboard.putString("shooter/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
   }
 }

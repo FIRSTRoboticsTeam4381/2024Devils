@@ -83,7 +83,7 @@ public class ComposedCommands {
      * feed the note
      */
     public Command feedNote(){
-        return new ConditionalCommand(index.indexUntilShot(), Commands.none(), shooter::readyForNote).repeatedly();
+        return new ConditionalCommand(index.runIndex(), Commands.none(), shooter::readyForNote).repeatedly();
     }
 
     /* CANCEL ALL COMMANDS */
