@@ -7,13 +7,12 @@ package frc.robot.commands;
 import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkBase;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
-public class SparkMaxPosition extends Command{
+public class SparkPosition extends Command{
     /** Creates a new SparkMaxPosition */
     private CANSparkBase motor;
     private double position;
@@ -21,19 +20,17 @@ public class SparkMaxPosition extends Command{
     private double error;
     private Supplier<Double> feedback;
 
-    public SparkMaxPosition(CANSparkBase m, double pos, int slot, double err, Subsystem s){
-        // Use addRequirements() here to declare subsystem dependencies.
+    public SparkPosition(CANSparkBase m, double pos, int slot, double err, Subsystem s, Supplier<Double> feedback){
         motor = m;
         position = pos;
         slotNumber = slot;
         error = err;
-        feedback = (motor.getEncoder())::getPosition;
+        this.feedback = feedback;
+        // Use addRequirements() here to declare system dependencies
         addRequirements(s);
     }
-
-    public SparkMaxPosition(CANSparkMax m, double pos, int slot, double err, Subsystem s, Supplier<Double> feedback){
-        this(m, pos, slot, err, s);
-        this.feedback = feedback;
+    public SparkPosition(CANSparkBase m, double pos, int slot, double err, Subsystem s){
+        this(m, pos, slot, err, s, m.getEncoder()::getPosition);
     }
 
     // Called when the command is initially scheduled

@@ -7,19 +7,18 @@ import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController; 
 import com.revrobotics.CANSparkBase.ControlType; 
 import com.revrobotics.CANSparkLowLevel.MotorType; 
-import com.revrobotics.SparkRelativeEncoder.Type; 
  
 import frc.lib.math.Conversions; 
 import frc.lib.util.LogOrDash; 
 import frc.lib.util.SparkUtilities;
 import frc.lib.util.SwerveModuleConstants; 
 import frc.robot.Constants; 
+
 import edu.wpi.first.math.controller.SimpleMotorFeedforward; 
 import edu.wpi.first.math.geometry.Rotation2d; 
 import edu.wpi.first.math.kinematics.SwerveModulePosition; 
 import edu.wpi.first.math.kinematics.SwerveModuleState; 
 import edu.wpi.first.wpilibj.DriverStation; 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard; 
  
 public class SwerveModule { 
  

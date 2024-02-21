@@ -36,15 +36,17 @@ public class ManualPivot extends Command {
     axis *= -0.25;
 
     SmartDashboard.putNumber("Pivot Axis", axis);
-    if(axis>0.0 && (pivot.getCurrentAngle()>115&&pivot.getCurrentAngle()<330)) {axis = 0.0;}
-    if(axis<0.0 && (pivot.getCurrentAngle()<=2||pivot.getCurrentAngle()>330)) {axis = 0.0;}
+
+    // Manual pivot limits
+    if(axis>0.0 && (pivot.getAngle()>115&&pivot.getAngle()<330)) {axis = 0.0;}
+    if(axis<0.0 && (pivot.getAngle()<=2||pivot.getAngle()>330)) {axis = 0.0;}
 
     pivot.setPercOutput(axis+basicFeedforward());
   }
 
   private double basicFeedforward(){
     final double ffSpeed = 0.015;
-    return Math.cos(pivot.getCurrentAngle()*(Math.PI/180.0))*ffSpeed;
+    return Math.cos(pivot.getAngle()*(Math.PI/180.0))*ffSpeed;
   }
 
   // Called once the command ends or is interrupted.

@@ -4,10 +4,9 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.lib.util.Limelight;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
@@ -44,14 +43,17 @@ public class AutoAim extends Command {
     double angle = calcAngle();
     double velocity = calcVelocity();
 
-    pivot.setDesiredAngle(angle);
-    shooter.setVelocity(velocity);
+    SmartDashboard.putNumber("autoaim/Calculated Velocity", velocity);
+    SmartDashboard.putNumber("autoaim/Calculated Angle", angle);
+
+    //pivot.setAngleReference(angle);
+    //shooter.setVelocity(velocity, false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.setPercOutput(0);
+    CommandScheduler.getInstance().schedule(pivot.goToTransit().alongWith(shooter.instantStopAll()));
   }
 
   // Returns true when the command should end.

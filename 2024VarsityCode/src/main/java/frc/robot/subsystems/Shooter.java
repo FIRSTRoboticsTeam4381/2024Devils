@@ -114,7 +114,7 @@ public class Shooter extends SubsystemBase {
    * @param velocity
    * @param deflect Whether the top motor should be flipped so as to allow the note to be deflected through the top
    */
-  private void setVelocity(double velocity, boolean deflect){
+  public void setVelocity(double velocity, boolean deflect){
     ampMode = deflect;
     setpoint = velocity;
     propMotor.getPIDController().setReference(-velocity, ControlType.kVelocity);

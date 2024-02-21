@@ -1,17 +1,10 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
-/* Desired Behavior:
- * I want this to mostly rely on automatic position control, but the specialist
- * can still have manual control.
- */
-
 package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkFlex;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -23,13 +16,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
+
 import frc.lib.math.Conversions;
 import frc.lib.util.SparkUtilities;
 import frc.robot.Constants;
-import frc.robot.commands.SparkMaxPosition;
+import frc.robot.commands.SparkPosition;
 
 public class Pivot extends SubsystemBase {
 
@@ -48,6 +41,7 @@ public class Pivot extends SubsystemBase {
   public static final double INTAKE_POS = 70;
   public static final double HUMAN_POS = 115;
   public static final double AMP_POS = 90;
+  public static final double TRANSIT_POS = 3;
 
 
   /* CONSTRUCTORS */
@@ -55,17 +49,15 @@ public class Pivot extends SubsystemBase {
   /** Creates a new Pivot. */
   public Pivot() {
     // Motor Setup
-    rightPivot = new CANSparkFlex(Constants.Pivot.rightPivotCAN, MotorType.kBrushless);
     leftPivot = new CANSparkFlex(Constants.Pivot.leftPivotCAN, MotorType.kBrushless);
-
-    rightPivot.follow(leftPivot);
+    rightPivot = new CANSparkFlex(Constants.Pivot.rightPivotCAN, MotorType.kBrushless);
     leftPivot.setInverted(true);
-
+    rightPivot.follow(leftPivot);
     leftPivot.setIdleMode(IdleMode.kBrake);
     rightPivot.setIdleMode(IdleMode.kBrake);
 
-    SparkUtilities.optimizeFrames(rightPivot, false, false, true, false, false, false);
     SparkUtilities.optimizeFrames(leftPivot, true, false, true, false, false, true);
+    SparkUtilities.optimizeFrames(rightPivot, false, false, true, false, false, false);
 
     // Encoder Setup
     pivotEncoder = leftPivot.getAbsoluteEncoder(Type.kDutyCycle);
@@ -79,42 +71,101 @@ public class Pivot extends SubsystemBase {
     pivotController.setD(0.0);
     pivotController.setFF(0.0);
 
+    // Trapezoid Profile Setup
     motionProfile = new TrapezoidProfile(new Constraints(Conversions.dpsToRpm(30), Conversions.dpsToRpm(30)));
   }
 
 
-  /* METHODS */
-  /*
-   * The way I want these to work is setSpeed will only be called by manual control, and
-   * set position will only be called by auto control, and the single set positions (see
-   * COMMANDS) should only be called by instant commands by button presses.
-   */
-  public void setPercOutput(double speed){
-    leftPivot.set(speed);
-  }
-  public void setDesiredAngle(double position){
-    pivotController.setReference(position, ControlType.kPosition);
-  }
+  /* ACCESSORS */
 
-  public double getCurrentAngle(){
+  /**
+   * Get the current angle of the pivot encoder
+   * @return
+   */
+  public double getAngle(){
     return pivotEncoder.getPosition();
   }
 
-  public void useState(TrapezoidProfile.State state){
-
-  }
+  /**
+   * Get the current Trapezoid Profile state of the pivot arm. Useful for profiled motion
+   * @return
+   */
   public TrapezoidProfile.State getState(){
     return new TrapezoidProfile.State(pivotEncoder.getPosition(), pivotEncoder.getVelocity());
   }
 
 
-  /* COMMANDS */
+  /* MUTATORS */
 
-  // Set position commands
-  public Command goTo(double position){
-    return new SparkMaxPosition(leftPivot, position, 0, 2, this);
+  /**
+   * Set a flat percentage-based output to the pivot. Useful for basic manual control
+   * @param speed
+   */
+  public void setPercOutput(double speed){
+    leftPivot.set(speed);
   }
 
+  /**
+   * Set a position reference for the pivot on a 0-360 degree range. Moves via PID control.
+   * @param angle
+   */
+  public void setAngleReference(double angle){
+    pivotController.setReference(angle, ControlType.kPosition);
+  }
+
+  /**
+   * Method to accept a Trapezoid Profile state and set the PID position reference to that state.
+   * @param state
+   */
+  public void useState(TrapezoidProfile.State state){
+    setAngleReference(state.position);
+  }
+
+  
+
+  /* COMMANDS */
+  // No instant commands here, because it will immediately hand off to manual pivot, cancelling the set point making it useless
+
+  /**
+   * Using  tuned PID control, moves pivot to the passed angle. Releases control over pivot once it is within 3 degrees of the setpoint
+   * @param angle Angle to travel to
+   * @return
+   */
+  private Command goToAngle(double angle){
+    return new SparkPosition(leftPivot, angle, 0, 3, this, pivotEncoder::getPosition);
+  }
+  public Command goToIntake(){
+    return goToAngle(INTAKE_POS).withName("Moving to intake");
+  }
+  public Command goToHuman(){
+    return goToAngle(HUMAN_POS).withName("Moving to human");
+  }
+  public Command goToTransit(){
+    return goToAngle(TRANSIT_POS).withName("Moving to transit");
+  }
+  public Command goToAmp(){
+    return goToAngle(AMP_POS).withName("Moving to amp");
+  }
+
+  /**
+   * Moves the pivot to a provided position until the command is interrupted, at which point the pivot will return back to the transit position
+   * @param position
+   * @return
+   */
+  public Command goToTemporaryPosition(double position){
+    return new FunctionalCommand(
+      ()->setAngleReference(position), 
+      ()->{}, 
+      interrupted->setAngleReference(TRANSIT_POS), 
+      ()->{return false;}, 
+      this).withName("Holding position "+position);
+  }
+
+  /**
+   * Move the pivot to a position via a Trapezoid Motion profile. This profile has yet to be tested and configured
+   * @param position
+   * @return
+   */
   public Command profiledMove(double position){
     return new TrapezoidProfileCommand(
       motionProfile, 
@@ -124,36 +175,6 @@ public class Pivot extends SubsystemBase {
       this).withName("Profiled Movement to "+position);
   }
 
-  public Command setIntakePosition(){
-    return new InstantCommand(() -> setDesiredAngle(INTAKE_POS), this);
-  }
-  public Command setDownPosition(){
-    return new InstantCommand(() -> setDesiredAngle(5), this);
-  }
-  public Command setHumanIntakePosition(){
-    return new InstantCommand(() -> setDesiredAngle(HUMAN_POS), this);
-  }
-  public Command setAmpPosition(){
-    return new InstantCommand(() -> setDesiredAngle(AMP_POS), this);
-  }
-
-  public Command holdPositionThenZero(double position){
-    return new FunctionalCommand(
-      ()->setDesiredAngle(position), 
-      ()->{}, 
-      (interrupted)->setDesiredAngle(5.0), 
-      ()->{return false;}, 
-      this).withName("Holding Position - "+position);
-  }
-  public Command holdPosition(double position){
-    return new FunctionalCommand(
-      ()->setDesiredAngle(position), 
-      ()->{}, 
-      (interrupted)->{}, 
-      ()->{return false;}, 
-      this);
-  }
-
 
   /* PERIODIC */
 
@@ -161,8 +182,7 @@ public class Pivot extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("Pivot Absolute Angle", pivotEncoder.getPosition());
-    SmartDashboard.putNumber("Pivot Speed", leftPivot.get());
-    SmartDashboard.putString("Pivot Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
+    SmartDashboard.putNumber("pivot/Absolute Angle", pivotEncoder.getPosition());
+    SmartDashboard.putString("pivot/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
   }
 }

@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.DriftCorrection;
+
 import frc.lib.util.Limelight;
 import frc.lib.util.LogOrDash;
 import frc.robot.Constants;
@@ -26,7 +26,7 @@ import frc.robot.Constants;
 public class Swerve extends SubsystemBase{
     public SwerveDriveOdometry mSwerveOdometry;
     public SwerveModule[] mSwerveMods;
-    public AHRS gyro; //TODO may not use
+    public AHRS gyro;
     public Field2d mField;
 
     public Swerve(){
