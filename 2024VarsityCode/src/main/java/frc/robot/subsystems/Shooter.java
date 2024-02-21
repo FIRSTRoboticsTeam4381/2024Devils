@@ -1,14 +1,7 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
-/* Desired Behavior:
- * 
- */
-
 package frc.robot.subsystems;
-
-import java.util.Optional;
 
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.RelativeEncoder;
@@ -17,20 +10,14 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.BangBangController;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.Limelight;
+
 import frc.lib.util.SparkUtilities;
 import frc.robot.Constants;
-import frc.robot.commands.FlywheelRamp;
 
 public class Shooter extends SubsystemBase {
   
@@ -47,15 +34,14 @@ public class Shooter extends SubsystemBase {
 
   public static final double maxRPM = 6500;
 
-  private static final double EJECT_SPEED = 0.2;
-  private static final double SHOOTING_SPEED = 0.5;
+  //private static final double EJECT_SPEED = 0.2;
+  //private static final double SHOOTING_SPEED = 0.5;
 
   private boolean ampMode = false;
   private double setpoint = 0.0;
 
 
   /* CONSTRUCTOR */
-
   /** Creates a new Shooter. */
   public Shooter() {
     // Motor Setup
@@ -79,7 +65,6 @@ public class Shooter extends SubsystemBase {
     // PID Setup
     controllers = new SparkPIDController[] {propMotor.getPIDController(), topMotor.getPIDController(), bottomMotor.getPIDController()};
 
-    // TODO configure
     for(int i = 0; i < controllers.length; i++){
       controllers[i].setP(0.001);
       controllers[i].setI(0.0);
@@ -90,105 +75,120 @@ public class Shooter extends SubsystemBase {
   }
 
 
-  /* METHODS */
-  public void setTopMotorPercOutput(double speed){
-    topMotor.set(-speed); // TODO invert?
-  }
-  public void setBottomMotorPercOutput(double speed){
-    bottomMotor.set(speed); // TODO invert?
-  }
-  public void setPropMotorPercOutput(double speed){
-    propMotor.set(speed); // TODO invert?
-  }
-  public void setPercOutput(double speed){
-    setPropMotorPercOutput(speed);
-    setTopMotorPercOutput(speed);
-    setBottomMotorPercOutput(speed);
-  }
-  public void ejectPercOutput(double speed){
-    setPropMotorPercOutput(speed);
-    setTopMotorPercOutput(-speed);
-    setBottomMotorPercOutput(speed);
-  }
+  /* ACCESSORS */
 
-  public void setVelocity(double velocity){
-    setpoint = velocity;
-    propMotor.getPIDController().setReference(-velocity, ControlType.kVelocity);
-    topMotor.getPIDController().setReference(-velocity, ControlType.kVelocity);
-    bottomMotor.getPIDController().setReference(velocity, ControlType.kVelocity);
-  }
+  /**
+   * 
+   * @return Current velocity of the propelling motor
+   */
   public double getVelocity(){
     return propMotor.getEncoder().getVelocity();
   }
 
+  /**
+   * Decide if the shooter is ready for a note to be fed based on current velocity
+   * @return Boolean determining if it is okay to feed a note to the shooter
+   */
   public boolean readyForNote(){
     return (ampMode || Math.abs(setpoint-propEncoder.getVelocity())<50);
   }
 
-  // TODO TEST
-  public double getDistanceFromGoal(){
-    boolean isBlue = DriverStation.getAlliance().get() == Alliance.Blue;
 
-    double[] position = isBlue ? Limelight.getBlueRelativePosition() : Limelight.getRedRelativePosition();
-    double[] goalPosition = {isBlue?0:0,isBlue?0:0}; // TODO get goal positions relative to origins (idk what the origins are);
-    double distance = Math.sqrt(Math.pow(position[0]-goalPosition[0],2)+Math.pow(position[1]-goalPosition[1],2));
-    return distance;
+  /* MUTATORS */
+
+  /**
+   * Set a flat percentage-based power output to the shooter motors. Doesn't run the PID.
+   * @param speed Speed (-1.0 - 1.0) to output to the motors
+   * @param deflect Whether the top motor should be flipped so as to allow the note to be deflected through the top
+   */
+  private void setPercOutput(double speed, boolean deflect){
+    ampMode = deflect;
+    propMotor.set(-speed);
+    topMotor.set(-speed * (deflect?-1:1));
+    bottomMotor.set(speed);
+  }
+
+  /**
+   * Set a reference velocity to be passed to the shooter motors. Runs off of a PID. Estimated time
+   * to ramp to 1500 rpm = 2 seconds. Note: CAN Spark Flex theoretical max rpm = 6500
+   * @param velocity
+   * @param deflect Whether the top motor should be flipped so as to allow the note to be deflected through the top
+   */
+  private void setVelocity(double velocity, boolean deflect){
+    ampMode = deflect;
+    setpoint = velocity;
+    propMotor.getPIDController().setReference(-velocity, ControlType.kVelocity);
+    topMotor.getPIDController().setReference(-velocity * (deflect?-1.0:1.0), ControlType.kVelocity);
+    bottomMotor.getPIDController().setReference(velocity, ControlType.kVelocity);
+  }
+  
+
+
+  /* INSTANT COMMANDS */
+
+  /**
+   * Pass a velocity reference to the shooter motors. For more information, see the setVelocity() function
+   * of this class. Note: motors will continue running at this reference until a new command is called, so be careful
+   * @param velocity Velocity to be set to the motors
+   * @param deflect Whether the top motor should be flipped so as to allow the note to be deflected through the top
+   * @return
+   */
+  public InstantCommand instantSetVelocityReference(double velocity, boolean deflect){
+    return new InstantCommand(() -> setVelocity(velocity, deflect), this);
+  }
+
+  /**
+   * Instant command to stop all shooter motors
+   * @return
+   */
+  public InstantCommand instantStopAll(){
+    return new InstantCommand(()->setPercOutput(0.0, false), this);
   }
 
 
-  /* COMMANDS */
+  /* FUNCTIONAL COMMANDS */
 
-  // Instant commands
-  public InstantCommand setVelocityReference(double velocity){
-    ampMode = false;
-    return new InstantCommand(() -> setVelocity(velocity), this);
-  }
-  public InstantCommand stopAll(){
-    return new InstantCommand(()->setPercOutput(0.0), this);
+  /**
+   * Sets the velocity reference for the shooter to 1500 rpm, and maintains that velocity
+   * until the command is interrupted. Has no natural end case, so must be interrupted
+   * @return
+   */
+  public Command shootAvgSpeed(){
+    return new FunctionalCommand(
+      () -> setVelocity(1500.0, false), 
+      () -> {}, 
+      interrupted->setVelocity(0.0, false), 
+      ()->{return false;}, 
+      this).withName("Holding Velocity "+1500);
   }
 
+  /**
+   * Spins shooter motors in reverse to assist in ejecting or to intake a note through the front. Uses a PID.
+   * Has no natural end case, so must be interrupted. Motors will stop when command ends.
+   * @return
+   */
   public Command eject(){
     return new FunctionalCommand(
-      ()->setPercOutput(-0.25), 
+      ()->setVelocity(-1000.0, false), 
       ()->{}, 
-      (interrupted)->setPercOutput(0.0), 
+      (interrupted)->setVelocity(0.0, false), 
       ()->{return false;}, 
       this).withName("Ejecting");
   }
 
-  // Functional commands
+  /**
+   * Spins the motors to deflect the note out through the top with a PID. Has no natural end case, so must
+   * be interrupted. Motors will stop when command ends.
+   * @return
+   */
   public Command ampShoot(){
-    ampMode = true;
     return new FunctionalCommand(
-      ()->ejectPercOutput(EJECT_SPEED),
+      ()->setVelocity(800, true),
       ()->{},
-      (interrupted)->ejectPercOutput(0.0),
+      (interrupted)->setVelocity(0, false),
       ()->{return false;},
       this
-    ).withName("Amp");
-  }
-
-  public Command shootAvg(){
-    ampMode = false;
-    return new FunctionalCommand(
-      () -> setVelocity(1500), 
-      () -> {}, 
-      interrupted->setVelocity(0), 
-      ()->{return false;}, 
-      this).withName("Holding Velocity"+1500);
-  }
-
-  public Command shootWithRamp(){
-    ampMode = false;
-    return new SequentialCommandGroup(
-      new FlywheelRamp(this, 1400, 0).withName("Shooter Ramp"), // Stops when cancelled, doesn't otherwise
-      new FunctionalCommand(
-        () -> setVelocity(1500), 
-        () -> {}, 
-        interrupted->setVelocity(0), 
-        ()->{return false;}, 
-        this).withName("Holding Velocity") // Stops when cancelled
-    );
+    ).withName("Amp Deflect");
   }
 
 

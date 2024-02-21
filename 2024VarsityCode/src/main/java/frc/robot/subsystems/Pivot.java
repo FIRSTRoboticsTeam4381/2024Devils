@@ -46,7 +46,7 @@ public class Pivot extends SubsystemBase {
 
   // Tested Positions
   public static final double INTAKE_POS = 70;
-  public static final double HUMAN_POS = 60; // TODO
+  public static final double HUMAN_POS = 115;
   public static final double AMP_POS = 90;
 
 

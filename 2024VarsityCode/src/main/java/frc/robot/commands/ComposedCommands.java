@@ -41,7 +41,7 @@ public class ComposedCommands {
         return new ParallelCommandGroup(
             pivot.holdPosition(Pivot.INTAKE_POS),
             intake.run(), // Stops when cancelled
-            index.indexUntilIn(1) // Stops when cancelled
+            index.indexUntilIn(false) // Stops when cancelled
         );
     }
 
@@ -52,7 +52,7 @@ public class ComposedCommands {
     public Command humanIntake(){
         return new ParallelCommandGroup(
             //pivot.holdPositionThenZero(Pivot.HUMAN_POS),
-            index.indexUntilIn(-1), // Stops when cancelled
+            index.indexUntilIn(true), // Stops when cancelled
             shooter.eject() // Stops when cancelled
         );
     }
@@ -83,7 +83,7 @@ public class ComposedCommands {
      * feed the note
      */
     public Command feedNote(){
-        return new ConditionalCommand(index.runIndex(), Commands.none(), shooter::readyForNote).repeatedly();
+        return new ConditionalCommand(index.run(), Commands.none(), shooter::readyForNote).repeatedly();
     }
 
     /* CANCEL ALL COMMANDS */
@@ -91,8 +91,8 @@ public class ComposedCommands {
         return new ParallelCommandGroup(
             pivot.setDownPosition(),
             shooter.stopAll(),
-            index.stop(),
-            intake.stop()
+            index.instantStop(),
+            intake.instantStop()
         );
     }
 }

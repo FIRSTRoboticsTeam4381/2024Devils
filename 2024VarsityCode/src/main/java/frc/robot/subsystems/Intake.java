@@ -9,7 +9,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -42,20 +41,38 @@ public class Intake extends SubsystemBase {
 
   /* METHODS */
 
-  public void setPercOutput(double speed){
+  private void setPercOutput(double speed){
     intake.set(-speed);
   }
 
 
-  /* COMMANDS */
+  /* INSTANT COMMANDS */
+  // Shouldn't use these, more just for testing. Use the functional commands
 
-  public InstantCommand start(){
-    return new InstantCommand(() -> CommandScheduler.getInstance().schedule(run()));
+  /**
+   * Turns intake on. Is an instant command, so intake will continue running until a new command is scheduled
+   * @return
+   */
+  public InstantCommand instantStart(){
+    return new InstantCommand(() -> setPercOutput(INTAKE_SPEED), this);
   }
-  public InstantCommand stop(){
+
+  /**
+   * Turns intake off. This is an instant command, useful for instantly cancelling other intake commands
+   * @return
+   */
+  public InstantCommand instantStop(){
     return new InstantCommand(() -> setPercOutput(0.0), this);
   }
 
+
+  /* FUNCTIONAL COMMANDS */
+
+  /**
+   * Turns intake on and runs it at a constant speed until the command is interrupted. This has no
+   * natural end condition, so it must be interrupted to stop the intake.
+   * @return
+   */
   public Command run(){
     return new FunctionalCommand(
       ()->setPercOutput(INTAKE_SPEED),
@@ -65,15 +82,12 @@ public class Intake extends SubsystemBase {
       this
     ).withName("Intaking");
   }
-  /* Starts running the intake at a good speed. Doesn't need anything fancy, so this
-  * just runs it on power output */
-  public InstantCommand on(){
-    return new InstantCommand(() -> setPercOutput(INTAKE_SPEED), this);
-  }
-  public InstantCommand off(){
-    return new InstantCommand(() -> setPercOutput(0.0), this);
-  }
 
+  /**
+   * Turns intake on at the same speed as intaking but with the direction reversed. Has no
+   * natural end condition, so it must be interrupted to stop the intake
+   * @return
+   */
   public Command eject(){
     return new FunctionalCommand(
       ()->setPercOutput(-INTAKE_SPEED),

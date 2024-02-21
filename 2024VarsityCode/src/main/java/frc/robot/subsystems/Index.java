@@ -1,14 +1,6 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
-/* Desired Behavior:
- * When the toggle button is pressed to turn the intake on, it also starts the index motor.
- * The motor will run until the break beam is broken, and this will then stop both the index
- * and intake motors. Will be triggered with the same groups as intake. Index should just
- * always run at its set speed, and commands just change the set speed
- */
-
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
@@ -20,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.lib.util.SparkUtilities;
 import frc.robot.Constants;
 
@@ -46,50 +39,52 @@ public class Index extends SubsystemBase {
 
   /* METHODS */
 
-  public boolean noteStored(){
+  private boolean noteStored(){
     return !indexEye.get();
   }
 
-  public void setPercOutput(double speed){
+  private void setPercOutput(double speed){
     indexMotor.set(speed);
   }
 
 
-  /* COMMANDS */
+  /* INSTANT COMMANDS */
 
-  // Instant Commands
-  public InstantCommand start(){
+  /**
+   * Instant command to set 30% power to the index motor. Index will continue at this speed
+   * until a new command is scheduled
+   * @return
+   */
+  public InstantCommand instantStart(){
     return new InstantCommand(() -> setPercOutput(INDEX_SPEED), this);
   }
-  public InstantCommand stop(){
-    return new InstantCommand(() -> setPercOutput(0.0), this);
-  }
-  public InstantCommand startEject(){
+
+  /**
+   * Instant command to set REVERSED 30% power to the index motor. Index will continue
+   * at this speed until a new command is scheduled
+   * @return
+   */
+  public InstantCommand instantStartEject(){
     return new InstantCommand(() -> setPercOutput(-INDEX_SPEED), this);
   }
 
-  // Full Commands
-  public Command indexUntilIn(int direction){
-    return new FunctionalCommand(
-      ()->setPercOutput(INDEX_SPEED*direction),
-      ()->{},
-      (interrupted)->setPercOutput(0.0),
-      this::noteStored,
-      this
-    ).withName("IndexUntilIn");
+  /**
+   * Instant command to stop the index motor
+   * @return
+   */
+  public InstantCommand instantStop(){
+    return new InstantCommand(() -> setPercOutput(0.0), this);
   }
 
-  public Command indexUntilShot(){
-    return new FunctionalCommand(
-      ()->setPercOutput(INDEX_SPEED),
-      ()->{},
-      (interrupted)->setPercOutput(0.0),
-      ()->{return !noteStored();},
-      this
-    ).withName("IndexUntilShot");
-  }
 
-  public Command runIndex(){
+  /* FUNCTIONAL COMMANDS */
+
+  /**
+   * Turns index on and runs it at a constant speed until interrupted, at which point
+   * it stops. Has no natural end condition, so must be interrupted
+   * @return
+   */
+  public Command run(){
     return new FunctionalCommand(
       ()->setPercOutput(INDEX_SPEED), 
       ()->{}, 
@@ -98,6 +93,11 @@ public class Index extends SubsystemBase {
       this).withName("Running Index");
   }
 
+  /**
+   * Turns index on in reversed direction and runs at constant speed until interrupted,
+   * at which point it stops. Has no natural end condition, so must be interrupted
+   * @return
+   */
   public Command eject(){
     return new FunctionalCommand(
       ()->setPercOutput(-INDEX_SPEED),
@@ -106,6 +106,37 @@ public class Index extends SubsystemBase {
       ()->{return false;},
       this
     ).withName("Ejecting");
+  }
+
+  /**
+   * Turns index on and runs until a note is detected by the breakbeam or is interrupted.
+   * @param reversed Which direction to intake through. If normally intaking, this is false,
+   * if intaking through the shooter (backwards), this is true
+   * @return
+   */
+  public Command indexUntilIn(boolean reversed){
+    return new FunctionalCommand(
+      ()->setPercOutput(INDEX_SPEED*(reversed?-1:1)),
+      ()->{},
+      (interrupted)->setPercOutput(0.0),
+      this::noteStored,
+      this
+    ).withName("IndexUntilIn");
+  }
+
+  /**
+   * Turns index on and runs until a note is NOT detected by the breakbeam or is interrupted.
+   * @param reversed Which direction to intake through. If intaking normally, this is false.
+   * @return
+   */
+  public Command indexUntilShot(boolean reversed){
+    return new FunctionalCommand(
+      ()->setPercOutput(INDEX_SPEED),
+      ()->{},
+      (interrupted)->setPercOutput(0.0),
+      ()->{return !noteStored();},
+      this
+    ).withName("IndexUntilShot");
   }
 
 
