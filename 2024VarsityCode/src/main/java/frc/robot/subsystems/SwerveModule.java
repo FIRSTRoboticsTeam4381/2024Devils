@@ -9,9 +9,9 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType; 
  
 import frc.lib.math.Conversions; 
-import frc.lib.util.LogOrDash; 
-import frc.lib.util.SparkUtilities;
-import frc.lib.util.SwerveModuleConstants; 
+import frc.lib.util.LogOrDash;
+import frc.lib.util.SwerveModuleConstants;
+import frc.lib.util.SparkUtilities.SparkUtilities;
 import frc.robot.Constants; 
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward; 
@@ -124,14 +124,12 @@ public class SwerveModule {
         mAngleEncoder.setPositionConversionFactor(360); 
         mAngleEncoder.setInverted(Constants.Swerve.canCoderInvert);
 
-        anglePIDController = mAngleMotor.getPIDController();
-        anglePIDController.setFeedbackDevice(mAngleEncoder); 
-        anglePIDController.setPositionPIDWrappingMinInput(0); 
-        anglePIDController.setPositionPIDWrappingMaxInput(360); 
-        anglePIDController.setPositionPIDWrappingEnabled(true); 
-        anglePIDController.setP(Constants.Swerve.angleKP); 
-        anglePIDController.setI(Constants.Swerve.angleKI); 
-        anglePIDController.setD(Constants.Swerve.angleKD);
+        // PID Config
+        anglePIDController = SparkUtilities.setupPID(mAngleMotor)
+                                            .setFeedbackDevice(mAngleEncoder)
+                                            .setPositionWrapping(true, 0, 360)
+                                            .setPIDF(Constants.Swerve.angleKP, Constants.Swerve.angleKI, Constants.Swerve.angleKD, Constants.Swerve.angleKF)
+                                            .get();
 
         /*
          * TODO I know why inverting the encoder fixed it. Because for some reason the encoder invert
@@ -152,11 +150,11 @@ public class SwerveModule {
         mDriveEncoder.setPositionConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio); 
         mDriveEncoder.setVelocityConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio / 60.0); 
 
-        drivePIDController = mDriveMotor.getPIDController();
-        drivePIDController.setFeedbackDevice(mDriveEncoder);
-        drivePIDController.setP(Constants.Swerve.driveKP);
-        drivePIDController.setI(Constants.Swerve.angleKI);
-        drivePIDController.setD(Constants.Swerve.driveKD);
+        // PID Config
+        drivePIDController = SparkUtilities.setupPID(mAngleMotor)
+                                            .setFeedbackDevice(mDriveEncoder)
+                                            .setPIDF(Constants.Swerve.driveKP, Constants.Swerve.driveKI, Constants.Swerve.driveKD, Constants.Swerve.driveKF)
+                                            .get();
     }
  
  
