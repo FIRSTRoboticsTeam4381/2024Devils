@@ -66,6 +66,9 @@ public class Pivot extends SubsystemBase {
     pivotController = leftPivot.getPIDController();
     pivotController.setFeedbackDevice(pivotEncoder);
     pivotController.setOutputRange(-1, 1);
+    pivotController.setPositionPIDWrappingEnabled(true);
+    pivotController.setPositionPIDWrappingMinInput(0);
+    pivotController.setPositionPIDWrappingMaxInput(360);
     pivotController.setP(0.01);
     pivotController.setI(0.0);
     pivotController.setD(0.0);
