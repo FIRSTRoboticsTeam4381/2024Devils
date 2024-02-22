@@ -90,7 +90,7 @@ public class Shooter extends SubsystemBase {
    * @return Boolean determining if it is okay to feed a note to the shooter
    */
   public boolean readyForNote(){
-    return (ampMode || Math.abs(setpoint-propEncoder.getVelocity())<50);
+    return (ampMode || Math.abs(-setpoint-propEncoder.getVelocity())<50);
   }
 
 
@@ -155,11 +155,11 @@ public class Shooter extends SubsystemBase {
    */
   public Command shootAvgSpeed(){
     return new FunctionalCommand(
-      () -> setVelocity(1500.0, false), 
+      () -> setVelocity(1700.0, false), 
       () -> {}, 
       interrupted->setVelocity(0.0, false), 
       ()->{return false;}, 
-      this).withName("Holding Velocity "+1500);
+      this).withName("Holding Velocity "+1700);
   }
 
   /**
@@ -202,5 +202,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("shooter/Top Velocity", topEncoder.getVelocity());
     SmartDashboard.putNumber("shooter/Bottom Velocity", bottomEncoder.getVelocity());
     SmartDashboard.putString("shooter/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
+    SmartDashboard.putNumber("shooter/Error", Math.abs(-setpoint-propEncoder.getVelocity()));
+    SmartDashboard.putBoolean("shooter/Amp Mode", ampMode);
   }
 }

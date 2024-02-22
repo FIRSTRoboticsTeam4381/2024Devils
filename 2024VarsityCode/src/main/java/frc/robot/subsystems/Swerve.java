@@ -12,14 +12,13 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import frc.lib.util.Limelight;
 import frc.lib.util.LogOrDash;
 import frc.robot.Constants;
 
@@ -95,6 +94,15 @@ public class Swerve extends SubsystemBase{
             mSwerveMods[2].getState(),
             mSwerveMods[3].getState()
         );
+    }
+
+    public double odometryDistanceFromGoal(){
+        Alliance alliance = DriverStation.getAlliance().get();
+        double[] redGoal = {16, 5.5, 0};
+        double[] blueGoal = {0, 5.5, 0};
+        Pose2d robotPose = getPose();
+        double distance = Math.sqrt(Math.pow(robotPose.getX()-(alliance==Alliance.Red?redGoal[0]:blueGoal[0]),2) + Math.pow(robotPose.getY()-(alliance==Alliance.Red?redGoal[1]:blueGoal[1]),2));
+        return distance;
     }
 
     /* Used by SwerveControllerCommand in Auto */
@@ -198,14 +206,11 @@ public class Swerve extends SubsystemBase{
         SmartDashboard.putNumberArray("swerve/status", currentStateAdv);
         SmartDashboard.putNumberArray("swerve/target", targetStateAdv);
         SmartDashboard.putNumberArray("swerve/absolute", absoluteStateAdv);
-
-        SmartDashboard.putBoolean("Tag In View?", Limelight.tagInView());
-        SmartDashboard.putNumberArray("Bot Position", Limelight.getPosition());
-        SmartDashboard.putNumberArray("Blue Relative Bot", Limelight.getBlueRelativePosition());
-        SmartDashboard.putNumberArray("Red Relative Bot", Limelight.getRedRelativePosition());
+        
+        SmartDashboard.putNumber("position/Distance From Goal (Odometry)", odometryDistanceFromGoal());
 
         mField.setRobotPose(getPose());
-        SmartDashboard.putData("Field", mField);
+        SmartDashboard.putData("position/Field", mField);
 
 
         LogOrDash.logNumber("Gyro Pitch", gyro.getPitch());

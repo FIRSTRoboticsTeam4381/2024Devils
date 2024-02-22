@@ -77,10 +77,10 @@ public final class Constants {
         
         // TODO check - auto - PIDs need to be configured
         public static final HolonomicPathFollowerConfig holonomicConfig = new HolonomicPathFollowerConfig(
-            new PIDConstants(1.0, 0.0, 0.0), // TODO Translation PID constants
+            new PIDConstants(2.3, 0.0, 0.0), // TODO Translation PID constants
             new PIDConstants(1.0, 0.0, 0.0), // TODO Rotation PID constants
-            6, // TODO Max module speed, in m/s
-            0.4, // TODO 
+            6,
+            0.382,
             new ReplanningConfig() // Default path replanning config. See the API for the options here
         );
 
@@ -103,10 +103,10 @@ public final class Constants {
 
         /* Drive Motor PID Values */
         // TODO
-        public static final double driveKP = 0.000005;
+        public static final double driveKP = 0.00005;
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
-        public static final double driveKF = 0.0;
+        public static final double driveKF = 0.00001;
 
         /* Drive Motor Characterization Values */
         // From SysId

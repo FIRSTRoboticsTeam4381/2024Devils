@@ -7,18 +7,25 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.lib.util.Limelight;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Swerve;
 
 public class AutoAim extends Command {
   private Shooter shooter;
   private Pivot pivot;
+  private Swerve swerve;
+  private Limelight ll;
+
+  private double currentVelocity = 0.0;
+  private double currentAngle = 0.0;
 
   /** Creates a new AutoAim. */
-  public AutoAim(Shooter shooter, Pivot pivot) {
+  public AutoAim(Shooter shooter, Pivot pivot, Limelight ll) {
     this.shooter = shooter;
     this.pivot = pivot;
+    this.ll = ll;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter, pivot);
@@ -28,26 +35,25 @@ public class AutoAim extends Command {
   @Override
   public void initialize() {}
 
-  private double calcAngle(){
-    double angle = 45.45445432*Math.pow(Limelight.getDistanceFromGoal(), -0.6264155683);
-    return angle;
+  private void calcAngle(){
+    if(ll.hasTargets() == 1) currentAngle = 45.45445432*Math.pow(ll.distanceFromGoal(), -0.6264155683);
   }
-  private double calcVelocity(){
-    double velocity = Limelight.getDistanceFromGoal() <= 2.5 ? 1000 : 1500;
-    return velocity;
+  private void calcVelocity(){
+    currentVelocity = 0;
+    //if(ll.hasTargets() == 1) currentVelocity = ll.distanceFromGoal() <= 2.5 ? 1000 : 1500;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double angle = calcAngle();
-    double velocity = calcVelocity();
+    calcAngle();
+    calcVelocity();
 
-    SmartDashboard.putNumber("autoaim/Calculated Velocity", velocity);
-    SmartDashboard.putNumber("autoaim/Calculated Angle", angle);
+    SmartDashboard.putNumber("autoaim/Calculated Velocity", currentVelocity);
+    SmartDashboard.putNumber("autoaim/Calculated Angle", currentAngle);
 
-    //pivot.setAngleReference(angle);
-    //shooter.setVelocity(velocity, false);
+    pivot.setAngleReference(currentAngle);
+    shooter.setVelocity(currentVelocity, false);
   }
 
   // Called once the command ends or is interrupted.

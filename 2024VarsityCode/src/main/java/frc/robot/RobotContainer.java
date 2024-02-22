@@ -10,11 +10,14 @@ import frc.robot.commands.ComposedCommands;
 import frc.robot.commands.ManualPivot;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Swerve;
+
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -50,6 +53,7 @@ public class RobotContainer {
     public static final Pivot s_Pivot = new Pivot();
     public static final Shooter s_Shooter = new Shooter();
     public static final Climb s_Climb = new Climb();
+    public static final Limelight s_LL = new Limelight();
 
     /* Commands */
     ComposedCommands commands = new ComposedCommands(s_Intake, s_Index, s_Shooter, s_Pivot);
@@ -61,6 +65,12 @@ public class RobotContainer {
     public RobotContainer(){
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true).withName("Teleop"));
         s_Pivot.setDefaultCommand(new ManualPivot(specialist::getLeftY, s_Pivot).withName("Manual Pivot"));
+
+        /* Pathplanner Commands */
+        NamedCommands.registerCommand("intake", commands.groundIntake());
+        NamedCommands.registerCommand("stopIntake", s_Intake.instantStop());
+        NamedCommands.registerCommand("autoAim", new AutoAim(s_Shooter, s_Pivot, s_LL));
+        NamedCommands.registerCommand("feedNote", commands.feedNote());
 
         // Configure the button bindings
         configureButtonBindings();
@@ -95,7 +105,7 @@ public class RobotContainer {
         specialist.L1().toggleOnTrue(s_Shooter.shootAvgSpeed());
         specialist.povRight().toggleOnTrue(commands.ampMode());
         specialist.R1().whileTrue(commands.feedNote());
-        specialist.triangle().toggleOnTrue(new AutoAim(s_Shooter, s_Pivot));
+        specialist.triangle().toggleOnTrue(new AutoAim(s_Shooter, s_Pivot, s_LL));
 
         specialist.touchpad().onTrue(commands.cancelAll());
 
