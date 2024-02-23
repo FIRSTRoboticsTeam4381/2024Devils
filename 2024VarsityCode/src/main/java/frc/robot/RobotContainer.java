@@ -71,9 +71,10 @@ public class RobotContainer {
         /* Pathplanner Commands */
         NamedCommands.registerCommand("Intake", commands.groundIntake());
         NamedCommands.registerCommand("StopIntake", s_Intake.instantStop());
-        NamedCommands.registerCommand("StartShooter", s_Shooter.shootAvgSpeed());
+        NamedCommands.registerCommand("ShooterSpinUp", s_Shooter.shootAvgSpeed());
         NamedCommands.registerCommand("AutoAim", new AutoAim(s_Shooter, s_Pivot, s_LL));
-        NamedCommands.registerCommand("FeedNote", s_Index.indexUntilShot(false));
+        NamedCommands.registerCommand("ShootNote", s_Index.indexUntilShot(false));
+        NamedCommands.registerCommand("LowerPivot", s_Pivot.profiledMove(40));
 
         // Configure the button bindings
         configureButtonBindings();

@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4311279977766789,
-      "y": 5.527514849608872
+      "x": 0.5455876385813603,
+      "y": 6.961013421132389
     },
     "rotation": 0
   },
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Example Path"
+            "pathName": "TopStartTopNoteThrough"
           }
         }
       ]
