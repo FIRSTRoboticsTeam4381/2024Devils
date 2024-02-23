@@ -15,7 +15,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.SparkUtilities.SparkUtilities;
+
+import frc.lib.util.SparkUtilities;
 import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
@@ -68,7 +69,7 @@ public class Shooter extends SubsystemBase {
       controllers[i].setP(0.001);
       controllers[i].setI(0.0);
       controllers[i].setD(0.0);
-      controllers[i].setFF(0.000212);
+      controllers[i].setFF(0.000215);
       controllers[i].setOutputRange(-1, 1);
     }
   }
@@ -89,7 +90,7 @@ public class Shooter extends SubsystemBase {
    * @return Boolean determining if it is okay to feed a note to the shooter
    */
   public boolean readyForNote(){
-    return (ampMode || Math.abs(-setpoint-propEncoder.getVelocity())<50);
+    return (ampMode || (setpoint != 0 && Math.abs(-setpoint-propEncoder.getVelocity())<50));
   }
 
 
@@ -119,6 +120,14 @@ public class Shooter extends SubsystemBase {
     propMotor.getPIDController().setReference(-velocity, ControlType.kVelocity);
     topMotor.getPIDController().setReference(-velocity * (deflect?-1.0:1.0), ControlType.kVelocity);
     bottomMotor.getPIDController().setReference(velocity, ControlType.kVelocity);
+  }
+
+  public void setAmpVelocity(){
+    ampMode = true;
+    setpoint = 500;
+    propMotor.getPIDController().setReference(-600, ControlType.kVelocity);
+    topMotor.getPIDController().setReference(1200, ControlType.kVelocity);
+    bottomMotor.getPIDController().setReference(1200, ControlType.kVelocity);
   }
   
 
@@ -154,7 +163,7 @@ public class Shooter extends SubsystemBase {
    */
   public Command shootAvgSpeed(){
     return new FunctionalCommand(
-      () -> setVelocity(1700.0, false), 
+      () -> setVelocity(1800.0, false), 
       () -> {}, 
       interrupted->setVelocity(0.0, false), 
       ()->{return false;}, 
@@ -182,7 +191,7 @@ public class Shooter extends SubsystemBase {
    */
   public Command ampShoot(){
     return new FunctionalCommand(
-      ()->setVelocity(800, true),
+      ()->setAmpVelocity(),
       ()->{},
       (interrupted)->setVelocity(0, false),
       ()->{return false;},
@@ -203,5 +212,6 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putString("shooter/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
     SmartDashboard.putNumber("shooter/Error", Math.abs(-setpoint-propEncoder.getVelocity()));
     SmartDashboard.putBoolean("shooter/Amp Mode", ampMode);
+    SmartDashboard.putBoolean("shooter/Is Ready", readyForNote());
   }
 }

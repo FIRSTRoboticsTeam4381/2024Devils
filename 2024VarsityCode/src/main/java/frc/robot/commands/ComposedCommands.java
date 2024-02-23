@@ -1,11 +1,12 @@
 package frc.robot.commands;
 
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
@@ -35,9 +36,12 @@ public class ComposedCommands {
      */
     public Command groundIntake(){
         return new ParallelCommandGroup(
-            pivot.goToIntake(),
-            intake.run(), // Stops when cancelled
-            index.indexUntilIn(false) // Stops when cancelled
+            //pivot.goToIntake(),
+            pivot.profiledMove(Pivot.INTAKE_POS),
+            new ParallelRaceGroup(
+                intake.run(),
+                index.indexUntilIn(false)
+            )
         );
     }
 
@@ -70,7 +74,7 @@ public class ComposedCommands {
 
     public Command ampMode(){
         return new ParallelCommandGroup(
-            pivot.goToTemporaryPosition(Pivot.AMP_POS), // Goes back to 0 when cancelled
+            pivot.profiledMove(Pivot.AMP_POS),
             shooter.ampShoot() // Stops when cancelled
         );
     }
@@ -82,7 +86,7 @@ public class ComposedCommands {
      * feed the note
      */
     public Command feedNote(){
-        return new ConditionalCommand(index.run(), Commands.none(), shooter::readyForNote).repeatedly();
+        return new ConditionalCommand(index.run(), Commands.none(), shooter::readyForNote).repeatedly().withName("Attempting to Feed");
     }
 
     /* CANCEL ALL COMMANDS */

@@ -4,7 +4,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
@@ -21,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 
 import frc.lib.math.Conversions;
-import frc.lib.util.SparkUtilities.SparkUtilities;
+import frc.lib.util.SparkUtilities;
 import frc.robot.Constants;
 import frc.robot.commands.SparkPosition;
 
@@ -39,10 +38,10 @@ public class Pivot extends SubsystemBase {
   private TrapezoidProfile motionProfile;
 
   // Tested Positions
-  public static final double INTAKE_POS = 70;
+  public static final double INTAKE_POS = 80;
   public static final double HUMAN_POS = 115;
-  public static final double AMP_POS = 90;
-  public static final double TRANSIT_POS = 3;
+  public static final double AMP_POS = 85;
+  public static final double TRANSIT_POS = 10;
 
 
   /* CONSTRUCTORS */
@@ -57,12 +56,6 @@ public class Pivot extends SubsystemBase {
     leftPivot.setIdleMode(IdleMode.kBrake);
     rightPivot.setIdleMode(IdleMode.kBrake);
 
-    // TODO test soft limits
-    //leftPivot.enableSoftLimit(CANSparkBase.SoftLimitDirection.kForward, true);
-    //leftPivot.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, 115);
-    //leftPivot.enableSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, true);
-    //leftPivot.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, 0);
-
     SparkUtilities.optimizeFrames(leftPivot, true, false, true, false, false, true);
     SparkUtilities.optimizeFrames(rightPivot, false, false, true, false, false, false);
 
@@ -70,15 +63,24 @@ public class Pivot extends SubsystemBase {
     pivotEncoder = leftPivot.getAbsoluteEncoder(Type.kDutyCycle);
 
     // PID Setup
-    pivotController = SparkUtilities.setupPID(leftPivot)
-                                    .setFeedbackDevice(pivotEncoder)
-                                    .setOutputRange(-1, 1)
-                                    .setPositionWrapping(true, 0, 360)
-                                    .setPIDF(0.01, 0.0, 0.0, 0.0)
-                                    .get();
+    pivotController = leftPivot.getPIDController();
+    pivotController.setFeedbackDevice(pivotEncoder);
+    pivotController.setOutputRange(-1, 1);
+    pivotController.setPositionPIDWrappingEnabled(true);
+    pivotController.setPositionPIDWrappingMinInput(0);
+    pivotController.setPositionPIDWrappingMaxInput(360);
+    pivotController.setP(0.0095, 0);
+    pivotController.setI(0.0, 0);
+    pivotController.setD(0.0, 0);
+    pivotController.setFF(0.0001, 0);
+
+    pivotController.setP(0.01, 1);
+    pivotController.setI(0.0, 1);
+    pivotController.setD(0.01, 1);
+    pivotController.setFF(0.0005, 1);
 
     // Trapezoid Profile Setup
-    motionProfile = new TrapezoidProfile(new Constraints(Conversions.dpsToRpm(30), Conversions.dpsToRpm(30)));
+    motionProfile = new TrapezoidProfile(new Constraints(Conversions.dpsToRpm(23040), Conversions.dpsToRpm(23040)));
   }
 
 
@@ -114,9 +116,10 @@ public class Pivot extends SubsystemBase {
   /**
    * Set a position reference for the pivot on a 0-360 degree range. Moves via PID control.
    * @param angle
+   * @param slot the PID slot number to use. 0 is normal, 1 is auto aim (more aggressive)
    */
-  public void setAngleReference(double angle){
-    pivotController.setReference(angle, ControlType.kPosition);
+  public void setAngleReference(double angle, int slot){
+    pivotController.setReference(angle, ControlType.kPosition, slot);
   }
 
   /**
@@ -124,10 +127,9 @@ public class Pivot extends SubsystemBase {
    * @param state
    */
   public void useState(TrapezoidProfile.State state){
-    setAngleReference(state.position);
+    setAngleReference(state.position, 0);
   }
 
-  
 
   /* COMMANDS */
   // No instant commands here, because it will immediately hand off to manual pivot, cancelling the set point making it useless
@@ -160,9 +162,9 @@ public class Pivot extends SubsystemBase {
    */
   public Command goToTemporaryPosition(double position){
     return new FunctionalCommand(
-      ()->setAngleReference(position), 
+      ()->setAngleReference(position, 0), 
       ()->{}, 
-      interrupted->setAngleReference(TRANSIT_POS), 
+      interrupted->setAngleReference(TRANSIT_POS, 0), 
       ()->{return false;}, 
       this).withName("Holding position "+position);
   }
@@ -176,7 +178,7 @@ public class Pivot extends SubsystemBase {
     return new TrapezoidProfileCommand(
       motionProfile, 
       this::useState, 
-      () -> new TrapezoidProfile.State(position, 0),
+      () -> new TrapezoidProfile.State(position, 0.0),
       this::getState,
       this).withName("Profiled Movement to "+position);
   }
@@ -189,6 +191,7 @@ public class Pivot extends SubsystemBase {
     // This method will be called once per scheduler run
 
     SmartDashboard.putNumber("pivot/Absolute Angle", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("pivot/Pivot Velocity", pivotEncoder.getVelocity());
     SmartDashboard.putString("pivot/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
   }
 }

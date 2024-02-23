@@ -19,7 +19,7 @@ public class AutoAim extends Command {
   private Limelight ll;
 
   private double currentVelocity = 0.0;
-  private double currentAngle = 0.0;
+  private double currentAngle = 30.0;
 
   /** Creates a new AutoAim. */
   public AutoAim(Shooter shooter, Pivot pivot, Limelight ll) {
@@ -36,10 +36,11 @@ public class AutoAim extends Command {
   public void initialize() {}
 
   private void calcAngle(){
-    if(ll.hasTargets() == 1) currentAngle = 45.45445432*Math.pow(ll.distanceFromGoal(), -0.6264155683);
+    if(ll.hasTargets() == 1) currentAngle = 49.62307316*Math.pow(ll.distanceFromGoal(), -0.425990916); // r^2 = 0.995
+    if(currentAngle > 90) currentAngle = 90;
   }
   private void calcVelocity(){
-    currentVelocity = 0;
+    currentVelocity = 1700;
     //if(ll.hasTargets() == 1) currentVelocity = ll.distanceFromGoal() <= 2.5 ? 1000 : 1500;
   }
 
@@ -52,14 +53,14 @@ public class AutoAim extends Command {
     SmartDashboard.putNumber("autoaim/Calculated Velocity", currentVelocity);
     SmartDashboard.putNumber("autoaim/Calculated Angle", currentAngle);
 
-    pivot.setAngleReference(currentAngle);
+    pivot.setAngleReference(currentAngle, 1);
     shooter.setVelocity(currentVelocity, false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    CommandScheduler.getInstance().schedule(pivot.goToTransit().alongWith(shooter.instantStopAll()));
+    //CommandScheduler.getInstance().schedule(pivot.goToTransit().alongWith(shooter.instantStopAll()));
   }
 
   // Returns true when the command should end.
