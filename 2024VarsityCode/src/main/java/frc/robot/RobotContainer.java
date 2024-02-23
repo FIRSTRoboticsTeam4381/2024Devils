@@ -59,7 +59,7 @@ public class RobotContainer {
     public static final Limelight s_LL = new Limelight();
 
     /* Commands */
-    ComposedCommands commands = new ComposedCommands(s_Intake, s_Index, s_Shooter, s_Pivot);
+    ComposedCommands commands = new ComposedCommands(s_Intake, s_Index, s_Shooter, s_Pivot, s_LL, s_Swerve);
 
     //Auto Chooser
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -111,7 +111,7 @@ public class RobotContainer {
         specialist.L1().toggleOnTrue(new ConditionalCommand(s_Shooter.shootAvgSpeed(), s_Shooter.instantStopAll(), () -> {return s_Shooter.getSetpoint()==0;})); // Changes this so it will cancel auto aiming
         specialist.povRight().toggleOnTrue(commands.ampMode());
         specialist.R1().whileTrue(commands.feedNote());
-        specialist.triangle().toggleOnTrue(new AutoAim(s_Shooter, s_Pivot, s_LL, s_Swerve));
+        specialist.triangle().onTrue(commands.toggleAutoAim());
 
         specialist.touchpad().onTrue(commands.cancelAll());
 

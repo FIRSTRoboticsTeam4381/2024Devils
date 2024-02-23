@@ -5,26 +5,34 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Swerve;
 
 public class ComposedCommands {
     private Intake intake;
     private Index index;
     private Shooter shooter;
     private Pivot pivot;
+    private Limelight ll;
+    private Swerve swerve;
 
     // TODO change pivot commands over to profiled motion once that's done
 
-    public ComposedCommands(Intake intake, Index index, Shooter shooter, Pivot pivot){
+    public ComposedCommands(Intake intake, Index index, Shooter shooter, Pivot pivot, Limelight ll, Swerve swerve){
         this.intake = intake;
         this.index = index;
         this.shooter = shooter;
         this.pivot = pivot;
+        this.ll = ll;
+        this.swerve = swerve;
     }
 
 
@@ -92,10 +100,27 @@ public class ComposedCommands {
     /* CANCEL ALL COMMANDS */
     public Command cancelAll(){
         return new ParallelCommandGroup(
-            pivot.goToTransit(),
+            new InstantCommand(() -> pivot.getCurrentCommand().cancel()),
             shooter.instantStopAll(),
             index.instantStop(),
             intake.instantStop()
+        );
+    }
+
+    private boolean autoAiming = false;
+    /* TOGGLE AUTO AIMING */
+    public Command toggleAutoAim(){
+        return new ConditionalCommand(stopAutoAim(), autoAim(), () -> {return autoAiming;});
+    }
+    public Command autoAim(){
+        autoAiming = true;
+        return new AutoAim(shooter, pivot, ll, swerve);
+    }
+    public Command stopAutoAim(){
+        autoAiming = false;
+        return new ParallelCommandGroup(
+            pivot.goToTransit(),
+            shooter.instantStopAll()
         );
     }
 }
