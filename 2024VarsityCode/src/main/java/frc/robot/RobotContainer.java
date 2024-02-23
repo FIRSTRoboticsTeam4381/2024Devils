@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
@@ -104,7 +105,7 @@ public class RobotContainer {
         specialist.cross().toggleOnTrue(commands.groundIntake());
         specialist.square().toggleOnTrue(commands.humanIntake());
         specialist.circle().whileTrue(commands.ejectNote());
-        specialist.L1().toggleOnTrue(s_Shooter.shootAvgSpeed());
+        specialist.L1().toggleOnTrue(new ConditionalCommand(s_Shooter.shootAvgSpeed(), s_Shooter.instantStopAll(), () -> {return s_Shooter.getSetpoint()==0;})); // Changes this so it will cancel auto aiming
         specialist.povRight().toggleOnTrue(commands.ampMode());
         specialist.R1().whileTrue(commands.feedNote());
         specialist.triangle().toggleOnTrue(new AutoAim(s_Shooter, s_Pivot, s_LL));
@@ -116,9 +117,6 @@ public class RobotContainer {
 
 
         /* TESTING BUTTONS */
-        //testingJoystick.button(7).onTrue(s_Pivot.profiledMove(60));
-        //testingJoystick.button(8).onTrue(s_Pivot.profiledMove(20));
-        // button to test shooter PID, then test shooter ramp
     }
 
     /**

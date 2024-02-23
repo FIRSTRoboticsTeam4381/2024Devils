@@ -1,0 +1,13 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/SendableChooser[0]": "String Chooser",
+      "/SmartDashboard/Toggle Debug Dashboards": "Command"
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  }
+}

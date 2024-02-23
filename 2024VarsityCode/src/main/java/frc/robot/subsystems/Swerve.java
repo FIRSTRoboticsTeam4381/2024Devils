@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.DriftCorrection;
 import frc.lib.util.LogOrDash;
 import frc.robot.Constants;
 
@@ -57,7 +58,7 @@ public class Swerve extends SubsystemBase{
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop){ 
         SwerveModuleState[] swerveModuleStates =  
-            Constants.Swerve.swerveKinematics.toSwerveModuleStates(/*DriftCorrection.driftCorrection TODO*/( 
+            Constants.Swerve.swerveKinematics.toSwerveModuleStates(DriftCorrection.driftCorrection( 
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds( 
                     translation.getX(), 
                     translation.getY(), 
@@ -67,10 +68,9 @@ public class Swerve extends SubsystemBase{
                 : new ChassisSpeeds( 
                     translation.getX(), 
                     translation.getY(), 
-                    rotation) 
-                )//mSwerveOdemetry.getPoseMeters(), 
-                //gyro) 
-                ); 
+                    rotation),
+                mSwerveOdometry.getPoseMeters(), 
+                gyro));
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed); 
  
         for(SwerveModule mod : mSwerveMods){ 
@@ -95,6 +95,7 @@ public class Swerve extends SubsystemBase{
             mSwerveMods[3].getState()
         );
     }
+
 
     public double odometryDistanceFromGoal(){
         Alliance alliance = DriverStation.getAlliance().get();

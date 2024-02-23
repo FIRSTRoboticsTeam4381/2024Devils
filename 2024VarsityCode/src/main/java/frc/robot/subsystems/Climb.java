@@ -11,7 +11,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.SparkUtilities;
+import frc.lib.util.SparkUtilities.SparkUtilities;
 import frc.robot.Constants;
 
 public class Climb extends SubsystemBase {

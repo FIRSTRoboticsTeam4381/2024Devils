@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 
 import frc.lib.math.Conversions;
-import frc.lib.util.SparkUtilities;
+import frc.lib.util.SparkUtilities.SparkUtilities;
 import frc.robot.Constants;
 import frc.robot.commands.SparkPosition;
 
@@ -74,13 +74,13 @@ public class Pivot extends SubsystemBase {
     pivotController.setD(0.0, 0);
     pivotController.setFF(0.0001, 0);
 
-    pivotController.setP(0.01, 1);
+    pivotController.setP(0.012, 1);
     pivotController.setI(0.0, 1);
-    pivotController.setD(0.01, 1);
+    pivotController.setD(0.02, 1);
     pivotController.setFF(0.0005, 1);
 
     // Trapezoid Profile Setup
-    motionProfile = new TrapezoidProfile(new Constraints(Conversions.dpsToRpm(23040), Conversions.dpsToRpm(23040)));
+    motionProfile = new TrapezoidProfile(new Constraints(Conversions.dpsToRpm(23040), Conversions.dpsToRpm(17280)));
   }
 
 

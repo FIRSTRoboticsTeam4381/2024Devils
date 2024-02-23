@@ -9,9 +9,9 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType; 
  
 import frc.lib.math.Conversions; 
-import frc.lib.util.LogOrDash; 
-import frc.lib.util.SparkUtilities;
-import frc.lib.util.SwerveModuleConstants; 
+import frc.lib.util.LogOrDash;
+import frc.lib.util.SwerveModuleConstants;
+import frc.lib.util.SparkUtilities.SparkUtilities;
 import frc.robot.Constants; 
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward; 

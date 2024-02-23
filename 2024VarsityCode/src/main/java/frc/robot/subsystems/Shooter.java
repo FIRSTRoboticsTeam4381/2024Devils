@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot.subsystems;
 
+import com.pathplanner.lib.controllers.PPRamseteController;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -15,8 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import frc.lib.util.SparkUtilities;
+import frc.lib.util.SparkUtilities.SparkUtilities;
 import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
@@ -26,18 +26,16 @@ public class Shooter extends SubsystemBase {
   private CANSparkFlex propMotor;
   private CANSparkFlex topMotor;
   private CANSparkFlex bottomMotor;
-  private SparkPIDController[] controllers;
 
   private RelativeEncoder propEncoder;
   private RelativeEncoder topEncoder;
   private RelativeEncoder bottomEncoder;
 
+  private SparkPIDController propController;
+  private SparkPIDController topController;
+
   public static final double maxRPM = 6500;
 
-  //private static final double EJECT_SPEED = 0.2;
-  //private static final double SHOOTING_SPEED = 0.5;
-
-  private boolean ampMode = false;
   private double setpoint = 0.0;
 
 
@@ -53,9 +51,13 @@ public class Shooter extends SubsystemBase {
     topMotor.setIdleMode(IdleMode.kCoast);
     bottomMotor.setIdleMode(IdleMode.kCoast);
 
-    SparkUtilities.optimizeFrames(propMotor, false, true, false, false, false, false);
+    propMotor.setInverted(true);
+    topMotor.setInverted(true);
+    bottomMotor.follow(propMotor, true);
+
+    SparkUtilities.optimizeFrames(propMotor, true, true, false, false, false, false);
     SparkUtilities.optimizeFrames(topMotor, false, true, false, false, false, false);
-    SparkUtilities.optimizeFrames(bottomMotor, false, true, false, false, false, false);
+    SparkUtilities.optimizeFrames(bottomMotor, false, false, false, false, false, false);
 
     // Encoder Setup
     propEncoder = propMotor.getEncoder();
@@ -63,15 +65,19 @@ public class Shooter extends SubsystemBase {
     bottomEncoder = bottomMotor.getEncoder();
 
     // PID Setup
-    controllers = new SparkPIDController[] {propMotor.getPIDController(), topMotor.getPIDController(), bottomMotor.getPIDController()};
+    propController = propMotor.getPIDController();
+    propController.setP(0.001);
+    propController.setI(0.0);
+    propController.setD(0.0);
+    propController.setFF(0.000218);
+    propController.setOutputRange(-1, 1);
 
-    for(int i = 0; i < controllers.length; i++){
-      controllers[i].setP(0.001);
-      controllers[i].setI(0.0);
-      controllers[i].setD(0.0);
-      controllers[i].setFF(0.000215);
-      controllers[i].setOutputRange(-1, 1);
-    }
+    topController = topMotor.getPIDController();
+    topController.setP(0.001);
+    topController.setI(0.0);
+    topController.setD(0.0);
+    topController.setFF(0.000215);
+    topController.setOutputRange(-1, 1);
   }
 
 
@@ -90,7 +96,11 @@ public class Shooter extends SubsystemBase {
    * @return Boolean determining if it is okay to feed a note to the shooter
    */
   public boolean readyForNote(){
-    return (ampMode || (setpoint != 0 && Math.abs(-setpoint-propEncoder.getVelocity())<50));
+    return (setpoint != 0 && Math.abs(setpoint-propEncoder.getVelocity())<50);
+  }
+
+  public double getSetpoint(){
+    return setpoint;
   }
 
 
@@ -102,10 +112,9 @@ public class Shooter extends SubsystemBase {
    * @param deflect Whether the top motor should be flipped so as to allow the note to be deflected through the top
    */
   private void setPercOutput(double speed, boolean deflect){
-    ampMode = deflect;
-    propMotor.set(-speed);
-    topMotor.set(-speed * (deflect?-1:1));
-    bottomMotor.set(speed);
+    setpoint = speed*maxRPM;
+    propMotor.set(speed);
+    topMotor.set(speed * (deflect?-1:1));
   }
 
   /**
@@ -115,19 +124,15 @@ public class Shooter extends SubsystemBase {
    * @param deflect Whether the top motor should be flipped so as to allow the note to be deflected through the top
    */
   public void setVelocity(double velocity, boolean deflect){
-    ampMode = deflect;
     setpoint = velocity;
-    propMotor.getPIDController().setReference(-velocity, ControlType.kVelocity);
-    topMotor.getPIDController().setReference(-velocity * (deflect?-1.0:1.0), ControlType.kVelocity);
-    bottomMotor.getPIDController().setReference(velocity, ControlType.kVelocity);
+    propController.setReference(velocity, ControlType.kVelocity);
+    topController.setReference(velocity * (deflect?-1.0:1.0), ControlType.kVelocity);
   }
 
   public void setAmpVelocity(){
-    ampMode = true;
-    setpoint = 500;
-    propMotor.getPIDController().setReference(-600, ControlType.kVelocity);
-    topMotor.getPIDController().setReference(1200, ControlType.kVelocity);
-    bottomMotor.getPIDController().setReference(1200, ControlType.kVelocity);
+    setpoint = 600;
+    propController.setReference(600, ControlType.kVelocity);
+    topController.setReference(-1200, ControlType.kVelocity);
   }
   
 
@@ -171,20 +176,6 @@ public class Shooter extends SubsystemBase {
   }
 
   /**
-   * Spins shooter motors in reverse to assist in ejecting or to intake a note through the front. Uses a PID.
-   * Has no natural end case, so must be interrupted. Motors will stop when command ends.
-   * @return
-   */
-  public Command eject(){
-    return new FunctionalCommand(
-      ()->setVelocity(-1000.0, false), 
-      ()->{}, 
-      (interrupted)->setVelocity(0.0, false), 
-      ()->{return false;}, 
-      this).withName("Ejecting");
-  }
-
-  /**
    * Spins the motors to deflect the note out through the top with a PID. Has no natural end case, so must
    * be interrupted. Motors will stop when command ends.
    * @return
@@ -199,6 +190,20 @@ public class Shooter extends SubsystemBase {
     ).withName("Amp Deflect");
   }
 
+  /**
+   * Spins shooter motors in reverse to assist in ejecting or to intake a note through the front. Uses a PID.
+   * Has no natural end case, so must be interrupted. Motors will stop when command ends.
+   * @return
+   */
+  public Command eject(){
+    return new FunctionalCommand(
+      ()->setVelocity(-1000.0, false), 
+      ()->{}, 
+      (interrupted)->setVelocity(0.0, false), 
+      ()->{return false;}, 
+      this).withName("Ejecting");
+  }
+
 
   /* PERIODIC */
 
@@ -211,7 +216,6 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("shooter/Bottom Velocity", bottomEncoder.getVelocity());
     SmartDashboard.putString("shooter/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
     SmartDashboard.putNumber("shooter/Error", Math.abs(-setpoint-propEncoder.getVelocity()));
-    SmartDashboard.putBoolean("shooter/Amp Mode", ampMode);
     SmartDashboard.putBoolean("shooter/Is Ready", readyForNote());
   }
 }
