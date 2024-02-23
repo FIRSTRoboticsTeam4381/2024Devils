@@ -27,6 +27,10 @@ public class Climb extends SubsystemBase {
   private RelativeEncoder baseEncoder;
   private RelativeEncoder midEncoder;
 
+  private double middleReference = 0.0;
+
+  public static final double MID_READY_POS = 0.0; // TODO
+
   /* CONSTRUCTOR */
 
   /** Creates a new Climb. */
@@ -76,7 +80,12 @@ public class Climb extends SubsystemBase {
     baseController.setReference(position, ControlType.kPosition);
   }
   public void setMiddleReference(double position){
+    middleReference = position;
     middleController.setReference(position, ControlType.kPosition);
+  }
+
+  public double getMiddleReference(){
+    return middleReference;
   }
 
   @Override
