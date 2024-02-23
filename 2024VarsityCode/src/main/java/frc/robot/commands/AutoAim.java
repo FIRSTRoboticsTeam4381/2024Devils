@@ -36,8 +36,10 @@ public class AutoAim extends Command {
   public void initialize() {}
 
   private void calcAngle(){
-    if(ll.hasTargets() == 1) currentAngle = 49.62307316*Math.pow(ll.distanceFromGoal(), -0.425990916); // r^2 = 0.995
-    if(currentAngle > 90) currentAngle = 90;
+    double calculatedAngle = currentAngle;
+    if(ll.hasTargets() == 1) calculatedAngle = 49.62307316*Math.pow(ll.distanceFromGoal(), -0.425990916); // r^2 = 0.995
+    if(calculatedAngle > 70) calculatedAngle = currentAngle;
+    currentAngle = calculatedAngle;
   }
   private void calcVelocity(){
     currentVelocity = 1700;
