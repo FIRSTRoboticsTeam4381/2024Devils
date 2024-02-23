@@ -1,0 +1,67 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3959954881393342,
+      "y": 5.527514849608872
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterToAlliance3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Alliance3ToCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterToAlliance2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Alliance2ToCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterToAlliance1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Alliance1ToCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpToMiddle1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Middle1ToAmp"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

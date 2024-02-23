@@ -3,12 +3,13 @@
   "robotLength": 0.99,
   "holonomicMode": true,
   "pathFolders": [
-    "Middle Notes Stage Fire",
-    "Middle Notes Amp Fire"
+    "Alliance Notes",
+    "Notes From Amp",
+    "Notes From Stage"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 2.5,
-  "defaultMaxAccel": 2.5,
+  "defaultMaxVel": 4.5,
+  "defaultMaxAccel": 3.5,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "maxModuleSpeed": 6.0
