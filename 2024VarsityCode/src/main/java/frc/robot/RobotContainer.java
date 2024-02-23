@@ -91,6 +91,13 @@ public class RobotContainer {
         // Button to turn on/off sending debug data to the dashboard
         SmartDashboard.putData("Toggle Debug Dashboards", LogOrDash.toggleDashboard());
         //SmartDashboard.putData("Burn Spark Settings", s_Swerve.configToFlash());
+
+        SmartDashboard.putData("configs/Burn Intake Settings", new InstantCommand(() -> s_Intake.burnFlash()));
+        SmartDashboard.putData("configs/Burn Index Settings", new InstantCommand(() -> s_Index.burnFlash()));
+        SmartDashboard.putData("configs/Burn Shooter Settings", new InstantCommand(() -> s_Shooter.burnFlash()));
+        SmartDashboard.putData("configs/Burn Pivot Settings", new InstantCommand(() -> s_Pivot.burnFlash()));
+        SmartDashboard.putData("configs/Burn Climb Settings", new InstantCommand(() -> s_Climb.burnFlash()));
+        SmartDashboard.putData("configs/Burn Swerve Settings", new InstantCommand(() -> s_Swerve.configToFlash()));
     }
 
     /**

@@ -13,6 +13,7 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -193,5 +194,18 @@ public class Pivot extends SubsystemBase {
     SmartDashboard.putNumber("pivot/Absolute Angle", pivotEncoder.getPosition());
     SmartDashboard.putNumber("pivot/Pivot Velocity", pivotEncoder.getVelocity());
     SmartDashboard.putString("pivot/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
+  }
+
+
+  public void burnFlash(){
+    try{
+      Thread.sleep(1000);
+      leftPivot.burnFlash();
+      Thread.sleep(1000);
+      rightPivot.burnFlash();
+      Thread.sleep(1000);
+    }catch(InterruptedException e){
+      DriverStation.reportError("Thread was interrupted while flashing pivot", e.getStackTrace());
+    }
   }
 }

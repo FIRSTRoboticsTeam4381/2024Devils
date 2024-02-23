@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -106,4 +107,18 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putString("intake/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
   }
+
+
+  public void burnFlash(){
+    try{
+      Thread.sleep(1000);
+      intake.burnFlash();
+      Thread.sleep(1000);
+      helper.burnFlash();
+      Thread.sleep(1000);
+    }catch(InterruptedException e){
+      DriverStation.reportError("Thread was interrupted while flashing intake", e.getStackTrace());
+    }
+  }
+  
 }

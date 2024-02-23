@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -147,5 +148,16 @@ public class Index extends SubsystemBase {
 
     SmartDashboard.putBoolean("index/Note Stored", noteStored());
     SmartDashboard.putString("index/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
+  }
+
+
+  public void burnFlash(){
+    try{
+      Thread.sleep(1000);
+      indexMotor.burnFlash();
+      Thread.sleep(1000);
+    }catch(InterruptedException e){
+      DriverStation.reportError("Thread was interrupted while flashing index", e.getStackTrace());
+    }
   }
 }

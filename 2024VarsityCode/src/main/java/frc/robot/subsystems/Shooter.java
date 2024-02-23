@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -217,5 +218,20 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putString("shooter/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
     SmartDashboard.putNumber("shooter/Error", Math.abs(-setpoint-propEncoder.getVelocity()));
     SmartDashboard.putBoolean("shooter/Is Ready", readyForNote());
+  }
+
+
+  public void burnFlash(){
+    try{
+      Thread.sleep(1000);
+      propMotor.burnFlash();
+      Thread.sleep(1000);
+      topMotor.burnFlash();
+      Thread.sleep(1000);
+      bottomMotor.burnFlash();
+      Thread.sleep(1000);
+    }catch(InterruptedException e){
+      DriverStation.reportError("Thread was interrupted while flashing shooter", e.getStackTrace());
+    }
   }
 }

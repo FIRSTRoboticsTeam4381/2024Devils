@@ -259,4 +259,17 @@ public class SwerveModule {
             DriverStation.reportError("Main thread interrupted while flashing swerve module!", e.getStackTrace()); 
         } 
     } 
+
+
+    public void burnFlash(){
+        try{
+          Thread.sleep(1000);
+          mDriveMotor.burnFlash();
+          Thread.sleep(1000);
+          mAngleMotor.burnFlash();
+          Thread.sleep(1000);
+        }catch(InterruptedException e){
+          DriverStation.reportError("Thread was interrupted while flashing swerve module", e.getStackTrace());
+        }
+      }
 } 

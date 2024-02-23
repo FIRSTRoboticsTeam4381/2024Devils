@@ -224,7 +224,7 @@ public class Swerve extends SubsystemBase{
         return new InstantCommand(() -> {
             for(SwerveModule mod : mSwerveMods)
             {
-                mod.configToFlash();
+                mod.burnFlash();
             }
         }, this).ignoringDisable(true);
     }

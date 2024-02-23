@@ -9,6 +9,7 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.SparkUtilities.SparkUtilities;
@@ -94,5 +95,20 @@ public class Climb extends SubsystemBase {
 
     SmartDashboard.putNumber("Base Pivot Position", baseEncoder.getPosition());
     SmartDashboard.putNumber("Mid Pivot Position", midEncoder.getPosition());
+  }
+
+
+  public void burnFlash(){
+    try{
+      Thread.sleep(1000);
+      rightBaseMotor.burnFlash();
+      Thread.sleep(1000);
+      leftBaseMotor.burnFlash();
+      Thread.sleep(1000);
+      midMotor.burnFlash();
+      Thread.sleep(1000);
+    }catch(InterruptedException e){
+      DriverStation.reportError("Thread was interrupted while flashing climb", e.getStackTrace());
+    }
   }
 }
