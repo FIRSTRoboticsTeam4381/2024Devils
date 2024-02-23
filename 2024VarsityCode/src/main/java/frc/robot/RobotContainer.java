@@ -72,7 +72,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Intake", commands.groundIntake());
         NamedCommands.registerCommand("StopIntake", s_Intake.instantStop());
         NamedCommands.registerCommand("ShooterSpinUp", s_Shooter.shootAvgSpeed());
-        NamedCommands.registerCommand("AutoAim", new AutoAim(s_Shooter, s_Pivot, s_LL));
+        NamedCommands.registerCommand("AutoAim", new AutoAim(s_Shooter, s_Pivot, s_LL, s_Swerve));
         NamedCommands.registerCommand("ShootNote", s_Index.indexUntilShot(false));
         NamedCommands.registerCommand("LowerPivot", s_Pivot.profiledMove(40));
 
@@ -109,7 +109,7 @@ public class RobotContainer {
         specialist.L1().toggleOnTrue(new ConditionalCommand(s_Shooter.shootAvgSpeed(), s_Shooter.instantStopAll(), () -> {return s_Shooter.getSetpoint()==0;})); // Changes this so it will cancel auto aiming
         specialist.povRight().toggleOnTrue(commands.ampMode());
         specialist.R1().whileTrue(commands.feedNote());
-        specialist.triangle().toggleOnTrue(new AutoAim(s_Shooter, s_Pivot, s_LL));
+        specialist.triangle().toggleOnTrue(new AutoAim(s_Shooter, s_Pivot, s_LL, s_Swerve));
 
         specialist.touchpad().onTrue(commands.cancelAll());
 

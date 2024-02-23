@@ -87,7 +87,7 @@ public class Swerve extends SubsystemBase{
 
     // TODO check - auto
     /* Used by PathPlanner AutoBuilder */
-    private ChassisSpeeds getRobotRelativeSpeeds(){
+    public ChassisSpeeds getRobotRelativeSpeeds(){
         return Constants.Swerve.swerveKinematics.toChassisSpeeds(
             mSwerveMods[0].getState(),
             mSwerveMods[1].getState(),

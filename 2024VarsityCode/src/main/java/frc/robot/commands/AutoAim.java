@@ -22,10 +22,11 @@ public class AutoAim extends Command {
   private double currentAngle = 30.0;
 
   /** Creates a new AutoAim. */
-  public AutoAim(Shooter shooter, Pivot pivot, Limelight ll) {
+  public AutoAim(Shooter shooter, Pivot pivot, Limelight ll, Swerve swerve) {
     this.shooter = shooter;
     this.pivot = pivot;
     this.ll = ll;
+    this.swerve = swerve;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter, pivot);
@@ -37,13 +38,31 @@ public class AutoAim extends Command {
 
   private void calcAngle(){
     double calculatedAngle = currentAngle;
-    if(ll.hasTargets() == 1) calculatedAngle = 49.62307316*Math.pow(ll.distanceFromGoal(), -0.425990916); // r^2 = 0.995
+    if(ll.hasTargets() == 1) calculatedAngle = 49.62307316*Math.pow(ll.distanceFromGoal(), -0.425990916); // r^2 = 0.995 // despite predicting, still won't move unless a target is in sight. prevents going crazy
     if(calculatedAngle > 70) calculatedAngle = currentAngle;
     currentAngle = calculatedAngle;
   }
   private void calcVelocity(){
-    currentVelocity = 1700;
-    //if(ll.hasTargets() == 1) currentVelocity = ll.distanceFromGoal() <= 2.5 ? 1000 : 1500;
+    currentVelocity = 1800;
+  }
+
+  private double getTargetRelativeVelocity(){
+    double robotVelocity = swerve.getRobotRelativeSpeeds().vxMetersPerSecond; // Since the Limelight is on the front of the robot, the only helpful velocity is the axis that is facing the target
+    return robotVelocity;
+  }
+
+  private double estimateDistance(){
+    double lastDistance = ll.distanceFromGoal();
+    double predictedTravelThroughLatency = getTargetRelativeVelocity() * (ll.totalLatency()/1000.0);
+    double estimatedPostLatencyPosition = lastDistance - predictedTravelThroughLatency;
+    return estimatedPostLatencyPosition;
+  }
+
+  private double predictFuturePosition(){
+    final double lengthOfTime = 100; // ms
+    double predictedTravel = getTargetRelativeVelocity() * (lengthOfTime/1000.0);
+    double predictedPosition = estimateDistance() - predictedTravel;
+    return predictedPosition;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -54,6 +73,9 @@ public class AutoAim extends Command {
 
     SmartDashboard.putNumber("autoaim/Calculated Velocity", currentVelocity);
     SmartDashboard.putNumber("autoaim/Calculated Angle", currentAngle);
+    SmartDashboard.putNumber("autoaim/Target Relative Velocity", getTargetRelativeVelocity());
+    SmartDashboard.putNumber("autoaim/Estimated Latency Position", estimateDistance());
+    SmartDashboard.putNumber("autoaim/Predicted Future Position", predictFuturePosition());
 
     pivot.setAngleReference(currentAngle, 1);
     shooter.setVelocity(currentVelocity, false);
