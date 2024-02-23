@@ -4,6 +4,8 @@
   "holonomicMode": true,
   "pathFolders": [
     "Alliance Notes",
+    "Preloaded Notes",
+    "Notes From Human Player",
     "Notes From Amp",
     "Notes From Stage"
   ],

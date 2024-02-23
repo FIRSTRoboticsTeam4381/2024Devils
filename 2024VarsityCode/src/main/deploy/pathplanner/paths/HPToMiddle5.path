@@ -3,32 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.5645260933888472,
-        "y": 4.133925300660873
+        "x": 6.08,
+        "y": 1.66
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0798029014032338,
-        "y": 4.133925300660873
+        "x": 6.490209385554292,
+        "y": 2.0376855589659812
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.0166698250657547,
-        "y": 4.520382906671662
+        "x": 8.024328973051668,
+        "y": 1.0188427794829902
       },
       "prevControl": {
-        "x": 1.5013930170513676,
-        "y": 4.496961233580099
+        "x": 7.7315580594071305,
+        "y": 0.9368669236625198
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6,
+      "rotationDegrees": -27.896024032555534,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -41,7 +47,7 @@
             {
               "type": "named",
               "data": {
-                "name": "AutoAim"
+                "name": "ShooterSpinUp"
               }
             }
           ]
@@ -50,7 +56,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.9,
+      "waypointRelativePos": 0.35,
       "command": {
         "type": "parallel",
         "data": {
@@ -58,7 +64,7 @@
             {
               "type": "named",
               "data": {
-                "name": "ShootNote"
+                "name": "Intake"
               }
             }
           ]
@@ -67,21 +73,21 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.5,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -28.393019421383006,
+    "rotation": -35.272421448598365,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Preloaded Notes",
+  "folder": "Notes From Human Player",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -30.064286283968503,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
