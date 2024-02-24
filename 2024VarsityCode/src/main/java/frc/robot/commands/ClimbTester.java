@@ -45,13 +45,9 @@ public class ClimbTester extends Command {
     baseInput *= 0.75;
     midInput *= 0.75;
 
-    if(baseInput!=0.0){
       s_Climb.setBasePercOutput(baseInput);
-    }
 
-    if(midInput!=0.0){
       s_Climb.setMidPercOutput(midInput);
-    }
   }
 
   // Called once the command ends or is interrupted.

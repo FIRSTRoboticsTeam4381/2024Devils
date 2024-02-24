@@ -96,7 +96,7 @@ public class Swerve extends SubsystemBase{
         );
     }
 
-
+    /*
     public double odometryDistanceFromGoal(){
         Alliance alliance = DriverStation.getAlliance().get();
         double[] redGoal = {16, 5.5, 0};
@@ -105,6 +105,7 @@ public class Swerve extends SubsystemBase{
         double distance = Math.sqrt(Math.pow(robotPose.getX()-(alliance==Alliance.Red?redGoal[0]:blueGoal[0]),2) + Math.pow(robotPose.getY()-(alliance==Alliance.Red?redGoal[1]:blueGoal[1]),2));
         return distance;
     }
+    */
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates){
@@ -208,7 +209,7 @@ public class Swerve extends SubsystemBase{
         SmartDashboard.putNumberArray("swerve/target", targetStateAdv);
         SmartDashboard.putNumberArray("swerve/absolute", absoluteStateAdv);
         
-        SmartDashboard.putNumber("position/Distance From Goal (Odometry)", odometryDistanceFromGoal());
+        //SmartDashboard.putNumber("position/Distance From Goal (Odometry)", odometryDistanceFromGoal());
 
         mField.setRobotPose(getPose());
         SmartDashboard.putData("position/Field", mField);

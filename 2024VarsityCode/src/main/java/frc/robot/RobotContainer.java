@@ -55,7 +55,7 @@ public class RobotContainer {
     public static final Index s_Index = new Index();
     public static final Pivot s_Pivot = new Pivot();
     public static final Shooter s_Shooter = new Shooter();
-    public static final Climb s_Climb = new Climb();
+    //public static final Climb s_Climb = new Climb();
     public static final Limelight s_LL = new Limelight();
 
     /* Commands */
@@ -68,7 +68,7 @@ public class RobotContainer {
     public RobotContainer(){
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true).withName("Teleop"));
         s_Pivot.setDefaultCommand(new ManualPivot(specialist::getLeftY, s_Pivot).withName("Manual Pivot"));
-        s_Climb.setDefaultCommand(new ManualClimb(specialist::getRightY, specialist.R3(), s_Climb, s_Pivot));
+        //s_Climb.setDefaultCommand(new ManualClimb(specialist::getRightY, specialist.R3(), s_Climb, s_Pivot));
 
         /* Pathplanner Commands */
         NamedCommands.registerCommand("Intake", commands.groundIntake());
@@ -96,7 +96,7 @@ public class RobotContainer {
         SmartDashboard.putData("configs/Burn Index Settings", new InstantCommand(() -> s_Index.burnFlash()));
         SmartDashboard.putData("configs/Burn Shooter Settings", new InstantCommand(() -> s_Shooter.burnFlash()));
         SmartDashboard.putData("configs/Burn Pivot Settings", new InstantCommand(() -> s_Pivot.burnFlash()));
-        SmartDashboard.putData("configs/Burn Climb Settings", new InstantCommand(() -> s_Climb.burnFlash()));
+        //SmartDashboard.putData("configs/Burn Climb Settings", new InstantCommand(() -> s_Climb.burnFlash()));
         SmartDashboard.putData("configs/Burn Swerve Settings", new InstantCommand(() -> s_Swerve.configToFlash()));
     }
 
@@ -118,7 +118,7 @@ public class RobotContainer {
         specialist.L1().toggleOnTrue(new ConditionalCommand(s_Shooter.shootAvgSpeed(), s_Shooter.instantStopAll(), () -> {return s_Shooter.getSetpoint()==0;})); // Changes this so it will cancel auto aiming
         specialist.povRight().toggleOnTrue(commands.ampMode());
         specialist.R1().whileTrue(commands.feedNote());
-        specialist.triangle().onTrue(commands.toggleAutoAim());
+        specialist.triangle().onTrue(new AutoAim(s_Shooter, s_Pivot, s_LL, s_Swerve));
 
         specialist.touchpad().onTrue(commands.cancelAll());
 

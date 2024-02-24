@@ -58,7 +58,7 @@ public class Shooter extends SubsystemBase {
 
     SparkUtilities.optimizeFrames(propMotor, true, true, false, false, false, false);
     SparkUtilities.optimizeFrames(topMotor, false, true, false, false, false, false);
-    SparkUtilities.optimizeFrames(bottomMotor, false, false, false, false, false, false);
+    SparkUtilities.optimizeFrames(bottomMotor, false, true, false, false, false, false);
 
     // Encoder Setup
     propEncoder = propMotor.getEncoder();
