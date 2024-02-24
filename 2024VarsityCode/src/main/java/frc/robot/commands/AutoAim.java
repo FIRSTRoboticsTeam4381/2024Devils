@@ -14,7 +14,6 @@ import frc.robot.subsystems.Swerve;
 
 public class AutoAim extends Command {
   private Shooter shooter;
-  private Pivot pivot;
   private Swerve swerve;
   private Limelight ll;
 
@@ -22,14 +21,13 @@ public class AutoAim extends Command {
   private double currentAngle = 30.0;
 
   /** Creates a new AutoAim. */
-  public AutoAim(Shooter shooter, Pivot pivot, Limelight ll, Swerve swerve) {
+  public AutoAim(Shooter shooter, Limelight ll, Swerve swerve) {
     this.shooter = shooter;
-    this.pivot = pivot;
     this.ll = ll;
     this.swerve = swerve;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter, pivot);
+    addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -40,7 +38,7 @@ public class AutoAim extends Command {
     double calculatedAngle = currentAngle;
     if(ll.hasTargets() == 1) calculatedAngle = 49.62307316*Math.pow(ll.distanceFromGoal(), -0.425990916); // r^2 = 0.995 // despite predicting, still won't move unless a target is in sight. prevents going crazy
     if(calculatedAngle > 70) calculatedAngle = currentAngle;
-    currentAngle = calculatedAngle;
+    currentAngle = 0;
   }
   private void calcVelocity(){
     currentVelocity = 1800;
@@ -77,7 +75,7 @@ public class AutoAim extends Command {
     SmartDashboard.putNumber("autoaim/Estimated Latency Position", estimateDistance());
     SmartDashboard.putNumber("autoaim/Predicted Future Position", predictFuturePosition());
 
-    pivot.setAngleReference(currentAngle, 1);
+    //pivot.setAngleReference(currentAngle, 1);
     shooter.setVelocity(currentVelocity, false);
   }
 

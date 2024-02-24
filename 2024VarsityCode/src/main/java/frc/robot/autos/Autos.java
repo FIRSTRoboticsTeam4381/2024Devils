@@ -25,6 +25,12 @@ public final class Autos {
         return new PathPlannerAuto("TestAuto");
     }
 
+    public static Command fourpiece(){
+        return new PathPlannerAuto("4Piece");
+    }
+
+    
+
     // TODO test of a single path
     public static Command testPath(){
         //PathPlannerPath path = PathPlannerPath.fromPathFile("TestPath1");

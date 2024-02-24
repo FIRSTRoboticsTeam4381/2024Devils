@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -53,13 +54,13 @@ public class RobotContainer {
     public static final Swerve s_Swerve = new Swerve();
     public static final Intake s_Intake = new Intake();
     public static final Index s_Index = new Index();
-    public static final Pivot s_Pivot = new Pivot();
+    //public static final Pivot s_Pivot = new Pivot();
     public static final Shooter s_Shooter = new Shooter();
     //public static final Climb s_Climb = new Climb();
     public static final Limelight s_LL = new Limelight();
 
     /* Commands */
-    ComposedCommands commands = new ComposedCommands(s_Intake, s_Index, s_Shooter, s_Pivot, s_LL, s_Swerve);
+    ComposedCommands commands = new ComposedCommands(s_Intake, s_Index, s_Shooter, s_LL, s_Swerve);
 
     //Auto Chooser
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -67,16 +68,16 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true).withName("Teleop"));
-        s_Pivot.setDefaultCommand(new ManualPivot(specialist::getLeftY, s_Pivot).withName("Manual Pivot"));
+        //s_Pivot.setDefaultCommand(new ManualPivot(specialist::getLeftY, s_Pivot).withName("Manual Pivot"));
         //s_Climb.setDefaultCommand(new ManualClimb(specialist::getRightY, specialist.R3(), s_Climb, s_Pivot));
 
         /* Pathplanner Commands */
-        NamedCommands.registerCommand("Intake", commands.groundIntake());
+        NamedCommands.registerCommand("Intake", s_Intake.run());
         NamedCommands.registerCommand("StopIntake", s_Intake.instantStop());
         NamedCommands.registerCommand("ShooterSpinUp", s_Shooter.shootAvgSpeed());
-        NamedCommands.registerCommand("AutoAim", new AutoAim(s_Shooter, s_Pivot, s_LL, s_Swerve));
+        NamedCommands.registerCommand("AutoAim", new AutoAim(s_Shooter, s_LL, s_Swerve));
         NamedCommands.registerCommand("ShootNote", s_Index.indexUntilShot(false));
-        NamedCommands.registerCommand("LowerPivot", s_Pivot.profiledMove(40));
+        NamedCommands.registerCommand("LowerPivot", Commands.none());
 
         // Configure the button bindings
         configureButtonBindings();
@@ -85,8 +86,9 @@ public class RobotContainer {
         m_AutoChooser.setDefaultOption("None", Autos.none());
         // TODO m_AutoChooser.addOption("PathPlanner Example", Autos.exampleAuto());
         m_AutoChooser.addOption("Test", Autos.testPath());
+        m_AutoChooser.addOption("4Piece", Autos.fourpiece());
 
-        SmartDashboard.putData(m_AutoChooser);
+        SmartDashboard.putData("Auto", m_AutoChooser);
 
         // Button to turn on/off sending debug data to the dashboard
         SmartDashboard.putData("Toggle Debug Dashboards", LogOrDash.toggleDashboard());
@@ -95,7 +97,7 @@ public class RobotContainer {
         SmartDashboard.putData("configs/Burn Intake Settings", new InstantCommand(() -> s_Intake.burnFlash()));
         SmartDashboard.putData("configs/Burn Index Settings", new InstantCommand(() -> s_Index.burnFlash()));
         SmartDashboard.putData("configs/Burn Shooter Settings", new InstantCommand(() -> s_Shooter.burnFlash()));
-        SmartDashboard.putData("configs/Burn Pivot Settings", new InstantCommand(() -> s_Pivot.burnFlash()));
+        //SmartDashboard.putData("configs/Burn Pivot Settings", new InstantCommand(() -> s_Pivot.burnFlash()));
         //SmartDashboard.putData("configs/Burn Climb Settings", new InstantCommand(() -> s_Climb.burnFlash()));
         SmartDashboard.putData("configs/Burn Swerve Settings", new InstantCommand(() -> s_Swerve.configToFlash()));
     }
@@ -116,9 +118,9 @@ public class RobotContainer {
         specialist.square().toggleOnTrue(commands.humanIntake());
         specialist.circle().whileTrue(commands.ejectNote());
         specialist.L1().toggleOnTrue(new ConditionalCommand(s_Shooter.shootAvgSpeed(), s_Shooter.instantStopAll(), () -> {return s_Shooter.getSetpoint()==0;})); // Changes this so it will cancel auto aiming
-        specialist.povRight().toggleOnTrue(commands.ampMode());
+        specialist.povRight().toggleOnTrue(s_Shooter.ampShoot());
         specialist.R1().whileTrue(commands.feedNote());
-        specialist.triangle().onTrue(new AutoAim(s_Shooter, s_Pivot, s_LL, s_Swerve));
+        specialist.triangle().onTrue(new AutoAim(s_Shooter, s_LL, s_Swerve));
 
         specialist.touchpad().onTrue(commands.cancelAll());
 
@@ -135,6 +137,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand(){
-        return Autos.testAuto();
+        return m_AutoChooser.getSelected();
     }
 }

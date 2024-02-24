@@ -20,17 +20,15 @@ public class ComposedCommands {
     private Intake intake;
     private Index index;
     private Shooter shooter;
-    private Pivot pivot;
     private Limelight ll;
     private Swerve swerve;
 
     // TODO change pivot commands over to profiled motion once that's done
 
-    public ComposedCommands(Intake intake, Index index, Shooter shooter, Pivot pivot, Limelight ll, Swerve swerve){
+    public ComposedCommands(Intake intake, Index index, Shooter shooter, Limelight ll, Swerve swerve){
         this.intake = intake;
         this.index = index;
         this.shooter = shooter;
-        this.pivot = pivot;
         this.ll = ll;
         this.swerve = swerve;
     }
@@ -45,7 +43,7 @@ public class ComposedCommands {
     public Command groundIntake(){
         return new ParallelCommandGroup(
             //pivot.goToIntake(),
-            pivot.profiledMove(Pivot.INTAKE_POS),
+            //pivot.profiledMove(Pivot.INTAKE_POS),
             new ParallelRaceGroup(
                 intake.run(),
                 index.indexUntilIn(false)
@@ -59,7 +57,7 @@ public class ComposedCommands {
      */
     public Command humanIntake(){
         return new ParallelCommandGroup(
-            pivot.goToHuman(),
+            //pivot.goToHuman(),
             index.indexUntilIn(true), // Stops when cancelled
             shooter.eject() // Stops when cancelled
         );
@@ -82,7 +80,7 @@ public class ComposedCommands {
 
     public Command ampMode(){
         return new ParallelCommandGroup(
-            pivot.profiledMove(Pivot.AMP_POS),
+            //pivot.profiledMove(Pivot.AMP_POS),
             shooter.ampShoot() // Stops when cancelled
         );
     }
@@ -100,7 +98,7 @@ public class ComposedCommands {
     /* CANCEL ALL COMMANDS */
     public Command cancelAll(){
         return new ParallelCommandGroup(
-            new InstantCommand(() -> pivot.setAngleReference(pivot.getAngle(), 0)),
+            //new InstantCommand(() -> pivot.setAngleReference(pivot.getAngle(), 0)),
             shooter.instantStopAll(),
             index.instantStop(),
             intake.instantStop()
@@ -114,12 +112,12 @@ public class ComposedCommands {
     }
     public Command autoAim(){
         autoAiming = true;
-        return new AutoAim(shooter, pivot, ll, swerve);
+        return new AutoAim(shooter, ll, swerve);
     }
     public Command stopAutoAim(){
         autoAiming = false;
         return new ParallelCommandGroup(
-            pivot.goToTransit(),
+            //pivot.goToTransit(),
             shooter.instantStopAll()
         );
     }
