@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
@@ -114,7 +115,10 @@ public class ComposedCommands {
     }
     public Command autoAim(){
         autoAiming = true;
-        return new AutoAim(shooter, pivot, ll, swerve);
+        return new SequentialCommandGroup(
+            pivot.profiledMove(20),
+            new AutoAim(shooter, pivot, ll, swerve)
+        );
     }
     public Command stopAutoAim(){
         autoAiming = false;
