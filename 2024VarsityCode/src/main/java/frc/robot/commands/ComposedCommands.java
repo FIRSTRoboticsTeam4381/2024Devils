@@ -44,13 +44,16 @@ public class ComposedCommands {
      * or the toggle, which would stop the intake running as well as the index.
      */
     public Command groundIntake(){
-        return new ParallelCommandGroup(
-            //pivot.goToIntake(),
-            pivot.profiledMove(Pivot.INTAKE_POS),
-            new ParallelRaceGroup(
-                intake.run(),
-                index.indexUntilIn(false)
-            )
+        return new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                //pivot.goToIntake(),
+                pivot.profiledMove(Pivot.INTAKE_POS),
+                new ParallelRaceGroup(
+                    intake.run(),
+                    index.indexUntilIn(false)
+                )
+            ),
+            pivot.profiledMove(Pivot.TRANSIT_POS)
         );
     }
 
@@ -59,10 +62,13 @@ public class ComposedCommands {
      * needs to stop should stop
      */
     public Command humanIntake(){
-        return new ParallelCommandGroup(
-            pivot.goToHuman(),
-            index.indexUntilIn(true), // Stops when cancelled
-            shooter.eject() // Stops when cancelled
+        return new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                pivot.profiledMove(Pivot.HUMAN_POS),
+                index.indexUntilIn(true), // Stops when cancelled
+                shooter.eject() // Stops when cancelled
+            ),
+            pivot.profiledMove(Pivot.TRANSIT_POS)
         );
     }
 
