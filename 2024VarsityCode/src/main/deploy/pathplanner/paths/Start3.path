@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.190306528972544,
-        "y": 6.358984244359359
+        "x": 0.5703815116617389,
+        "y": 4.133925300660873
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.045197596814594,
-        "y": 6.464381773271393
+        "x": 0.9919716273098732,
+        "y": 4.122214464115091
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.04775064614323,
-        "y": 7.237296985292972
+        "x": 1.764886839331453,
+        "y": 4.485250397034318
       },
       "prevControl": {
-        "x": 7.251413761030089,
-        "y": 6.90939356201109
+        "x": 1.2261883582255033,
+        "y": 4.391563704668066
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "ShooterSpinUp"
+                "name": "AutoAim"
               }
             }
           ]
@@ -50,7 +50,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.75,
+      "waypointRelativePos": 0.9,
       "command": {
         "type": "parallel",
         "data": {
@@ -58,7 +58,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Intake"
+                "name": "Shoot"
               }
             }
           ]
@@ -67,18 +67,18 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.5,
-    "maxAcceleration": 3.5,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 30.411081267125265,
+    "rotation": -28.81079374297313,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Notes From Amp",
+  "folder": "StartingPoints",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

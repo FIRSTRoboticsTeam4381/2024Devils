@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3959954881393342,
-      "y": 5.527514849608872
+      "x": 0.5703815116617389,
+      "y": 6.979658581285779
     },
     "rotation": 0
   },
@@ -14,49 +14,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CenterToAlliance3"
+            "pathName": "Start1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Alliance3ToCenter"
+            "pathName": "A1Full"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CenterToAlliance2"
+            "pathName": "A1ReturnHome"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Alliance2ToCenter"
+            "pathName": "A2Full"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CenterToAlliance1"
+            "pathName": "M1PickupAmp"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Alliance1ToCenter"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AmpToMiddle1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Middle1ToAmp"
+            "pathName": "ShootAmpSide"
           }
         }
       ]

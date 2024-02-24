@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.440812990042526,
-        "y": 4.778021310678856
+        "x": 0.5703815116617389,
+        "y": 6.979658581285779
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.717294173532712,
-        "y": 4.1690578102982165
+        "x": 0.9568391176725288,
+        "y": 7.038212764014687
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.930642280685416,
-        "y": 2.634938222800839
+        "x": 2.010814406792864,
+        "y": 6.522935956000301
       },
       "prevControl": {
-        "x": 7.4504979823083755,
-        "y": 3.0213958288116296
+        "x": 1.5775134545989487,
+        "y": 6.522935956000301
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "ready shooter",
+      "name": "New Event Marker",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "ShooterSpinUp"
+                "name": "AutoAim"
               }
             }
           ]
@@ -49,8 +49,8 @@
       }
     },
     {
-      "name": "intake",
-      "waypointRelativePos": 0.75,
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.9,
       "command": {
         "type": "parallel",
         "data": {
@@ -58,7 +58,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Intake"
+                "name": "Shoot"
               }
             }
           ]
@@ -67,20 +67,20 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.5,
-    "maxAcceleration": 3.5,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -27.149681697783226,
+    "rotation": 30.96375653207352,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Notes From Stage",
+  "folder": "StartingPoints",
   "previewStartingState": {
-    "rotation": -18.434948822922042,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": true

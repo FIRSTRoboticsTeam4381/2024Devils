@@ -3,60 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.05,
-        "y": 7.24
+        "x": 3.3634160278306275,
+        "y": 5.4806715034257465
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.33338961685056,
-        "y": 6.9328152351026535
+        "x": 3.023801768002964,
+        "y": 5.492382339971527
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.190306528972544,
-        "y": 6.358984244359359
+        "x": 2.2040432097982583,
+        "y": 5.4806715034257465
       },
       "prevControl": {
-        "x": 6.045197596814594,
-        "y": 6.511225119454518
+        "x": 2.426549104168106,
+        "y": 5.445538993788402
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 8.369872793063447,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.1,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "LowerPivot"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.35,
+      "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
         "data": {
@@ -81,7 +58,7 @@
             {
               "type": "named",
               "data": {
-                "name": "ShootNote"
+                "name": "Shoot"
               }
             }
           ]
@@ -90,21 +67,21 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.5,
-    "maxAcceleration": 3.5,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 11.093723011557774,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Notes From Amp",
+  "folder": "ShootingPaths",
   "previewStartingState": {
-    "rotation": 33.98591003563327,
+    "rotation": -1.101706115206325,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

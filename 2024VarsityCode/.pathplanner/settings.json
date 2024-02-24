@@ -4,14 +4,13 @@
   "holonomicMode": true,
   "pathFolders": [
     "Alliance Notes",
-    "Preloaded Notes",
-    "Notes From Human Player",
-    "Notes From Amp",
-    "Notes From Stage"
+    "ShootingPaths",
+    "StagePaths",
+    "StartingPoints"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 4.5,
-  "defaultMaxAccel": 3.5,
+  "defaultMaxVel": 3.5,
+  "defaultMaxAccel": 2.5,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "maxModuleSpeed": 6.0

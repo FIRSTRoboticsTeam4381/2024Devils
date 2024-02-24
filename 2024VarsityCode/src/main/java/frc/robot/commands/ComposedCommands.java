@@ -100,7 +100,7 @@ public class ComposedCommands {
     /* CANCEL ALL COMMANDS */
     public Command cancelAll(){
         return new ParallelCommandGroup(
-            new InstantCommand(() -> pivot.setAngleReference(pivot.getAngle(), 0)),
+            new InstantCommand(() -> pivot.setAngleReference(pivot.getAngle(), 0), pivot),
             shooter.instantStopAll(),
             index.instantStop(),
             intake.instantStop()
