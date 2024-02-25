@@ -93,8 +93,12 @@ public class Climb extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("Base Pivot Position", baseEncoder.getPosition());
-    SmartDashboard.putNumber("Mid Pivot Position", midEncoder.getPosition());
+    SmartDashboard.putNumber("climb/Base Pivot Position", baseEncoder.getPosition());
+    SmartDashboard.putNumber("climb/Mid Pivot Position", midEncoder.getPosition());
+
+    SmartDashboard.putNumber("climb/Left Base Current", leftBaseMotor.getOutputCurrent());
+    SmartDashboard.putNumber("climb/Right Base Current", rightBaseMotor.getOutputCurrent());
+    SmartDashboard.putNumber("climb/Mid Climb Current", midMotor.getOutputCurrent());
   }
 
 

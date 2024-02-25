@@ -3,6 +3,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -106,12 +107,15 @@ public class ComposedCommands {
 
     /* CANCEL ALL COMMANDS */
     public Command cancelAll(){
+        return new InstantCommand(() -> CommandScheduler.getInstance().cancelAll());
+        /*
         return new ParallelCommandGroup(
             new InstantCommand(() -> pivot.setAngleReference(pivot.getAngle(), 0), pivot),
             shooter.instantStopAll(),
             index.instantStop(),
             intake.instantStop()
         );
+        */
     }
 
     private boolean autoAiming = false;
@@ -122,7 +126,7 @@ public class ComposedCommands {
     public Command autoAim(){
         autoAiming = true;
         return new SequentialCommandGroup(
-            pivot.profiledMove(20),
+            //pivot.profiledMove(20),
             new AutoAim(shooter, pivot, ll, swerve)
         );
     }

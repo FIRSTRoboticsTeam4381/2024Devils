@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5703815116617389,
-      "y": 6.979658581285779
+      "x": 0.5528152568430658,
+      "y": 4.11050362756931
     },
     "rotation": 0
   },
@@ -14,19 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "A1Full"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "A1ReturnHome"
+            "pathName": "Start3"
           }
         },
         {
@@ -38,13 +26,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "M1PickupAmp"
+            "pathName": "A2ReturnHome"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ShootAmpSide"
+            "pathName": "A1Full"
           }
         }
       ]

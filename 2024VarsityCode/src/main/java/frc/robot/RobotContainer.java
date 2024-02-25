@@ -84,7 +84,7 @@ public class RobotContainer {
         // Add autonomous options to chooser
         m_AutoChooser.setDefaultOption("None", Autos.none());
         // TODO m_AutoChooser.addOption("PathPlanner Example", Autos.exampleAuto());
-        m_AutoChooser.addOption("Test", Autos.testPath());
+        m_AutoChooser.addOption("Test", Autos.testAuto());
 
         SmartDashboard.putData(m_AutoChooser);
 
@@ -98,6 +98,8 @@ public class RobotContainer {
         SmartDashboard.putData("configs/Burn Pivot Settings", new InstantCommand(() -> s_Pivot.burnFlash()));
         //SmartDashboard.putData("configs/Burn Climb Settings", new InstantCommand(() -> s_Climb.burnFlash()));
         SmartDashboard.putData("configs/Burn Swerve Settings", new InstantCommand(() -> s_Swerve.configToFlash()));
+
+        SmartDashboard.putData("shooter/Reset PIDs", new InstantCommand(() -> s_Shooter.resetPID()));
     }
 
     /**
@@ -115,12 +117,12 @@ public class RobotContainer {
         specialist.cross().toggleOnTrue(commands.groundIntake());
         specialist.square().toggleOnTrue(commands.humanIntake());
         specialist.circle().whileTrue(commands.ejectNote());
-        specialist.L1().toggleOnTrue(new ConditionalCommand(s_Shooter.shootAvgSpeed(), s_Shooter.instantStopAll(), () -> {return s_Shooter.getSetpoint()==0;})); // Changes this so it will cancel auto aiming
+        specialist.L1().toggleOnTrue(s_Shooter.shootAvgSpeed()); // Changes this so it will cancel auto aiming
         specialist.povRight().toggleOnTrue(commands.ampMode());
         specialist.R1().whileTrue(commands.feedNote());
-        specialist.triangle().onTrue(commands.toggleAutoAim());
+        specialist.triangle().toggleOnTrue(commands.autoAim());
 
-        specialist.touchpad().onTrue(commands.cancelAll());
+        specialist.touchpad().or(driver.touchpad()).onTrue(commands.cancelAll());
 
 
         specialist.povUp(); // Unfold climb

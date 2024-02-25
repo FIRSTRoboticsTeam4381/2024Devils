@@ -272,4 +272,11 @@ public class SwerveModule {
           DriverStation.reportError("Thread was interrupted while flashing swerve module", e.getStackTrace());
         }
       }
+
+    public double getAngleCurrent(){
+        return mAngleMotor.getOutputCurrent();
+    }
+    public double getDriveCurrent(){
+        return mDriveMotor.getOutputCurrent();
+    }
 } 

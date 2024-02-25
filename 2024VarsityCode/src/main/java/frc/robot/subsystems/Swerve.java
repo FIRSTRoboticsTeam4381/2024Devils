@@ -180,6 +180,11 @@ public class Swerve extends SubsystemBase{
         double[] targetSpeeds = new double[4];
         double[] targetAngles = new double[4];
         double[] absoluteAngles = new double[4];
+
+        for(SwerveModule m : mSwerveMods){
+            SmartDashboard.putNumber("swerve/Mod "+m.moduleNumber+" Angle Current", m.getAngleCurrent());
+            SmartDashboard.putNumber("swerve/Mod "+m.moduleNumber+" Drive Current", m.getDriveCurrent());
+        }
         
         for(SwerveModule mod : mSwerveMods){
             mod.sendTelemetry();

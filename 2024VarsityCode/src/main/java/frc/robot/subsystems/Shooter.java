@@ -34,6 +34,7 @@ public class Shooter extends SubsystemBase {
 
   private SparkPIDController propController;
   private SparkPIDController topController;
+  private SparkPIDController bottomController;
 
   public static final double maxRPM = 6500;
 
@@ -48,13 +49,18 @@ public class Shooter extends SubsystemBase {
     topMotor = new CANSparkFlex(Constants.Shooter.topCAN, MotorType.kBrushless);
     bottomMotor = new CANSparkFlex(Constants.Shooter.bottomCAN, MotorType.kBrushless);
 
+    propMotor.setSmartCurrentLimit(60);
+    bottomMotor.setSmartCurrentLimit(30);
+    topMotor.setSmartCurrentLimit(30);
+
     propMotor.setIdleMode(IdleMode.kCoast);
     topMotor.setIdleMode(IdleMode.kCoast);
     bottomMotor.setIdleMode(IdleMode.kCoast);
 
     propMotor.setInverted(true);
     topMotor.setInverted(true);
-    bottomMotor.follow(propMotor, true);
+    bottomMotor.setInverted(false);
+    //bottomMotor.follow(propMotor, true);
 
     SparkUtilities.optimizeFrames(propMotor, true, true, false, false, false, false);
     SparkUtilities.optimizeFrames(topMotor, false, true, false, false, false, false);
@@ -65,20 +71,7 @@ public class Shooter extends SubsystemBase {
     topEncoder = topMotor.getEncoder();
     bottomEncoder = bottomMotor.getEncoder();
 
-    // PID Setup
-    propController = propMotor.getPIDController();
-    propController.setP(0.001);
-    propController.setI(0.0);
-    propController.setD(0.0);
-    propController.setFF(0.000218);
-    propController.setOutputRange(-1, 1);
-
-    topController = topMotor.getPIDController();
-    topController.setP(0.001);
-    topController.setI(0.0);
-    topController.setD(0.0);
-    topController.setFF(0.000215);
-    topController.setOutputRange(-1, 1);
+    resetPID();
   }
 
 
@@ -97,7 +90,7 @@ public class Shooter extends SubsystemBase {
    * @return Boolean determining if it is okay to feed a note to the shooter
    */
   public boolean readyForNote(){
-    return (setpoint != 0 && Math.abs(setpoint-propEncoder.getVelocity())<50);
+    return (setpoint != 0 && setpoint-propEncoder.getVelocity()<50);
   }
 
   public double getSetpoint(){
@@ -116,6 +109,7 @@ public class Shooter extends SubsystemBase {
     setpoint = speed*maxRPM;
     propMotor.set(speed);
     topMotor.set(speed * (deflect?-1:1));
+    bottomMotor.set(speed);
   }
 
   /**
@@ -128,12 +122,14 @@ public class Shooter extends SubsystemBase {
     setpoint = velocity;
     propController.setReference(velocity, ControlType.kVelocity);
     topController.setReference(velocity * (deflect?-1.0:1.0), ControlType.kVelocity);
+    bottomController.setReference(velocity, ControlType.kVelocity);
   }
 
   public void setAmpVelocity(){
     setpoint = 600;
     propController.setReference(600, ControlType.kVelocity);
     topController.setReference(-1200, ControlType.kVelocity);
+    bottomController.setReference(1200, ControlType.kVelocity);
   }
   
 
@@ -156,6 +152,7 @@ public class Shooter extends SubsystemBase {
    * @return
    */
   public InstantCommand instantStopAll(){
+    setpoint = 0.0;
     return new InstantCommand(()->setPercOutput(0.0, false), this);
   }
 
@@ -171,7 +168,7 @@ public class Shooter extends SubsystemBase {
     return new FunctionalCommand(
       () -> setVelocity(1800.0, false), 
       () -> {}, 
-      interrupted->setVelocity(0.0, false), 
+      interrupted->setPercOutput(0.0, false), 
       ()->{return false;}, 
       this).withName("Holding Velocity "+1700);
   }
@@ -200,9 +197,42 @@ public class Shooter extends SubsystemBase {
     return new FunctionalCommand(
       ()->setVelocity(-1000.0, false), 
       ()->{}, 
-      (interrupted)->setVelocity(0.0, false), 
+      (interrupted)->setPercOutput(0.0, false), 
       ()->{return false;}, 
       this).withName("Ejecting");
+  }
+
+
+  public void resetPID(){
+    // PID Setup
+    double kp = 0.003;
+    double ki = 0.0;
+    double kd = 0.01;
+    double kf = 0.00028;
+    propController = propMotor.getPIDController();
+    propController.setP(kp);
+    propController.setI(ki);
+    propController.setD(kd);
+    propController.setFF(kf);
+    propController.setOutputRange(-1, 1);
+
+    kp = 0.003;
+    ki = 0.0;
+    kd = 0.01;
+    kf = 0.00028;
+    topController = topMotor.getPIDController();
+    topController.setP(kp);
+    topController.setI(ki);
+    topController.setD(kd);
+    topController.setFF(kf);
+    topController.setOutputRange(-1, 1);
+
+    bottomController = bottomMotor.getPIDController();
+    bottomController.setP(kp);
+    bottomController.setI(ki);
+    bottomController.setD(kd);
+    bottomController.setFF(kf);
+    bottomController.setOutputRange(-1, 1);
   }
 
 
@@ -218,6 +248,10 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putString("shooter/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
     SmartDashboard.putNumber("shooter/Error", Math.abs(-setpoint-propEncoder.getVelocity()));
     SmartDashboard.putBoolean("shooter/Is Ready", readyForNote());
+
+    SmartDashboard.putNumber("shooter/Propellor Current", propMotor.getOutputCurrent());
+    SmartDashboard.putNumber("shooter/Top Current", topMotor.getOutputCurrent());
+    SmartDashboard.putNumber("shooter/Bottom Current", bottomMotor.getOutputCurrent());
   }
 
 

@@ -40,10 +40,12 @@ public class Pivot extends SubsystemBase {
   private TrapezoidProfile motionProfile;
 
   // Tested Positions
-  public static final double INTAKE_POS = 80;
+  public static final double INTAKE_POS = 75;
   public static final double HUMAN_POS = 115;
-  public static final double AMP_POS = 85;
+  public static final double AMP_POS = 92;
   public static final double TRANSIT_POS = 10;
+
+  private double MAX = 110.0; // TODO
 
 
   /* CONSTRUCTORS */
@@ -53,10 +55,12 @@ public class Pivot extends SubsystemBase {
     // Motor Setup
     leftPivot = new CANSparkFlex(Constants.Pivot.leftPivotCAN, MotorType.kBrushless);
     rightPivot = new CANSparkFlex(Constants.Pivot.rightPivotCAN, MotorType.kBrushless);
-    leftPivot.setInverted(true);
-    rightPivot.follow(leftPivot);
+    leftPivot.setInverted(false);
+    rightPivot.follow(leftPivot, true);
     leftPivot.setIdleMode(IdleMode.kBrake);
     rightPivot.setIdleMode(IdleMode.kBrake);
+    leftPivot.setSmartCurrentLimit(40);
+    rightPivot.setSmartCurrentLimit(40);
 
     SparkUtilities.optimizeFrames(leftPivot, true, false, true, false, false, true);
     SparkUtilities.optimizeFrames(rightPivot, false, false, true, false, false, false);
@@ -71,18 +75,21 @@ public class Pivot extends SubsystemBase {
     pivotController.setPositionPIDWrappingEnabled(true);
     pivotController.setPositionPIDWrappingMinInput(0);
     pivotController.setPositionPIDWrappingMaxInput(360);
-    pivotController.setP(0.009, 0);
+    pivotController.setP(0.006, 0);
     pivotController.setI(0.0, 0);
-    pivotController.setD(0.0, 0);
+    pivotController.setD(0.002, 0);
     pivotController.setFF(0.0001, 0);
 
-    pivotController.setP(0.005, 1);
+    pivotController.setP(0.01, 1);
     pivotController.setI(0.0, 1);
-    pivotController.setD(0.01, 1);
+    pivotController.setD(0.02, 1);
     pivotController.setFF(0.0005, 1);
 
     // Trapezoid Profile Setup
-    motionProfile = new TrapezoidProfile(new Constraints(Conversions.dpsToRpm(5760), Conversions.dpsToRpm(5760)));
+    motionProfile = new TrapezoidProfile(new Constraints(Conversions.dpsToRpm(1440 * (125.0*50.0/48.0)), Conversions.dpsToRpm(1440 * (125.0*50.0/48.0))));
+    // Torque = 1:5 + 1:5 + 1:5 + 48:50 = 130.21 : 1
+    // RPM = 5:1 + 5:1 + 5:1 + 50:48 = 1 : 130.20833333
+
   }
 
 
@@ -194,7 +201,13 @@ public class Pivot extends SubsystemBase {
 
     SmartDashboard.putNumber("pivot/Absolute Angle", pivotEncoder.getPosition());
     SmartDashboard.putNumber("pivot/Pivot Velocity", pivotEncoder.getVelocity());
+    SmartDashboard.putNumber("pivot/Relative Position", leftPivot.getEncoder().getPosition());
     SmartDashboard.putString("pivot/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
+
+    SmartDashboard.putNumber("pivot/Left Current", leftPivot.getOutputCurrent());
+    SmartDashboard.putNumber("pivot/Right Current", rightPivot.getOutputCurrent());
+
+    //if(leftPivot.getEncoder().getPosition() >= MAX)
   }
 
 

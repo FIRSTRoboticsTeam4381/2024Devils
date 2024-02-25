@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase {
   private CANSparkMax intake;
   private CANSparkMax helper;
 
-  public static final double INTAKE_SPEED = 0.8;
+  public static final double INTAKE_SPEED = 1.0;
 
 
   /* CONSTRUCTORS */
@@ -32,6 +32,8 @@ public class Intake extends SubsystemBase {
   public Intake() {
     intake = new CANSparkMax(Constants.Intake.primaryIntakeCAN, MotorType.kBrushless);
     helper = new CANSparkMax(Constants.Intake.helperIntakeCAN, MotorType.kBrushless);
+    intake.setSmartCurrentLimit(60);
+    helper.setSmartCurrentLimit(40);
 
     helper.follow(intake);
 
@@ -106,6 +108,9 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putString("intake/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
+
+    SmartDashboard.putNumber("intake/Intake Current", intake.getOutputCurrent());
+    SmartDashboard.putNumber("intake/Helper Current", helper.getAppliedOutput());
   }
 
 

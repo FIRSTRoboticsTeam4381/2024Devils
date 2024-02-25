@@ -23,7 +23,7 @@ public class Index extends SubsystemBase {
   private CANSparkMax indexMotor;
   private DigitalInput indexEye;
 
-  public static final double INDEX_SPEED = 0.3;
+  public static final double INDEX_SPEED = 0.2;
 
 
   /* CONSTRUCTORS */
@@ -32,6 +32,7 @@ public class Index extends SubsystemBase {
   public Index() {
     indexMotor = new CANSparkMax(Constants.Index.indexCAN, MotorType.kBrushless);
     indexEye = new DigitalInput(Constants.Index.indexDIO);
+    indexMotor.setSmartCurrentLimit(30);
 
     SparkUtilities.optimizeFrames(indexMotor, false, false, false, false, false, false);
   }
@@ -148,6 +149,8 @@ public class Index extends SubsystemBase {
 
     SmartDashboard.putBoolean("index/Note Stored", noteStored());
     SmartDashboard.putString("index/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
+
+    SmartDashboard.putNumber("index/Index Current", indexMotor.getOutputCurrent());
   }
 
 
