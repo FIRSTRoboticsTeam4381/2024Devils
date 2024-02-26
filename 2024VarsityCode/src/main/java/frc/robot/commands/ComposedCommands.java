@@ -26,6 +26,8 @@ public class ComposedCommands {
     private Limelight ll;
     private Swerve swerve;
 
+    private State activeState = State.transit;
+
     // TODO change pivot commands over to profiled motion once that's done
 
     public ComposedCommands(Intake intake, Index index, Shooter shooter, Pivot pivot, Limelight ll, Swerve swerve){
@@ -40,38 +42,67 @@ public class ComposedCommands {
 
     /* INTAKE */
 
-    /*
-     * Should be able to run off of a toggleOnTrue because this will be cancelled by either other commands
-     * or the toggle, which would stop the intake running as well as the index.
-     */
+    public Command toggleGroundIntake(){
+        return new ConditionalCommand(stopGroundIntake(), groundIntake(), this::groundIntaking);
+    }
+    private boolean groundIntaking(){
+        return activeState == State.groundIntake;
+    }
     public Command groundIntake(){
+        activeState = State.groundIntake;
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
-                //pivot.goToIntake(),
                 pivot.profiledMove(Pivot.INTAKE_POS),
                 new ParallelRaceGroup(
                     intake.run(),
                     index.indexUntilIn(false)
                 )
             ),
-            pivot.profiledMove(Pivot.TRANSIT_POS)
+            stopGroundIntake()
         );
     }
+    public Command stopGroundIntake(){
+        activeState = State.transit;
+        return new ParallelCommandGroup(
+            pivot.profiledMove(Pivot.TRANSIT_POS),
+            intake.instantStop(),
+            index.instantStop()  
+        );
+    }
+
+
+    /* HUMAN PLAYER INTAKE */
 
     /*
      * Should also be able to run off of a toggleOnTrue for the same reasons, everything that
      * needs to stop should stop
      */
+    public Command toggleHumanIntake(){
+        return new ConditionalCommand(stopHumanIntake(), humanIntake(), this::humanIntaking);
+    }
+    private boolean humanIntaking(){
+        return activeState == State.humanIntake;
+    }
     public Command humanIntake(){
+        activeState = State.humanIntake;
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
                 pivot.profiledMove(Pivot.HUMAN_POS),
                 index.indexUntilIn(true), // Stops when cancelled
                 shooter.eject() // Stops when cancelled
             ),
-            pivot.profiledMove(Pivot.TRANSIT_POS)
+            stopHumanIntake()
         );
     }
+    public Command stopHumanIntake(){
+        activeState = State.transit;
+        return new ParallelCommandGroup(
+            pivot.profiledMove(Pivot.TRANSIT_POS),
+            index.instantStop(),
+            shooter.instantStopAll()
+        );
+    }
+
 
     /* EJECT */
 
@@ -88,10 +119,24 @@ public class ComposedCommands {
 
     /* AMP MODE TOGGLE */
 
+    public Command toggleAmpMode(){
+        return new ConditionalCommand(stopAmpMode(), ampMode(), this::inAmpMode);
+    }
+    private boolean inAmpMode(){
+        return activeState == State.amp;
+    }
     public Command ampMode(){
+        activeState = State.amp;
         return new ParallelCommandGroup(
             pivot.profiledMove(Pivot.AMP_POS),
             shooter.ampShoot() // Stops when cancelled
+        );
+    }
+    public Command stopAmpMode(){
+        activeState = State.transit;
+        return new ParallelCommandGroup(
+            pivot.profiledMove(Pivot.TRANSIT_POS),
+            shooter.instantStopAll()
         );
     }
 
@@ -108,33 +153,37 @@ public class ComposedCommands {
     /* CANCEL ALL COMMANDS */
     public Command cancelAll(){
         return new InstantCommand(() -> CommandScheduler.getInstance().cancelAll());
-        /*
-        return new ParallelCommandGroup(
-            new InstantCommand(() -> pivot.setAngleReference(pivot.getAngle(), 0), pivot),
-            shooter.instantStopAll(),
-            index.instantStop(),
-            intake.instantStop()
-        );
-        */
     }
 
-    private boolean autoAiming = false;
-    /* TOGGLE AUTO AIMING */
+
+    /* AUTO AIM */
+
     public Command toggleAutoAim(){
-        return new ConditionalCommand(stopAutoAim(), autoAim(), () -> {return autoAiming;});
+        return new ConditionalCommand(stopAutoAim(), autoAim(), this::autoAiming);
+    }
+    public boolean autoAiming(){
+        return activeState == State.autoAim;
     }
     public Command autoAim(){
-        autoAiming = true;
+        activeState = State.autoAim;
         return new SequentialCommandGroup(
-            //pivot.profiledMove(20),
+            pivot.profiledMove(30),
             new AutoAim(shooter, pivot, ll, swerve)
         );
     }
     public Command stopAutoAim(){
-        autoAiming = false;
+        activeState = State.transit;
         return new ParallelCommandGroup(
-            pivot.goToTransit(),
+            pivot.profiledMove(Pivot.TRANSIT_POS),
             shooter.instantStopAll()
         );
+    }
+
+    private enum State{
+        transit,
+        autoAim,
+        groundIntake,
+        humanIntake,
+        amp
     }
 }

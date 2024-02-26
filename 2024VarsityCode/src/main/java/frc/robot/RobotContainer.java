@@ -108,13 +108,13 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
 
-        specialist.cross().toggleOnTrue(commands.groundIntake());
-        specialist.square().toggleOnTrue(commands.humanIntake());
+        specialist.cross().onTrue(commands.toggleGroundIntake());
+        specialist.square().onTrue(commands.toggleHumanIntake());
         specialist.circle().whileTrue(commands.ejectNote());
         specialist.L1().toggleOnTrue(s_Shooter.shootAvgSpeed()); // Changes this so it will cancel auto aiming
-        specialist.povRight().toggleOnTrue(commands.ampMode());
+        specialist.povRight().onTrue(commands.toggleAmpMode());
         specialist.R1().whileTrue(commands.feedNote());
-        specialist.triangle().toggleOnTrue(commands.autoAim());
+        specialist.triangle().onTrue(commands.toggleAutoAim());
 
         specialist.touchpad().or(driver.touchpad()).onTrue(commands.cancelAll());
 
