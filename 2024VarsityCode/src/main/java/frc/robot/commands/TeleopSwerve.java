@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Swerve;
 
 public class TeleopSwerve extends Command{
@@ -46,15 +48,22 @@ public class TeleopSwerve extends Command{
         rAxis = (Math.abs(rAxis) < Constants.stickDeadband) ? 0 : rAxis;
 
         /* Slow Trigger */
-        double slowdown = 1 - (controller.getR2Axis() < Constants.stickDeadband ? 0 : controller.getR2Axis());
+        double slowdown = 1 - ((controller.getR2Axis()+1.0)/2.0 < Constants.stickDeadband ? 0 : (controller.getR2Axis()+1.0)/2.0);
         yAxis *= slowdown;
         xAxis *= slowdown;
         rAxis *= slowdown;
+
+        /* Slowdown from Pivot */
+        Pivot pivot = RobotContainer.s_Pivot;
+        if(pivot.getAngle() > 65){
+            yAxis *= 0.5;
+            xAxis *= 0.5;
+            rAxis *= 0.5;
+        }
 
         /* Calculates inputs for swerve subsystem */
         translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);
         rotation = rAxis * Constants.Swerve.maxAngularVelocity;
         s_Swerve.drive(translation, rotation, true, openLoop);
-
     }
 }
