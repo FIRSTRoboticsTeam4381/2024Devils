@@ -77,8 +77,8 @@ public final class Constants {
         
         // TODO check - auto - PIDs need to be configured
         public static final HolonomicPathFollowerConfig holonomicConfig = new HolonomicPathFollowerConfig(
-            new PIDConstants(2.3, 0.0, 0.0), // TODO Translation PID constants
-            new PIDConstants(1.0, 0.0, 0.0), // TODO Rotation PID constants
+            new PIDConstants(5.0, 0.0, 0.0), // TODO Translation PID constants
+            new PIDConstants(2.5, 0.0, 0.0), // TODO Rotation PID constants
             6,
             0.382,
             new ReplanningConfig() // Default path replanning config. See the API for the options here

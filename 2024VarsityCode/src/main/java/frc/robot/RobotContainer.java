@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -74,8 +75,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("Intake", commands.groundIntake());
         NamedCommands.registerCommand("StopIntake", s_Intake.instantStop());
         NamedCommands.registerCommand("ShooterSpinUp", s_Shooter.shootAvgSpeed());
-        NamedCommands.registerCommand("AutoAim", commands.autoAim());
-        NamedCommands.registerCommand("Shoot", s_Index.indexUntilShot(false));
+        NamedCommands.registerCommand("AutoAim", new SequentialCommandGroup(s_Pivot.profiledMove(35),commands.autoAim()));
+        NamedCommands.registerCommand("Shoot", s_Index.run());
         NamedCommands.registerCommand("LowerPivot", s_Pivot.profiledMove(40));
 
         // Configure the button bindings
@@ -120,7 +121,7 @@ public class RobotContainer {
         specialist.L1().toggleOnTrue(s_Shooter.shootAvgSpeed()); // Changes this so it will cancel auto aiming
         specialist.povRight().toggleOnTrue(commands.ampMode());
         specialist.R1().whileTrue(commands.feedNote());
-        specialist.triangle().toggleOnTrue(commands.autoAim());
+        //specialist.triangle().toggleOnTrue(commands.autoAim());
 
         specialist.touchpad().or(driver.touchpad()).onTrue(commands.cancelAll());
 

@@ -38,7 +38,7 @@ public class AutoAim extends Command {
 
   private void calcAngle(){
     double calculatedAngle = currentAngle;
-    if(ll.hasTargets() == 1) calculatedAngle = 45.62307316*Math.pow(ll.distanceFromGoal(), -0.425990916); // r^2 = 0.995 // despite predicting, still won't move unless a target is in sight. prevents going crazy
+    if(ll.hasTargets() == 1) calculatedAngle = 53.62307316*Math.pow(predictFuturePosition(), -0.62590916); // r^2 = 0.995 // despite predicting, still won't move unless a target is in sight. prevents going crazy
     if(calculatedAngle > 60) calculatedAngle = currentAngle; // Angle should never be greater than 60, so if it is for some reason, ignore it and keep pivot at the current angle
     currentAngle = calculatedAngle;
   }
@@ -48,7 +48,7 @@ public class AutoAim extends Command {
 
   private double getTargetRelativeVelocity(){
     double robotVelocity = swerve.getRobotRelativeSpeeds().vxMetersPerSecond; // Since the Limelight is on the front of the robot, the only helpful velocity is the axis that is facing the target
-    return robotVelocity;
+    return -robotVelocity;
   }
 
   private double estimateDistance(){
@@ -59,7 +59,7 @@ public class AutoAim extends Command {
   }
 
   private double predictFuturePosition(){
-    final double lengthOfTime = 100; // ms
+    final double lengthOfTime = 900; // ms
     double predictedTravel = getTargetRelativeVelocity() * (lengthOfTime/1000.0);
     double predictedPosition = estimateDistance() - predictedTravel;
     return predictedPosition;

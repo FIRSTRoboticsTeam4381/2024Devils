@@ -22,7 +22,7 @@ public final class Autos {
 
     // TODO test of full auto
     public static Command testAuto(){
-        return new PathPlannerAuto("Auto1");
+        return new PathPlannerAuto("Test");
     }
 
     // TODO test of a single path

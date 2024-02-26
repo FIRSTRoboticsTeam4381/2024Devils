@@ -40,7 +40,7 @@ public class Pivot extends SubsystemBase {
   private TrapezoidProfile motionProfile;
 
   // Tested Positions
-  public static final double INTAKE_POS = 75;
+  public static final double INTAKE_POS = 80;
   public static final double HUMAN_POS = 115;
   public static final double AMP_POS = 92;
   public static final double TRANSIT_POS = 10;
@@ -75,18 +75,18 @@ public class Pivot extends SubsystemBase {
     pivotController.setPositionPIDWrappingEnabled(true);
     pivotController.setPositionPIDWrappingMinInput(0);
     pivotController.setPositionPIDWrappingMaxInput(360);
-    pivotController.setP(0.006, 0);
+    pivotController.setP(0.008, 0);
     pivotController.setI(0.0, 0);
     pivotController.setD(0.002, 0);
     pivotController.setFF(0.0001, 0);
 
     pivotController.setP(0.01, 1);
     pivotController.setI(0.0, 1);
-    pivotController.setD(0.02, 1);
+    pivotController.setD(0.03, 1);
     pivotController.setFF(0.0005, 1);
 
     // Trapezoid Profile Setup
-    motionProfile = new TrapezoidProfile(new Constraints(Conversions.dpsToRpm(1440 * (125.0*50.0/48.0)), Conversions.dpsToRpm(1440 * (125.0*50.0/48.0))));
+    motionProfile = new TrapezoidProfile(new Constraints(Conversions.dpsToRpm(2000 * (125.0*50.0/48.0)), Conversions.dpsToRpm(800 * (125.0*50.0/48.0))));
     // Torque = 1:5 + 1:5 + 1:5 + 48:50 = 130.21 : 1
     // RPM = 5:1 + 5:1 + 5:1 + 50:48 = 1 : 130.20833333
 
