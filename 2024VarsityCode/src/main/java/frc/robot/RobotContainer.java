@@ -19,6 +19,7 @@ import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Swerve;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -76,6 +77,10 @@ public class RobotContainer {
 
         /* Pathplanner Commands */
         registerCommands();
+
+        PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {s_Swerve.mField.setRobotPose(pose);});
+        PathPlannerLogging.setLogTargetPoseCallback((pose) -> {s_Swerve.mField.getObject("target pose").setPose(pose);});
+        PathPlannerLogging.setLogActivePathCallback((poses) -> {s_Swerve.mField.getObject("path").setPoses(poses);});
 
         /* Autonomous Chooser */
         m_AutoChooser.setDefaultOption("None", Autos.none());
