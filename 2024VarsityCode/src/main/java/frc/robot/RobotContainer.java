@@ -121,7 +121,7 @@ public class RobotContainer {
         specialist.L1().toggleOnTrue(s_Shooter.shootAvgSpeed()); // Changes this so it will cancel auto aiming
         specialist.povRight().toggleOnTrue(commands.ampMode());
         specialist.R1().whileTrue(commands.feedNote());
-        //specialist.triangle().toggleOnTrue(commands.autoAim());
+        specialist.triangle().toggleOnTrue(commands.autoAim());
 
         specialist.touchpad().or(driver.touchpad()).onTrue(commands.cancelAll());
 
