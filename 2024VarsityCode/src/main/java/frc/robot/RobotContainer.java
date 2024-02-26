@@ -60,9 +60,9 @@ public class RobotContainer {
     public static final Limelight s_LL = new Limelight();
 
     /* Commands */
-    ComposedCommands commands = new ComposedCommands(s_Intake, s_Index, s_Shooter, s_Pivot, s_LL, s_Swerve);
+   public static final ComposedCommands commands = new ComposedCommands(s_Intake, s_Index, s_Shooter, s_Pivot, s_LL, s_Swerve);
 
-    //Auto Chooser
+    // Auto Chooser
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
@@ -71,22 +71,15 @@ public class RobotContainer {
         s_Pivot.setDefaultCommand(new ManualPivot(specialist::getLeftY, s_Pivot).withName("Manual Pivot"));
         //s_Climb.setDefaultCommand(new ManualClimb(specialist::getRightY, specialist.R3(), s_Climb, s_Pivot));
 
-        /* Pathplanner Commands */
-        NamedCommands.registerCommand("Intake", commands.groundIntake());
-        NamedCommands.registerCommand("StopIntake", s_Intake.instantStop());
-        NamedCommands.registerCommand("ShooterSpinUp", s_Shooter.shootAvgSpeed());
-        NamedCommands.registerCommand("AutoAim", new SequentialCommandGroup(s_Pivot.profiledMove(35),commands.autoAim()));
-        NamedCommands.registerCommand("Shoot", s_Index.run());
-        NamedCommands.registerCommand("LowerPivot", s_Pivot.profiledMove(40));
-
         // Configure the button bindings
         configureButtonBindings();
 
-        // Add autonomous options to chooser
-        m_AutoChooser.setDefaultOption("None", Autos.none());
-        // TODO m_AutoChooser.addOption("PathPlanner Example", Autos.exampleAuto());
-        m_AutoChooser.addOption("Test", Autos.testAuto());
+        /* Pathplanner Commands */
+        registerCommands();
 
+        /* Autonomous Chooser */
+        m_AutoChooser.setDefaultOption("None", Autos.none());
+        m_AutoChooser.addOption("Current Test", Autos.testAuto());
         SmartDashboard.putData(m_AutoChooser);
 
         // Button to turn on/off sending debug data to the dashboard
@@ -130,6 +123,15 @@ public class RobotContainer {
 
 
         /* TESTING BUTTONS */
+    }
+
+    private void registerCommands(){
+        NamedCommands.registerCommand("Intake", commands.groundIntake());
+        NamedCommands.registerCommand("StopIntake", s_Intake.instantStop());
+        NamedCommands.registerCommand("ShooterSpinUp", s_Shooter.shootAvgSpeed());
+        NamedCommands.registerCommand("AutoAim", new SequentialCommandGroup(s_Pivot.profiledMove(35),commands.autoAim()));
+        NamedCommands.registerCommand("Shoot", s_Index.run());
+        NamedCommands.registerCommand("LowerPivot", s_Pivot.profiledMove(40));
     }
 
     /**
