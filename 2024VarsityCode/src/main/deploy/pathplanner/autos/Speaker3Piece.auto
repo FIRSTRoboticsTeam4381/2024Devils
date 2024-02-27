@@ -34,12 +34,6 @@
           "data": {
             "pathName": "AmpSide3PiecePath3"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AmpSideShoot"
-          }
         }
       ]
     }

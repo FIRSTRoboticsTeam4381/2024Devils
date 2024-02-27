@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -20,7 +21,7 @@ public class Climb extends SubsystemBase {
   /* ATTRIBUTES */
   private CANSparkMax rightBaseMotor;
   private CANSparkMax leftBaseMotor;
-  private CANSparkMax midMotor;
+  private CANSparkFlex midMotor;
 
   private SparkPIDController baseController;
   private SparkPIDController middleController;
@@ -39,7 +40,7 @@ public class Climb extends SubsystemBase {
     // Motor Setup
     rightBaseMotor = new CANSparkMax(Constants.Climb.rightClimbCAN, MotorType.kBrushless);
     leftBaseMotor = new CANSparkMax(Constants.Climb.leftClimbCAN, MotorType.kBrushless);
-    midMotor = new CANSparkMax(Constants.Climb.midClimbCAN, MotorType.kBrushless);
+    midMotor = new CANSparkFlex(Constants.Climb.midClimbCAN, MotorType.kBrushless);
 
     leftBaseMotor.follow(rightBaseMotor, true);
 

@@ -58,7 +58,7 @@ public class RobotContainer {
     public static final Index s_Index = new Index();
     public static final Pivot s_Pivot = new Pivot();
     public static final Shooter s_Shooter = new Shooter();
-    public static final Climb s_Climb = new Climb();
+    //public static final Climb s_Climb = new Climb();
     public static final Limelight s_LL = new Limelight();
 
     /* Commands */
@@ -71,7 +71,7 @@ public class RobotContainer {
     public RobotContainer(){
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true).withName("Teleop"));
         s_Pivot.setDefaultCommand(new ManualPivot(specialist::getLeftY, s_Pivot).withName("Manual Pivot"));
-        s_Climb.setDefaultCommand(new ManualClimb(specialist, s_Climb, s_Pivot));
+        //s_Climb.setDefaultCommand(new ManualClimb(specialist, s_Climb, s_Pivot));
 
         // Configure the button bindings
         configureButtonBindings();
