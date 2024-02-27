@@ -181,6 +181,8 @@ public class Swerve extends SubsystemBase{
         double[] targetAngles = new double[4];
         double[] absoluteAngles = new double[4];
 
+        SmartDashboard.putNumber("swerve/rotation", getYaw().getDegrees());
+
         for(SwerveModule m : mSwerveMods){
             SmartDashboard.putNumber("swerve/Mod "+m.moduleNumber+" Angle Current", m.getAngleCurrent());
             SmartDashboard.putNumber("swerve/Mod "+m.moduleNumber+" Drive Current", m.getDriveCurrent());
@@ -193,6 +195,7 @@ public class Swerve extends SubsystemBase{
             targetAngles[mod.moduleNumber] = mod.getDesiredAngle();
             absoluteAngles[mod.moduleNumber] = mod.getAngle().getDegrees();
         }
+
 
         // Compile swerve status for AdvantageScope
         double[] targetStateAdv = new double[8];

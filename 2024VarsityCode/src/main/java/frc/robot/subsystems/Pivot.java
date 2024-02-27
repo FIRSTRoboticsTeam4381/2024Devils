@@ -5,6 +5,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkFlex;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -30,8 +31,8 @@ public class Pivot extends SubsystemBase {
 
   /* ATTRIBUTES */
   
-  private CANSparkFlex rightPivot;
-  private CANSparkFlex leftPivot;
+  private CANSparkMax rightPivot;
+  private CANSparkMax leftPivot;
 
   private AbsoluteEncoder pivotEncoder;
 
@@ -53,8 +54,8 @@ public class Pivot extends SubsystemBase {
   /** Creates a new Pivot. */
   public Pivot() {
     // Motor Setup
-    leftPivot = new CANSparkFlex(Constants.Pivot.leftPivotCAN, MotorType.kBrushless);
-    rightPivot = new CANSparkFlex(Constants.Pivot.rightPivotCAN, MotorType.kBrushless);
+    leftPivot = new CANSparkMax(Constants.Pivot.leftPivotCAN, MotorType.kBrushless);
+    rightPivot = new CANSparkMax(Constants.Pivot.rightPivotCAN, MotorType.kBrushless);
     leftPivot.setInverted(false);
     rightPivot.follow(leftPivot, true);
     leftPivot.setIdleMode(IdleMode.kBrake);

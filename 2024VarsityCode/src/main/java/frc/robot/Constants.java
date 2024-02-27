@@ -60,13 +60,13 @@ public final class Constants {
         /* Drivetrain Constants */
         public static final double trackWidth = Units.inchesToMeters(21.25);
         public static final double wheelBase = Units.inchesToMeters(21.25);
-        public static final double wheelDiameter = Units.inchesToMeters(4);
+        public static final double wheelDiameter = Units.inchesToMeters(3.82);
         public static final double wheelCircumference = wheelDiameter * Math.PI;
 
         public static final double openLoopRamp = 0.25;
         public static final double closedLoopRamp = 0.0;
 
-        public static final double driveGearRatio = (425.0 / 72.0); //TODO
+        public static final double driveGearRatio = (5.9025); //TODO
         public static final double angleGearRatio = (150.0/7.0 / 1.0); //TODO
 
         public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
@@ -77,9 +77,9 @@ public final class Constants {
         
         // TODO check - auto - PIDs need to be configured
         public static final HolonomicPathFollowerConfig holonomicConfig = new HolonomicPathFollowerConfig(
-            new PIDConstants(5.0, 0.0, 0.0), // TODO Translation PID constants
+            new PIDConstants(4.0, 0.0, 0.0), // TODO Translation PID constants
             new PIDConstants(2.5, 0.0, 0.0), // TODO Rotation PID constants
-            6,
+            5.95,
             0.382,
             new ReplanningConfig() // Default path replanning config. See the API for the options here
         );
@@ -103,10 +103,10 @@ public final class Constants {
 
         /* Drive Motor PID Values */
         // TODO
-        public static final double driveKP = 0.00005;
+        public static final double driveKP = 0.00008;
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
-        public static final double driveKF = 0.00001;
+        public static final double driveKF = 0.00002;
 
         /* Drive Motor Characterization Values */
         // From SysId
