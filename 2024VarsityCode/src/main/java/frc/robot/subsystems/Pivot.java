@@ -41,7 +41,7 @@ public class Pivot extends SubsystemBase {
   private TrapezoidProfile motionProfile;
 
   // Tested Positions
-  public static final double INTAKE_POS = 80;
+  public static final double INTAKE_POS = 85;
   public static final double HUMAN_POS = 115;
   public static final double AMP_POS = 92;
   public static final double TRANSIT_POS = 10;
@@ -87,7 +87,7 @@ public class Pivot extends SubsystemBase {
     pivotController.setFF(0.0005, 1);
 
     // Trapezoid Profile Setup
-    motionProfile = new TrapezoidProfile(new Constraints(Conversions.dpsToRpm(2000 * (125.0*50.0/48.0)), Conversions.dpsToRpm(800 * (125.0*50.0/48.0))));
+    motionProfile = new TrapezoidProfile(new Constraints(Conversions.dpsToRpm(3000 * (125.0*50.0/48.0)), Conversions.dpsToRpm(1000 * (125.0*50.0/48.0))));
     // Torque = 1:5 + 1:5 + 1:5 + 48:50 = 130.21 : 1
     // RPM = 5:1 + 5:1 + 5:1 + 50:48 = 1 : 130.20833333
 

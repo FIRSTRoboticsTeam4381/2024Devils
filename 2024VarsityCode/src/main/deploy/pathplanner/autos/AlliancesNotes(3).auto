@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5528152568430658,
-      "y": 4.11050362756931
+      "x": 0.5602733209044244,
+      "y": 4.126676732781015
     },
     "rotation": 0
   },
@@ -20,43 +20,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "New Path"
+            "pathName": "A3QuickPick"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "M5PickupStage"
+            "pathName": "A3QuickShot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "M5ReturnHP"
+            "pathName": "A2FromA3QuickFire"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ShootHPSide"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "M4PickupHP"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "M4ReturnHP"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ShootHPSide"
+            "pathName": "A1FromA2QuickFire"
           }
         }
       ]
