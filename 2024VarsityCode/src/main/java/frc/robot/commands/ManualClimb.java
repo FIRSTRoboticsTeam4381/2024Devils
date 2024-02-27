@@ -4,28 +4,22 @@
 
 package frc.robot.commands;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import frc.robot.Constants;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Pivot;
 
 public class ManualClimb extends Command {
+  private CommandPS4Controller controller;
   private Climb climb;
   private Pivot pivot;
 
-  private Supplier<Double> joystick;
-  private Trigger button;
-
-  private boolean previousState = false;
-
   /** Creates a new ManualClimb. */
-  public ManualClimb(Supplier<Double> joystick, Trigger button, Climb climb, Pivot pivot) {
+  public ManualClimb(CommandPS4Controller specialsController, Climb climb, Pivot pivot) {
+    controller = specialsController;
     this.climb = climb;
     this.pivot = pivot;
-    this.joystick = joystick;
-    this.button = button;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(climb);
@@ -38,28 +32,24 @@ public class ManualClimb extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(pivot.getAngle() < 60){
-      climb.setBasePercOutput(joystick.get());
-      if(button.getAsBoolean()){
-        if(!previousState){
-          togglePosition();
-        }
-        previousState = true;
-      }else{
-        previousState = false;
-      }
-    }else{
-      climb.setBasePercOutput(0.0);
-      climb.setMidPercOutput(0.0);
-    }
-  }
+    double positiveJointInput = (controller.getL2Axis()+1.0)/2.0;
+    double negativeJointInput = (controller.getR2Axis()+1.0)/2.0;
+    double climbInput = controller.getRightY();
 
-  private void togglePosition(){
-    if(climb.getMiddleReference() == 0.0){
-      climb.setMiddleReference(Climb.MID_READY_POS);
-    }else{
-      climb.setMiddleReference(0.0);
+    // Deadbands
+    positiveJointInput = positiveJointInput<Constants.stickDeadband?0.0:positiveJointInput;
+    negativeJointInput = negativeJointInput<Constants.stickDeadband?0.0:negativeJointInput;
+    climbInput = climbInput<Constants.stickDeadband?0.0:climbInput;
+
+    // Disable Control if pivot is too low
+    if(pivot.getAngle()<60){
+      positiveJointInput = 0.0;
+      negativeJointInput = 0.0;
+      climbInput = 0.0;
     }
+
+    climb.setBasePercOutput(climbInput);
+    climb.setMidPercOutput(positiveJointInput-negativeJointInput);
   }
 
   // Called once the command ends or is interrupted.
