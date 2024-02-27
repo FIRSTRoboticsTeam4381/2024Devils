@@ -26,19 +26,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "M1PickupAmp"
+            "pathName": "AmpSide3PiecePath2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "M1ReturnAmp"
+            "pathName": "AmpSide3PiecePath3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ShootAmpSide"
+            "pathName": "AmpSideShoot"
           }
         }
       ]

@@ -20,12 +20,12 @@
         "y": 0.7636554807993345
       },
       "prevControl": {
-        "x": 7.785629023851966,
-        "y": 0.660855704537886
+        "x": 7.765515447724047,
+        "y": 0.6940396101545365
       },
       "nextControl": {
-        "x": 8.229713717797003,
-        "y": 1.0062549109395804
+        "x": 8.431799046066786,
+        "y": 0.9986263979683605
       },
       "isLocked": false,
       "linkedName": null
@@ -36,24 +36,24 @@
         "y": 7.298784114562863
       },
       "prevControl": {
-        "x": 8.382630997646269,
-        "y": 7.1999202775977595
+        "x": 8.19682812889776,
+        "y": 7.284098432239799
       },
       "nextControl": {
-        "x": 7.624086518298261,
-        "y": 7.548440714054952
+        "x": 7.6326075205521535,
+        "y": 7.566208736412602
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.597462357715413,
-        "y": 6.784785233255618
+        "x": 5.0100350647928495,
+        "y": 6.623242727701913
       },
       "prevControl": {
-        "x": 6.3314030733607085,
-        "y": 7.618197705089507
+        "x": 5.90586168649976,
+        "y": 7.019756150424644
       },
       "nextControl": null,
       "isLocked": false,
@@ -72,7 +72,19 @@
       "rotateFast": false
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 2.55,
+      "maxWaypointRelativePos": 3.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "New Event Marker",
@@ -107,11 +119,28 @@
           ]
         }
       }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 2.9,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -121,7 +150,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Chaos2Piece",
   "previewStartingState": {
     "rotation": -30.721758405096203,
     "velocity": 0

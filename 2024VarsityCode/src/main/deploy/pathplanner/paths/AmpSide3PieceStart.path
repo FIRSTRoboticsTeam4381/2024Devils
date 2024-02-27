@@ -3,37 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.106304828872139,
-        "y": 7.37782702384235
+        "x": 0.5703815116617389,
+        "y": 6.979658581285779
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.473919655399938,
-        "y": 7.120188619835157
+        "x": 0.9568391176725288,
+        "y": 7.038212764014687
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.443366039371165,
-        "y": 6.604911811820771
+        "x": 1.9932481519741916,
+        "y": 6.499514282908736
       },
       "prevControl": {
-        "x": 7.215672001643574,
-        "y": 6.8504260947295075
+        "x": 1.559947199780276,
+        "y": 6.499514282908736
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6,
+      "rotationDegrees": 34.29377323349481,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.75,
+      "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
         "data": {
@@ -47,23 +53,40 @@
           ]
         }
       }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.9,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.75,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 0.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 11.055130568079525,
+    "rotation": 33.34070734647711,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "AmpPaths",
+  "folder": "AmpSide3Piece",
   "previewStartingState": {
-    "rotation": 9.314767419796826,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": false

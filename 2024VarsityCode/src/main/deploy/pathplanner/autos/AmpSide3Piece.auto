@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5455876385813603,
-      "y": 2.055995525228976
+      "x": 0.5528152568430658,
+      "y": 6.956236908194216
     },
     "rotation": 0
   },
@@ -14,19 +14,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start4"
+            "pathName": "AmpSide3PieceStart"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Auto1Path1"
+            "pathName": "AmpSide3PiecePath1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Auto1Path2"
+            "pathName": "AmpSide3PiecePath2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AmpSide3PiecePath3"
           }
         }
       ]

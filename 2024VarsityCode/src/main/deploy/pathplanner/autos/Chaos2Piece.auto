@@ -14,19 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start4"
+            "pathName": "HP3PieceStart"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "PickAndDestroy"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ShootAmpSide"
           }
         }
       ]

@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.9756818971555201,
+        "x": 2.2050697410876046,
         "y": 5.562647359246215
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.444115358986781,
+        "x": 2.6735032029188655,
         "y": 5.58606903233778
       },
       "isLocked": false,
@@ -39,7 +39,7 @@
     {
       "name": "New Constraints Zone",
       "minWaypointRelativePos": 0.55,
-      "maxWaypointRelativePos": 0.9,
+      "maxWaypointRelativePos": 0.85,
       "constraints": {
         "maxVelocity": 0.25,
         "maxAcceleration": 0.75,
@@ -102,8 +102,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.25,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 0.75,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -113,7 +113,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Alliance Notes",
+  "folder": "Speaker3Piece",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
