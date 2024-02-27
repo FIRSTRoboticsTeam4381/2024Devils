@@ -135,9 +135,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("Intake", commands.groundIntake());
         NamedCommands.registerCommand("StopIntake", s_Intake.instantStop());
         NamedCommands.registerCommand("ShooterSpinUp", s_Shooter.shootAvgSpeed());
-        NamedCommands.registerCommand("AutoAim", new SequentialCommandGroup(s_Pivot.profiledMove(35),commands.autoAim()));
+        NamedCommands.registerCommand("AutoAim", new SequentialCommandGroup(s_Pivot.profiledMove(30),commands.autoAim()));
         NamedCommands.registerCommand("Shoot", s_Index.run());
-        NamedCommands.registerCommand("LowerPivot", s_Pivot.profiledMove(40));
+        NamedCommands.registerCommand("LowerPivot", s_Pivot.profiledMove(0));
     }
 
     /**

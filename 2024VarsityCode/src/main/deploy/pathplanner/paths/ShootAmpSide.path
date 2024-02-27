@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.56,
-        "y": 6.45267093672561
+        "x": 6.537052731737417,
+        "y": 6.628333484912334
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.255518249809681,
-        "y": 6.405827590542485
+        "x": 6.232570981547099,
+        "y": 6.581490138729208
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.39,
-        "y": 6.253586715447326
+        "x": 4.874113942236443,
+        "y": 6.300430061630451
       },
       "prevControl": {
-        "x": 5.647638404007193,
-        "y": 6.312140898176233
+        "x": 5.131752346243636,
+        "y": 6.358984244359359
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,24 +33,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "AutoAim"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.95,
+      "waypointRelativePos": 0.5,
       "command": {
         "type": "parallel",
         "data": {
@@ -67,8 +50,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 0.75,
-    "maxAcceleration": 0.5,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 0.75,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

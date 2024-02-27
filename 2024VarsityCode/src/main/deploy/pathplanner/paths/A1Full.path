@@ -57,7 +57,7 @@
       "minWaypointRelativePos": 1.55,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
-        "maxVelocity": 0.25,
+        "maxVelocity": 0.5,
         "maxAcceleration": 1.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
@@ -84,7 +84,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 1.55,
+      "waypointRelativePos": 1.4,
       "command": {
         "type": "parallel",
         "data": {
@@ -118,7 +118,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
@@ -134,5 +134,5 @@
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

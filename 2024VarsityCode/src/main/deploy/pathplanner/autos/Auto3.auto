@@ -1,0 +1,67 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.5528152568430658,
+      "y": 4.11050362756931
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New Path"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "M5PickupStage"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "M5ReturnHP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootHPSide"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "M4PickupHP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "M4ReturnHP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootHPSide"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

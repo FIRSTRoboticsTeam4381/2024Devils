@@ -59,7 +59,7 @@ public class AutoAim extends Command {
   }
 
   private double predictFuturePosition(){
-    final double lengthOfTime = 900; // ms
+    final double lengthOfTime = 1000; // ms
     double predictedTravel = getTargetRelativeVelocity() * (lengthOfTime/1000.0);
     double predictedPosition = estimateDistance() - predictedTravel;
     return predictedPosition;
