@@ -26,7 +26,7 @@ public class ComposedCommands {
     private Limelight ll;
     private Swerve swerve;
 
-    private State activeState = State.transit;
+    private State activeState;
 
     // TODO change pivot commands over to profiled motion once that's done
 
@@ -37,13 +37,14 @@ public class ComposedCommands {
         this.pivot = pivot;
         this.ll = ll;
         this.swerve = swerve;
+        setState(State.transit);
     }
 
 
     /* INTAKE */
 
     public Command toggleGroundIntake(){
-        return new ConditionalCommand(stopGroundIntake(), groundIntake(), ()->{return activeState==State.groundIntake;});
+        return new ConditionalCommand(transit(), groundIntake(), ()->{return activeState==State.groundIntake;});
     }
     public Command groundIntake(){
         return new SequentialCommandGroup(
@@ -55,15 +56,20 @@ public class ComposedCommands {
                     index.indexUntilIn(false)
                 )
             ),
-            stopGroundIntake()
+            transit()
         );
     }
-    public Command stopGroundIntake(){
+
+
+    /* TRANSIT */
+
+    public Command transit(){
         return new ParallelCommandGroup(
             new InstantCommand(() -> setState(State.transit)),
             pivot.profiledMove(Pivot.TRANSIT_POS),
             intake.instantStop(),
-            index.instantStop()  
+            index.instantStop(),
+            shooter.instantStopAll()
         );
     }
 
@@ -75,7 +81,7 @@ public class ComposedCommands {
      * needs to stop should stop
      */
     public Command toggleHumanIntake(){
-        return new ConditionalCommand(stopHumanIntake(), humanIntake(), ()->{return activeState==State.humanIntake;});
+        return new ConditionalCommand(transit(), humanIntake(), ()->{return activeState==State.humanIntake;});
     }
     public Command humanIntake(){
         return new SequentialCommandGroup(
@@ -85,15 +91,7 @@ public class ComposedCommands {
                 index.indexUntilIn(true), // Stops when cancelled
                 shooter.eject() // Stops when cancelled
             ),
-            stopHumanIntake()
-        );
-    }
-    public Command stopHumanIntake(){
-        return new ParallelCommandGroup(
-            new InstantCommand(()->setState(State.transit)),
-            pivot.profiledMove(Pivot.TRANSIT_POS),
-            index.instantStop(),
-            shooter.instantStopAll()
+            transit()
         );
     }
 
@@ -114,7 +112,7 @@ public class ComposedCommands {
     /* AMP MODE TOGGLE */
 
     public Command toggleAmpMode(){
-        return new ConditionalCommand(stopAmpMode(), ampMode(), ()->{return activeState==State.amp;});
+        return new ConditionalCommand(transit(), ampMode(), ()->{return activeState==State.amp;});
     }
     public Command ampMode(){
         return new ParallelCommandGroup(
@@ -123,13 +121,7 @@ public class ComposedCommands {
             shooter.ampShoot() // Stops when cancelled
         );
     }
-    public Command stopAmpMode(){
-        return new ParallelCommandGroup(
-            new InstantCommand(() -> setState(State.transit)),
-            pivot.profiledMove(Pivot.TRANSIT_POS),
-            shooter.instantStopAll()
-        );
-    }
+
 
     /* FEED NOTE IF READY */
 
@@ -150,7 +142,7 @@ public class ComposedCommands {
     /* AUTO AIM */
 
     public Command toggleAutoAim(){
-        return new ConditionalCommand(stopAutoAim(), autoAim(), ()->{return activeState==State.autoAim;});
+        return new ConditionalCommand(transit(), autoAim(), ()->{return activeState==State.autoAim;});
     }
     public Command autoAim(){
         return new SequentialCommandGroup(
@@ -159,13 +151,7 @@ public class ComposedCommands {
             new AutoAim(shooter, pivot, ll, swerve)
         );
     }
-    public Command stopAutoAim(){
-        return new ParallelCommandGroup(
-            new InstantCommand(() -> setState(State.transit)),
-            pivot.profiledMove(Pivot.TRANSIT_POS),
-            shooter.instantStopAll()
-        );
-    }
+
 
     private enum State{
         transit,
@@ -175,6 +161,7 @@ public class ComposedCommands {
         amp
     }
     private void setState(State s){
+        SmartDashboard.putString("pivot/Robot State", activeState.toString());
         activeState = s;
     }
 }
