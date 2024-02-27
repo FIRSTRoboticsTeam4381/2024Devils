@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.2,
+      "waypointRelativePos": 0.05,
       "rotationDegrees": 68.7141559440226,
       "rotateFast": false
     }
@@ -113,7 +113,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "AlliancesNotes(3)",
+  "folder": "AlliancesNotes3",
   "previewStartingState": {
     "rotation": 67.87986676400024,
     "velocity": 0

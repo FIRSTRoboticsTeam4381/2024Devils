@@ -85,7 +85,11 @@ public class RobotContainer {
 
         /* Autonomous Chooser */
         m_AutoChooser.setDefaultOption("None", Autos.none());
-        m_AutoChooser.addOption("Current Test", Autos.testAuto());
+        m_AutoChooser.addOption("Start3 Alliance Notes", Autos.start3AllianceNotes());
+        m_AutoChooser.addOption("Start1 Three Piece", Autos.start1ThreePiece());
+        m_AutoChooser.addOption("Start2 Three Piece", Autos.start2ThreePiece());
+        m_AutoChooser.addOption("Start4 Chaos", Autos.start4ChaosTwoPiece());
+        m_AutoChooser.addOption("Start4 Three Piece", Autos.start4ThreePiece());
         SmartDashboard.putData(m_AutoChooser);
 
         // Button to turn on/off sending debug data to the dashboard
@@ -146,6 +150,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand(){
-        return Autos.testAuto();
+        return m_AutoChooser.getSelected();
     }
 }

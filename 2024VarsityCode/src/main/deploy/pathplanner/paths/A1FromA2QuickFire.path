@@ -44,7 +44,13 @@
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.0,
+      "rotationDegrees": 89.07069929887972,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -111,7 +117,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "AlliancesNotes(3)",
+  "folder": "AlliancesNotes3",
   "previewStartingState": {
     "rotation": 90.39971210084131,
     "velocity": 0

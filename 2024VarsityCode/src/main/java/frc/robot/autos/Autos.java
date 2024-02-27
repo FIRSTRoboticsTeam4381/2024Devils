@@ -21,8 +21,20 @@ public final class Autos {
   // TODO use AutoBuilder.buildAutoChooser() to choose autos??
 
     // TODO test of full auto
-    public static Command testAuto(){
-        return new PathPlannerAuto("AmpSide");
+    public static Command start3AllianceNotes(){
+        return new PathPlannerAuto("AllianceNotes3");
+    }
+    public static Command start1ThreePiece(){
+        return new PathPlannerAuto("AmpSide3Piece");
+    }
+    public static Command start4ChaosTwoPiece(){
+        return new PathPlannerAuto("Chaos2Piece");
+    }
+    public static Command start4ThreePiece(){
+        return new PathPlannerAuto("HP3Piece");
+    }
+    public static Command start2ThreePiece(){
+        return new PathPlannerAuto("Speaker3Piece");
     }
 
     // TODO test of a single path
