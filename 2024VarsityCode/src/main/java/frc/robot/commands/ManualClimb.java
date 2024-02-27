@@ -41,12 +41,14 @@ public class ManualClimb extends Command {
     negativeJointInput = negativeJointInput<Constants.stickDeadband?0.0:negativeJointInput;
     climbInput = climbInput<Constants.stickDeadband?0.0:climbInput;
 
+    /*
     // Disable Control if pivot is too low
     if(pivot.getAngle()<60){
       positiveJointInput = 0.0;
       negativeJointInput = 0.0;
       climbInput = 0.0;
     }
+    */
 
     climb.setBasePercOutput(climbInput);
     climb.setMidPercOutput(positiveJointInput-negativeJointInput);
