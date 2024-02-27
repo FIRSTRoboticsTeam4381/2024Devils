@@ -20,12 +20,12 @@
         "y": 7.093184562039965
       },
       "prevControl": {
-        "x": 2.694400447477103,
-        "y": 7.107870244363029
+        "x": 2.694794593888724,
+        "y": 7.112616148841243
       },
       "nextControl": {
-        "x": 3.897458699830744,
-        "y": 7.021937512052055
+        "x": 3.480524393288442,
+        "y": 7.038212764014687
       },
       "isLocked": false,
       "linkedName": null
@@ -51,7 +51,19 @@
       "rotateFast": false
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.6,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "New Event Marker",
@@ -89,7 +101,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 1.85,
+      "waypointRelativePos": 1.75,
       "command": {
         "type": "parallel",
         "data": {
