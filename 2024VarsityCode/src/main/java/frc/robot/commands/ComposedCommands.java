@@ -43,15 +43,12 @@ public class ComposedCommands {
     /* INTAKE */
 
     public Command toggleGroundIntake(){
-        return new ConditionalCommand(stopGroundIntake(), groundIntake(), this::groundIntaking);
-    }
-    private boolean groundIntaking(){
-        return activeState == State.groundIntake;
+        return new ConditionalCommand(stopGroundIntake(), groundIntake(), ()->{return activeState==State.groundIntake;});
     }
     public Command groundIntake(){
-        activeState = State.groundIntake;
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
+                new InstantCommand(() -> setState(State.groundIntake)),
                 pivot.profiledMove(Pivot.INTAKE_POS),
                 new ParallelRaceGroup(
                     intake.run(),
@@ -62,8 +59,8 @@ public class ComposedCommands {
         );
     }
     public Command stopGroundIntake(){
-        activeState = State.transit;
         return new ParallelCommandGroup(
+            new InstantCommand(() -> setState(State.transit)),
             pivot.profiledMove(Pivot.TRANSIT_POS),
             intake.instantStop(),
             index.instantStop()  
@@ -78,15 +75,12 @@ public class ComposedCommands {
      * needs to stop should stop
      */
     public Command toggleHumanIntake(){
-        return new ConditionalCommand(stopHumanIntake(), humanIntake(), this::humanIntaking);
-    }
-    private boolean humanIntaking(){
-        return activeState == State.humanIntake;
+        return new ConditionalCommand(stopHumanIntake(), humanIntake(), ()->{return activeState==State.humanIntake;});
     }
     public Command humanIntake(){
-        activeState = State.humanIntake;
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
+                new InstantCommand(()->setState(State.humanIntake)),
                 pivot.profiledMove(Pivot.HUMAN_POS),
                 index.indexUntilIn(true), // Stops when cancelled
                 shooter.eject() // Stops when cancelled
@@ -95,8 +89,8 @@ public class ComposedCommands {
         );
     }
     public Command stopHumanIntake(){
-        activeState = State.transit;
         return new ParallelCommandGroup(
+            new InstantCommand(()->setState(State.transit)),
             pivot.profiledMove(Pivot.TRANSIT_POS),
             index.instantStop(),
             shooter.instantStopAll()
@@ -120,21 +114,18 @@ public class ComposedCommands {
     /* AMP MODE TOGGLE */
 
     public Command toggleAmpMode(){
-        return new ConditionalCommand(stopAmpMode(), ampMode(), this::inAmpMode);
-    }
-    private boolean inAmpMode(){
-        return activeState == State.amp;
+        return new ConditionalCommand(stopAmpMode(), ampMode(), ()->{return activeState==State.amp;});
     }
     public Command ampMode(){
-        activeState = State.amp;
         return new ParallelCommandGroup(
+            new InstantCommand(() -> setState(State.amp)),
             pivot.profiledMove(Pivot.AMP_POS),
             shooter.ampShoot() // Stops when cancelled
         );
     }
     public Command stopAmpMode(){
-        activeState = State.transit;
         return new ParallelCommandGroup(
+            new InstantCommand(() -> setState(State.transit)),
             pivot.profiledMove(Pivot.TRANSIT_POS),
             shooter.instantStopAll()
         );
@@ -159,21 +150,18 @@ public class ComposedCommands {
     /* AUTO AIM */
 
     public Command toggleAutoAim(){
-        return new ConditionalCommand(stopAutoAim(), autoAim(), this::autoAiming);
-    }
-    public boolean autoAiming(){
-        return activeState == State.autoAim;
+        return new ConditionalCommand(stopAutoAim(), autoAim(), ()->{return activeState==State.autoAim;});
     }
     public Command autoAim(){
-        activeState = State.autoAim;
         return new SequentialCommandGroup(
+            new InstantCommand(() -> setState(State.autoAim)),
             pivot.profiledMove(30),
             new AutoAim(shooter, pivot, ll, swerve)
         );
     }
     public Command stopAutoAim(){
-        activeState = State.transit;
         return new ParallelCommandGroup(
+            new InstantCommand(() -> setState(State.transit)),
             pivot.profiledMove(Pivot.TRANSIT_POS),
             shooter.instantStopAll()
         );
@@ -185,5 +173,8 @@ public class ComposedCommands {
         groundIntake,
         humanIntake,
         amp
+    }
+    private void setState(State s){
+        activeState = s;
     }
 }
