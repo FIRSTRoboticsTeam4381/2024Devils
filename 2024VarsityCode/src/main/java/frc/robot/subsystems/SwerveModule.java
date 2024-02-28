@@ -118,7 +118,7 @@ public class SwerveModule {
         mAngleMotor = new CANSparkMax(id, MotorType.kBrushless);
         SparkUtilities.optimizeFrames(mAngleMotor, false, false, false, false, false, true);
         mAngleMotor.setInverted(Constants.Swerve.angleMotorInvert);
-        mAngleMotor.setSmartCurrentLimit(25);
+        mAngleMotor.setSmartCurrentLimit(30);
 
         mAngleEncoder = mAngleMotor.getAbsoluteEncoder(com.revrobotics.SparkAbsoluteEncoder.Type.kDutyCycle); 
         mAngleEncoder.setPositionConversionFactor(360); 
@@ -143,7 +143,7 @@ public class SwerveModule {
         mDriveMotor = new CANSparkFlex(id, MotorType.kBrushless); 
         SparkUtilities.optimizeFrames(mDriveMotor, false, true, true, false, false, false); 
         mDriveMotor.setInverted(false); // TODO Setting this to true breaks it. Manually invert motor sets and encoder reads
-        mDriveMotor.setSmartCurrentLimit(55);
+        mDriveMotor.setSmartCurrentLimit(60);
         //configDriveMotor();
 
         /* Drive Encoder Config */
