@@ -161,7 +161,7 @@ public class ComposedCommands {
         amp
     }
     private void setState(State s){
-        SmartDashboard.putString("pivot/Robot State", activeState.toString());
         activeState = s;
+        SmartDashboard.putString("pivot/Robot State", activeState.toString());
     }
 }

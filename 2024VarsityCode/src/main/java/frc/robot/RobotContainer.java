@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
@@ -108,13 +109,13 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
 
-        specialist.cross().onTrue(commands.toggleGroundIntake());
-        specialist.square().onTrue(commands.toggleHumanIntake());
+        specialist.cross().onTrue(new ScheduleCommand(commands.toggleGroundIntake()));
+        specialist.square().onTrue(new ScheduleCommand(commands.toggleHumanIntake()));
         specialist.circle().whileTrue(commands.ejectNote());
         specialist.L1().toggleOnTrue(s_Shooter.shootAvgSpeed()); // Changes this so it will cancel auto aiming
-        specialist.povRight().onTrue(commands.toggleAmpMode());
+        specialist.povRight().onTrue(new ScheduleCommand(commands.toggleAmpMode()));
         specialist.R1().whileTrue(commands.feedNote());
-        specialist.triangle().onTrue(commands.toggleAutoAim());
+        specialist.triangle().onTrue(new ScheduleCommand(commands.toggleAutoAim()));
 
         specialist.touchpad().or(driver.touchpad()).onTrue(commands.cancelAll());
 
