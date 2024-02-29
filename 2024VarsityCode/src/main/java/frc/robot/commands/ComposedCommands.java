@@ -26,7 +26,6 @@ public class ComposedCommands {
     private Limelight ll;
     private Swerve swerve;
 
-    private State activeState;
 
     // TODO change pivot commands over to profiled motion once that's done
 
@@ -37,27 +36,6 @@ public class ComposedCommands {
         this.pivot = pivot;
         this.ll = ll;
         this.swerve = swerve;
-        setState(State.transit);
-    }
-
-
-    /* INTAKE */
-
-    public Command toggleGroundIntake(){
-        return new ConditionalCommand(transit(), groundIntake(), ()->{return activeState==State.groundIntake;});
-    }
-    public Command groundIntake(){
-        return new SequentialCommandGroup(
-            new ParallelCommandGroup(
-                new InstantCommand(() -> setState(State.groundIntake)),
-                pivot.profiledMove(Pivot.INTAKE_POS),
-                new ParallelRaceGroup(
-                    intake.run(),
-                    index.indexUntilIn(false)
-                )
-            ),
-            transit()
-        );
     }
 
 
@@ -65,12 +43,27 @@ public class ComposedCommands {
 
     public Command transit(){
         return new ParallelCommandGroup(
-            new InstantCommand(() -> setState(State.transit)),
             pivot.profiledMove(Pivot.TRANSIT_POS),
             intake.instantStop(),
             index.instantStop(),
             shooter.instantStopAll()
         );
+    }
+
+
+    /* INTAKE */
+
+    public Command groundIntake(){
+        return new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                pivot.profiledMove(Pivot.INTAKE_POS),
+                new ParallelRaceGroup(
+                    intake.run(),
+                    index.indexUntilIn(false)
+                )
+            ),
+            transit()
+        ).withName("Ground Intake");
     }
 
 
@@ -80,19 +73,15 @@ public class ComposedCommands {
      * Should also be able to run off of a toggleOnTrue for the same reasons, everything that
      * needs to stop should stop
      */
-    public Command toggleHumanIntake(){
-        return new ConditionalCommand(transit(), humanIntake(), ()->{return activeState==State.humanIntake;});
-    }
     public Command humanIntake(){
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
-                new InstantCommand(()->setState(State.humanIntake)),
                 pivot.profiledMove(Pivot.HUMAN_POS),
                 index.indexUntilIn(true), // Stops when cancelled
                 shooter.eject() // Stops when cancelled
             ),
             transit()
-        );
+        ).withName("Human Intake");
     }
 
 
@@ -111,15 +100,11 @@ public class ComposedCommands {
 
     /* AMP MODE TOGGLE */
 
-    public Command toggleAmpMode(){
-        return new ConditionalCommand(transit(), ampMode(), ()->{return activeState==State.amp;});
-    }
     public Command ampMode(){
         return new ParallelCommandGroup(
-            new InstantCommand(() -> setState(State.amp)),
             pivot.profiledMove(Pivot.AMP_POS),
             shooter.ampShoot() // Stops when cancelled
-        );
+        ).withName("Amp Mode");
     }
 
 
@@ -141,27 +126,10 @@ public class ComposedCommands {
 
     /* AUTO AIM */
 
-    public Command toggleAutoAim(){
-        return new ConditionalCommand(transit(), autoAim(), ()->{return activeState==State.autoAim;});
-    }
     public Command autoAim(){
         return new SequentialCommandGroup(
-            new InstantCommand(() -> setState(State.autoAim)),
             pivot.profiledMove(30),
             new AutoAim(shooter, pivot, ll, swerve)
         );
-    }
-
-
-    private enum State{
-        transit,
-        autoAim,
-        groundIntake,
-        humanIntake,
-        amp
-    }
-    private void setState(State s){
-        activeState = s;
-        SmartDashboard.putString("pivot/Robot State", activeState.toString());
     }
 }

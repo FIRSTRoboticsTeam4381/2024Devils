@@ -109,13 +109,13 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
 
-        specialist.cross().onTrue(new ScheduleCommand(commands.toggleGroundIntake()));
-        specialist.square().onTrue(new ScheduleCommand(commands.toggleHumanIntake()));
+        specialist.cross().onTrue(new ConditionalCommand(commands.groundIntake(), commands.transit(), ()->{return s_Intake.getCurrentCommand()==null||!s_Intake.getCurrentCommand().getName().equals("Ground Intake");}));
+        specialist.square().onTrue(new ConditionalCommand(commands.humanIntake(), commands.transit(), ()->{return s_Intake.getCurrentCommand()==null||!s_Index.getCurrentCommand().getName().equals("Human Intake");}));
         specialist.circle().whileTrue(commands.ejectNote());
         specialist.L1().toggleOnTrue(s_Shooter.shootAvgSpeed()); // Changes this so it will cancel auto aiming
-        specialist.povRight().onTrue(new ScheduleCommand(commands.toggleAmpMode()));
+        specialist.povRight().onTrue(new ConditionalCommand(commands.ampMode(), commands.transit(), ()->{return s_Pivot.getCurrentCommand()==null||!s_Pivot.getCurrentCommand().getName().equals("Amp Mode");}));
         specialist.R1().whileTrue(commands.feedNote());
-        specialist.triangle().onTrue(new ScheduleCommand(commands.toggleAutoAim()));
+        specialist.triangle().whileTrue(commands.autoAim());
 
         specialist.touchpad().or(driver.touchpad()).onTrue(commands.cancelAll());
 
