@@ -127,7 +127,7 @@ public class ComposedCommands {
         autoAiming = true;
         return new SequentialCommandGroup(
             //pivot.profiledMove(20),
-            new AutoAim(shooter, pivot, ll, swerve)
+            new AutoAim(pivot, ll, swerve)
         );
     }
     public Command stopAutoAim(){

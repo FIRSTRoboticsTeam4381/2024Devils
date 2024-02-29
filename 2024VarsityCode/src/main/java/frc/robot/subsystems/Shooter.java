@@ -182,7 +182,7 @@ public class Shooter extends SubsystemBase {
     return new FunctionalCommand(
       ()->setAmpVelocity(),
       ()->{},
-      (interrupted)->setVelocity(0, false),
+      (interrupted)->setPercOutput(0, false),
       ()->{return false;},
       this
     ).withName("Amp Deflect");

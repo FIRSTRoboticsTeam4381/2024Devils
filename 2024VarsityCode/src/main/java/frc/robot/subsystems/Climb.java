@@ -31,7 +31,9 @@ public class Climb extends SubsystemBase {
 
   private double middleReference = 0.0;
 
-  public static final double MID_READY_POS = 0.0; // TODO
+  //public static final double MID_READY_POS = 0.0; // TODO
+
+  private static final double MID_MIN = 0.0;
 
   /* CONSTRUCTOR */
 

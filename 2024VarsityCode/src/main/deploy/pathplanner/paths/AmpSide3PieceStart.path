@@ -49,6 +49,12 @@
               "data": {
                 "name": "AutoAim"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "ShooterSpinUp"
+              }
             }
           ]
         }

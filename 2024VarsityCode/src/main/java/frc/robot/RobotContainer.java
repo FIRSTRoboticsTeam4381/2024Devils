@@ -8,7 +8,6 @@ import frc.robot.autos.Autos;
 import frc.robot.commands.AutoAim;
 import frc.robot.commands.ComposedCommands;
 import frc.robot.commands.ManualClimb;
-import frc.robot.commands.OldClimb;
 import frc.robot.commands.ManualPivot;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Intake;
@@ -126,7 +125,7 @@ public class RobotContainer {
         specialist.povRight().toggleOnTrue(commands.ampMode());
         specialist.povLeft().toggleOnTrue(s_Shooter.ampShoot());
         specialist.R1().whileTrue(commands.feedNote());
-        specialist.triangle().toggleOnTrue(commands.autoAim());
+        specialist.triangle().whileTrue(commands.autoAim());
 
         specialist.touchpad().or(driver.touchpad()).onTrue(commands.cancelAll());
 
