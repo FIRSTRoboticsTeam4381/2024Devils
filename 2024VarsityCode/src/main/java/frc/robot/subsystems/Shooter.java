@@ -90,7 +90,7 @@ public class Shooter extends SubsystemBase {
    * @return Boolean determining if it is okay to feed a note to the shooter
    */
   public boolean readyForNote(){
-    return (setpoint != 0 && setpoint-propEncoder.getVelocity()<50);
+    return (setpoint != 0 && (setpoint-Math.abs(propEncoder.getVelocity())<50 && setpoint-Math.abs(topEncoder.getVelocity())<50 && setpoint-Math.abs(bottomEncoder.getVelocity())<50));
   }
 
   public double getSetpoint(){
@@ -248,6 +248,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putString("shooter/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
     SmartDashboard.putNumber("shooter/Error", Math.abs(-setpoint-propEncoder.getVelocity()));
     SmartDashboard.putBoolean("shooter/Is Ready", readyForNote());
+    SmartDashboard.putNumber("shooter/setpoint", setpoint);
 
     SmartDashboard.putNumber("shooter/Propellor Current", propMotor.getOutputCurrent());
     SmartDashboard.putNumber("shooter/Top Current", topMotor.getOutputCurrent());
