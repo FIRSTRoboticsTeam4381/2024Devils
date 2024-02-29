@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.SparkUtilities.SparkUtilities;
 import frc.robot.Constants;
@@ -170,7 +171,7 @@ public class Shooter extends SubsystemBase {
       () -> {}, 
       interrupted->setPercOutput(0.0, false), 
       ()->{return false;}, 
-      this).withName("Holding Velocity "+1700);
+      this).withName("Holding Velocity "+1800);
   }
 
   /**
@@ -200,6 +201,18 @@ public class Shooter extends SubsystemBase {
       (interrupted)->setPercOutput(0.0, false), 
       ()->{return false;}, 
       this).withName("Ejecting");
+  }
+
+  public Command customBangBang(){
+    return new SequentialCommandGroup(
+      new FunctionalCommand(
+        () -> setPercOutput(1.0, false), 
+        ()->{}, 
+        (interrupted)->{if(interrupted){setPercOutput(0.0, false);}}, 
+        ()->{return 1800-propEncoder.getVelocity()<50&&1800-topEncoder.getVelocity()<50&&bottomEncoder.getVelocity()<50;}, 
+        this),
+      shootAvgSpeed()
+    );
   }
 
 
