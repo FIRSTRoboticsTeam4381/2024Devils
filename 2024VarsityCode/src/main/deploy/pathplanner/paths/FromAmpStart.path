@@ -3,38 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3023087957730821,
-        "y": 5.527514849608872
+        "x": 1.44283883432246,
+        "y": 7.237296985292972
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7004772383296534,
-        "y": 5.515804013063089
+        "x": 1.6067905459634015,
+        "y": 7.178742802564065
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.1103565174320065,
-        "y": 5.527514849608872
+        "x": 1.96,
+        "y": 6.99
       },
       "prevControl": {
-        "x": 1.7473205845127802,
-        "y": 5.527514849608872
+        "x": 1.8428916345421849,
+        "y": 7.036843346183126
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.7,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -47,13 +41,13 @@
             {
               "type": "named",
               "data": {
-                "name": "AutoAim"
+                "name": "ShooterSpinUp"
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "ShooterSpinUp"
+                "name": "AutoAim"
               }
             }
           ]
@@ -62,7 +56,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.95,
+      "waypointRelativePos": 0.9,
       "command": {
         "type": "parallel",
         "data": {
@@ -79,18 +73,18 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 0.4,
-    "maxAcceleration": 1.0,
-    "maxAngularVelocity": 1200.0,
+    "maxVelocity": 0.2,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 37.87498365109816,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Speaker3Piece",
+  "folder": "FromAmp",
   "previewStartingState": {
     "rotation": 90.0,
     "velocity": 0

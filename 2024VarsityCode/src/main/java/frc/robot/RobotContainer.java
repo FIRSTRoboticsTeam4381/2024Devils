@@ -90,6 +90,8 @@ public class RobotContainer {
         m_AutoChooser.addOption("Start2 Three Piece", Autos.start2ThreePiece());
         m_AutoChooser.addOption("Start4 Chaos", Autos.start4ChaosTwoPiece());
         m_AutoChooser.addOption("Start4 Three Piece", Autos.start4ThreePiece());
+        m_AutoChooser.addOption("Start Amp Four Piece", Autos.startAmp4Piece());
+        //m_AutoChooser.addOption("Test Auto", Autos.testAuto());
         SmartDashboard.putData(m_AutoChooser);
 
         // Button to turn on/off sending debug data to the dashboard
@@ -126,6 +128,7 @@ public class RobotContainer {
         specialist.povLeft().toggleOnTrue(s_Shooter.ampShoot());
         specialist.R1().whileTrue(commands.feedNote());
         specialist.triangle().whileTrue(commands.autoAim());
+        specialist.povDown().whileTrue(commands.reverseAmp()).onFalse(new InstantCommand(()->s_Shooter.setCurrentLimit(60)));
 
         specialist.touchpad().or(driver.touchpad()).onTrue(commands.cancelAll());
 

@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -86,6 +87,14 @@ public class ComposedCommands {
         );
     }
 
+    public Command reverseAmp(){
+        return new ParallelCommandGroup(
+            new InstantCommand(()->shooter.setCurrentLimit(120)),
+            shooter.ejectFromAmp(),
+            index.eject()
+        );
+    }
+
     /* AMP MODE TOGGLE */
 
     public Command ampMode(){
@@ -126,7 +135,7 @@ public class ComposedCommands {
     public Command autoAim(){
         autoAiming = true;
         return new SequentialCommandGroup(
-            //pivot.profiledMove(20),
+            pivot.profiledMove(45),
             new AutoAim(pivot, ll, swerve)
         );
     }

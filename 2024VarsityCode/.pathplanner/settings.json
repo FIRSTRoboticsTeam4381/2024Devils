@@ -3,6 +3,7 @@
   "robotLength": 0.99,
   "holonomicMode": true,
   "pathFolders": [
+    "FromAmp",
     "AlliancesNotes3",
     "AmpSide3Piece",
     "Chaos2Piece",
@@ -12,7 +13,7 @@
   "autoFolders": [],
   "defaultMaxVel": 5.0,
   "defaultMaxAccel": 2.0,
-  "defaultMaxAngVel": 540.0,
-  "defaultMaxAngAccel": 720.0,
+  "defaultMaxAngVel": 360.0,
+  "defaultMaxAngAccel": 120.0,
   "maxModuleSpeed": 5.95
 }

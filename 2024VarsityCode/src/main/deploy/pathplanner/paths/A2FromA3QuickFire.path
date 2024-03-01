@@ -31,7 +31,12 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.05,
-      "rotationDegrees": 68.7141559440226,
+      "rotationDegrees": 31.93909251655582,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.1,
+      "rotationDegrees": 48.134637723729085,
       "rotateFast": false
     }
   ],
@@ -85,7 +90,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.9,
+      "waypointRelativePos": 0.85,
       "command": {
         "type": "parallel",
         "data": {
@@ -102,10 +107,10 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.25,
-    "maxAcceleration": 1.25,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxVelocity": 1.5,
+    "maxAcceleration": 0.5,
+    "maxAngularVelocity": 360.0,
+    "maxAngularAcceleration": 240.0
   },
   "goalEndState": {
     "velocity": 0,
@@ -115,7 +120,7 @@
   "reversed": false,
   "folder": "AlliancesNotes3",
   "previewStartingState": {
-    "rotation": 67.87986676400024,
+    "rotation": -39.47306834200226,
     "velocity": 0
   },
   "useDefaultConstraints": false

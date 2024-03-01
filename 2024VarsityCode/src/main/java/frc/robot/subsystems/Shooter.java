@@ -51,8 +51,8 @@ public class Shooter extends SubsystemBase {
     bottomMotor = new CANSparkFlex(Constants.Shooter.bottomCAN, MotorType.kBrushless);
 
     propMotor.setSmartCurrentLimit(60);
-    bottomMotor.setSmartCurrentLimit(30);
-    topMotor.setSmartCurrentLimit(30);
+    bottomMotor.setSmartCurrentLimit(60);
+    topMotor.setSmartCurrentLimit(60);
 
     propMotor.setIdleMode(IdleMode.kCoast);
     topMotor.setIdleMode(IdleMode.kCoast);
@@ -132,6 +132,11 @@ public class Shooter extends SubsystemBase {
     topController.setReference(-1200, ControlType.kVelocity);
     bottomController.setReference(1200, ControlType.kVelocity);
   }
+
+  public void setCurrentLimit(int current){
+    propMotor.setSmartCurrentLimit(current);
+    topMotor.setSmartCurrentLimit(current);
+  }
   
 
 
@@ -201,6 +206,15 @@ public class Shooter extends SubsystemBase {
       (interrupted)->setPercOutput(0.0, false), 
       ()->{return false;}, 
       this).withName("Ejecting");
+  }
+
+  public Command ejectFromAmp(){
+    return new FunctionalCommand(
+      ()->setVelocity(-1000.0, true), 
+      ()->{}, 
+      (interrupted)->setPercOutput(0.0, false), 
+      ()->{return false;}, 
+      this).withName("Eject from amp");
   }
 
   public Command customBangBang(){

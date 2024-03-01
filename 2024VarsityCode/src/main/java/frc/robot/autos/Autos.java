@@ -36,6 +36,9 @@ public final class Autos {
     public static Command start2ThreePiece(){
         return new PathPlannerAuto("Speaker3Piece");
     }
+    public static Command startAmp4Piece(){
+        return new PathPlannerAuto("FromAmp");
+    }
 
     // TODO test of a single path
     public static Command testPath(){
