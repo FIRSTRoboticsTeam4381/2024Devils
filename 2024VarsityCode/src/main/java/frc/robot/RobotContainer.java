@@ -70,7 +70,7 @@ public class RobotContainer {
     public RobotContainer(){
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true).withName("Teleop"));
         s_Pivot.setDefaultCommand(new ManualPivot(specialist::getLeftY, s_Pivot).withName("Manual Pivot"));
-        s_Climb.setDefaultCommand(new ManualClimb(specialist, s_Climb, s_Pivot));
+        //s_Climb.setDefaultCommand(new ManualClimb(specialist, s_Climb, s_Pivot));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -129,6 +129,7 @@ public class RobotContainer {
         specialist.R1().whileTrue(commands.feedNote());
         specialist.triangle().whileTrue(commands.autoAim());
         specialist.povDown().whileTrue(commands.reverseAmp()).onFalse(new InstantCommand(()->s_Shooter.setCurrentLimit(60)));
+        specialist.PS().toggleOnTrue(new ManualClimb(specialist, s_Climb));
 
         specialist.touchpad().or(driver.touchpad()).onTrue(commands.cancelAll());
 

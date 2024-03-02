@@ -13,13 +13,11 @@ import frc.robot.subsystems.Pivot;
 public class ManualClimb extends Command {
   private CommandPS4Controller controller;
   private Climb climb;
-  private Pivot pivot;
 
   /** Creates a new ManualClimb. */
-  public ManualClimb(CommandPS4Controller specialsController, Climb climb, Pivot pivot) {
+  public ManualClimb(CommandPS4Controller specialsController, Climb climb) {
     controller = specialsController;
     this.climb = climb;
-    this.pivot = pivot;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(climb);
