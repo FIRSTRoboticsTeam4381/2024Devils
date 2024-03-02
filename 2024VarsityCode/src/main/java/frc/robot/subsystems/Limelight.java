@@ -130,9 +130,10 @@ public class Limelight extends SubsystemBase{
     @Override
     public void periodic(){
         SmartDashboard.putNumberArray("limelight/targetPose", cameraPoseFromTarget());
-        SmartDashboard.putNumber("limelight/targetInSight", hasTargets());
+        SmartDashboard.putBoolean("limelight/targetInSight", hasTargets()==1.0);
         SmartDashboard.putNumber("limelight/goalDistance (Meters)", distanceFromGoal());
         SmartDashboard.putNumber("limelight/goalDistance (Feet)", distanceFromGoal()*3.281);
+        SmartDashboard.putNumber("limelight/targetXOffset", targetXOffset());
     }
 
     private boolean validateInput(int in, int... validRange){

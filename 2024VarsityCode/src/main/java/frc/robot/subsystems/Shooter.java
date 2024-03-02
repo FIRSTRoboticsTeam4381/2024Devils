@@ -127,10 +127,10 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setAmpVelocity(){
-    setpoint = 600;
-    propController.setReference(600, ControlType.kVelocity);
-    topController.setReference(-1200, ControlType.kVelocity);
-    bottomController.setReference(1200, ControlType.kVelocity);
+    setpoint = 800;
+    propController.setReference(800, ControlType.kVelocity);
+    topController.setReference(-1600, ControlType.kVelocity);
+    bottomController.setReference(1600, ControlType.kVelocity);
   }
 
   public void setCurrentLimit(int current){
@@ -274,7 +274,8 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("shooter/Bottom Velocity", bottomEncoder.getVelocity());
     SmartDashboard.putString("shooter/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
     SmartDashboard.putNumber("shooter/Error", Math.abs(-setpoint-propEncoder.getVelocity()));
-    SmartDashboard.putBoolean("shooter/Is Ready", readyForNote());
+    SmartDashboard.putBoolean("shooter/Shooter Ready", readyForNote());
+    SmartDashboard.putBoolean("shooter/Shooter Running", setpoint!=0.0);
     SmartDashboard.putNumber("shooter/setpoint", setpoint);
 
     SmartDashboard.putNumber("shooter/Propellor Current", propMotor.getOutputCurrent());
