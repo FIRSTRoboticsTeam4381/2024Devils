@@ -128,7 +128,7 @@ public class RobotContainer {
         specialist.povLeft().toggleOnTrue(s_Shooter.ampShoot());
         specialist.R1().whileTrue(commands.feedNote());
         specialist.triangle().whileTrue(commands.autoAim());
-        specialist.povDown().whileTrue(commands.reverseAmp()).onFalse(new InstantCommand(()->s_Shooter.setCurrentLimit(60)));
+        specialist.povDown().whileTrue(commands.reverseAmp()).onFalse(new InstantCommand(()->s_Shooter.setCurrentLimit(60, 40)));
         specialist.PS().toggleOnTrue(new ManualClimb(specialist, s_Climb));
 
         specialist.touchpad().or(driver.touchpad()).onTrue(commands.cancelAll());

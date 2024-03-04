@@ -89,7 +89,7 @@ public class ComposedCommands {
 
     public Command reverseAmp(){
         return new ParallelCommandGroup(
-            new InstantCommand(()->shooter.setCurrentLimit(120)),
+            new InstantCommand(()->shooter.setCurrentLimit(120, 120)),
             shooter.ejectFromAmp(),
             index.eject()
         );

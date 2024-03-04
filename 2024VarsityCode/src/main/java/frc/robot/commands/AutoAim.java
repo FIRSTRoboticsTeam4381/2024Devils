@@ -38,7 +38,7 @@ public class AutoAim extends Command {
 
   private void calcAngle(){
     double calculatedAngle = currentAngle;
-    if(ll.hasTargets() == 1) calculatedAngle = 49.62307316*Math.pow(predictFuturePosition(), -0.4259909159627); // r^2 = 0.995 // despite predicting, still won't move unless a target is in sight. prevents going crazy
+    if(ll.hasTargets() == 1) calculatedAngle = 47.62307316*Math.pow(predictFuturePosition(), -0.4259909159627); // r^2 = 0.995 // despite predicting, still won't move unless a target is in sight. prevents going crazy
     if(calculatedAngle > 60) calculatedAngle = currentAngle; // Angle should never be greater than 60, so if it is for some reason, ignore it and keep pivot at the current angle
     currentAngle = calculatedAngle;
   }

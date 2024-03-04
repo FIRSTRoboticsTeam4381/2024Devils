@@ -49,7 +49,7 @@ public class ManualClimb extends Command {
     */
 
     climb.setBasePercOutput(climbInput*0.5);
-    climb.setMidPercOutput((positiveJointInput-negativeJointInput)*0.5);
+    climb.setMidPercOutput((positiveJointInput-negativeJointInput)*-0.5);
   }
 
   // Called once the command ends or is interrupted.

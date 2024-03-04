@@ -133,9 +133,9 @@ public class Shooter extends SubsystemBase {
     bottomController.setReference(1600, ControlType.kVelocity);
   }
 
-  public void setCurrentLimit(int current){
-    propMotor.setSmartCurrentLimit(current);
-    topMotor.setSmartCurrentLimit(current);
+  public void setCurrentLimit(int current1, int current2){
+    propMotor.setSmartCurrentLimit(current1);
+    topMotor.setSmartCurrentLimit(current2);
   }
   
 
@@ -210,7 +210,7 @@ public class Shooter extends SubsystemBase {
 
   public Command ejectFromAmp(){
     return new FunctionalCommand(
-      ()->setVelocity(-1000.0, true), 
+      ()->setVelocity(-1500.0, true), 
       ()->{}, 
       (interrupted)->setPercOutput(0.0, false), 
       ()->{return false;}, 
