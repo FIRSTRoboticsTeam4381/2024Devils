@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.util.DriftCorrection;
 import frc.lib.util.LogOrDash;
 import frc.robot.Constants;
@@ -54,6 +55,26 @@ public class Swerve extends SubsystemBase{
             () -> {return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;},
             this // Reference to this subsystem to set requirements
         );
+
+        setupSysId();
+    }
+
+    private void setupSysId(){
+        SysIdRoutine routine = new SysIdRoutine(
+            new SysIdRoutine.Config(), 
+            new SysIdRoutine.Mechanism(
+                (volts) -> {
+                    for(int i = 0; i < mSwerveMods.length; i++){
+                        mSwerveMods[i].voltageDrive(volts.in(edu.wpi.first.units.Units.Volts));
+                    }
+                }, 
+                (log) -> {
+                    for(int i = 0; i < mSwerveMods.length; i++){
+                        mSwerveMods[i].sysIdLog(log);
+                    }
+                }, 
+                this)
+                );
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop){ 

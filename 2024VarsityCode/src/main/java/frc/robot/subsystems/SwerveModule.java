@@ -19,7 +19,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition; 
 import edu.wpi.first.math.kinematics.SwerveModuleState; 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard; 
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
  
 public class SwerveModule { 
  
@@ -51,6 +53,19 @@ public class SwerveModule {
 
         mLastAngle = getState().angle.getDegrees(); 
     } 
+
+    public void voltageDrive(double v){
+        anglePIDController.setReference(0, ControlType.kPosition);
+        mDriveMotor.setVoltage(v);
+    }
+
+    public void sysIdLog(SysIdRoutineLog log){
+        log.motor("m"+moduleNumber).voltage(
+            edu.wpi.first.units.Units.Volts.of(mDriveMotor.getAppliedOutput() * RobotController.getBatteryVoltage())
+            ).linearVelocity(edu.wpi.first.units.Units.MetersPerSecond.of(mDriveEncoder.getVelocity()))
+            .linearPosition(edu.wpi.first.units.Units.Meters.of(mDriveMotor.getEncoder().getPosition()));
+    }
+
  
  
     /* METHODS */
