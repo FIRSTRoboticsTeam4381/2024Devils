@@ -110,9 +110,9 @@ public final class Constants {
 
         /* Drive Motor Characterization Values */
         // From SysId
-        public static final double driveKS = 0.018231;
-        public static final double driveKV = 1.9676;
-        public static final double driveKA = 0.68184;
+        public static final double driveKS = 0.044345;
+        public static final double driveKV = 2.1441;
+        public static final double driveKA = 0.55957;
 
         /* Swerve Profiling Values */
         public static final double maxSpeed = 6.0; //meters per second

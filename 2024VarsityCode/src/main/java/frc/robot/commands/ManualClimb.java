@@ -48,7 +48,7 @@ public class ManualClimb extends Command {
     }
     */
 
-    if(climb.getBasePosition()<=0.0)
+    if(climb.getBasePosition()<=0.0 && climbInput<0.0)
     {
       climbInput = 0;
     }
