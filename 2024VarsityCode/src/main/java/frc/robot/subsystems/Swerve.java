@@ -30,7 +30,7 @@ public class Swerve extends SubsystemBase{
     public Field2d mField;
 
     public Swerve(){
-        gyro = new AHRS(Port.kUSB);
+        gyro = new AHRS(Port.kMXP);
         zeroGyro();
 
         mField = new Field2d();

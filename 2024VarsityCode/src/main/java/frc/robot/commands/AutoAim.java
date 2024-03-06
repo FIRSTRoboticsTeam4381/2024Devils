@@ -72,7 +72,7 @@ public class AutoAim extends Command {
   @Override
   public void execute() {
     calcAngle();
-    calcVelocity();
+    //calcVelocity();
 
     SmartDashboard.putNumber("autoaim/Calculated Velocity", currentVelocity);
     SmartDashboard.putNumber("autoaim/Calculated Angle", currentAngle);

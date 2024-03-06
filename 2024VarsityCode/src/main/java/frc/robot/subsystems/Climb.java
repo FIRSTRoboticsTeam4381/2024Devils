@@ -91,6 +91,9 @@ public class Climb extends SubsystemBase {
   public double getMiddleReference(){
     return middleReference;
   }
+  public double getBasePosition(){
+    return rightBaseMotor.getEncoder().getPosition();
+  }
 
   @Override
   public void periodic() {

@@ -122,6 +122,8 @@ public class Pivot extends SubsystemBase {
    * @param speed
    */
   public void setPercOutput(double speed){
+    double pos = pivotEncoder.getPosition();
+    if(pos < 10 || pos > 80) speed *= 0.75;
     leftPivot.set(speed);
   }
 
