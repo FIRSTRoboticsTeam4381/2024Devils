@@ -132,6 +132,6 @@ public class ComposedCommands {
         return new SequentialCommandGroup(
             pivot.profiledMove(45),
             new AutoAim(pivot, ll, swerve)
-        );
+        ).withName("Auto Aim");
     }
 }

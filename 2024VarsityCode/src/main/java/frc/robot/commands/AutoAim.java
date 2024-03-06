@@ -37,8 +37,9 @@ public class AutoAim extends Command {
   public void initialize() {}
 
   private void calcAngle(){
-    if(ll.hasTargets() == 1){
-      double calculatedAngle = 47.62307316*Math.pow(predictFuturePosition(), -0.4259909159627); // r^2 = 0.995 // despite predicting, still won't move unless a target is in sight. prevents going crazy
+    double predictedPosition = predictFuturePosition();
+    if(predictedPosition >= 0.1){ // Only take predicted position if it is a reasonable positive number. Prevents calculation of infinity.
+      double calculatedAngle = 47.62307316*Math.pow(predictedPosition, -0.4259909159627); // r^2 = 0.995 // despite predicting, still won't move unless a target is in sight. prevents going crazy
       if(calculatedAngle <= 60){ // Only set current angle to the calculated angle if it was calculated to be less than 60
         currentAngle = calculatedAngle;
       }
