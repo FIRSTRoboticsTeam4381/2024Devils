@@ -59,8 +59,10 @@ public class SwerveModule {
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
  
         if(isOpenLoop){ // TELEOP 
-            double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed; 
-            mDriveMotor.set(percentOutput * -1); // TODO remove when inverting works
+            //double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed; 
+            //mDriveMotor.set(percentOutput * -1); // TODO remove when inverting works
+            double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
+            drivePIDController.setReference(velocity * -1, ControlType.kVelocity, 0, feedforward.calculate(desiredState.speedMetersPerSecond * -1));
         } 
         else{ // AUTO 
             double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio); //TODO update for neos? 
