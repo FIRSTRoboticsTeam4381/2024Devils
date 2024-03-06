@@ -30,6 +30,8 @@ public class Swerve extends SubsystemBase{
     public AHRS gyro;
     public Field2d mField;
 
+    private SysIdRoutine routine;
+
     public Swerve(){
         gyro = new AHRS(Port.kMXP);
         zeroGyro();
@@ -56,10 +58,10 @@ public class Swerve extends SubsystemBase{
             this // Reference to this subsystem to set requirements
         );
 
-        setupSysId();
+        routine = setupSysId();
     }
 
-    private void setupSysId(){
+    private SysIdRoutine setupSysId(){
         SysIdRoutine routine = new SysIdRoutine(
             new SysIdRoutine.Config(), 
             new SysIdRoutine.Mechanism(
@@ -75,6 +77,14 @@ public class Swerve extends SubsystemBase{
                 }, 
                 this)
                 );
+        return routine;
+    }
+
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction){
+        return routine.quasistatic(direction);
+    }
+    public Command sysIdDynamic(SysIdRoutine.Direction direction){
+        return routine.dynamic(direction);
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop){ 

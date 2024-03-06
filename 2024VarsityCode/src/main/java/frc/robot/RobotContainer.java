@@ -91,6 +91,10 @@ public class RobotContainer {
         m_AutoChooser.addOption("Start4 Chaos", Autos.start4ChaosTwoPiece());
         m_AutoChooser.addOption("Start4 Three Piece", Autos.start4ThreePiece());
         m_AutoChooser.addOption("Start Amp Four Piece", Autos.startAmp4Piece());
+        m_AutoChooser.addOption("SysId Quas Fwd", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
+        m_AutoChooser.addOption("SysId Quas Rev", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse));
+        m_AutoChooser.addOption("SysId Dyna Fwd", s_Swerve.sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
+        m_AutoChooser.addOption("SysId Dyna Rev", s_Swerve.sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse));
         //m_AutoChooser.addOption("Test Auto", Autos.testAuto());
         SmartDashboard.putData(m_AutoChooser);
 
