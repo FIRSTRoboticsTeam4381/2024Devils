@@ -54,18 +54,16 @@ public class SwerveModule {
  
     /* METHODS */
  
-    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) 
+    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop)
     { 
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
  
         if(isOpenLoop){ // TELEOP 
-            //double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed; 
-            //mDriveMotor.set(percentOutput * -1); // TODO remove when inverting works
-            double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
+            double velocity = Conversions.MPStoRPM(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
             drivePIDController.setReference(velocity * -1, ControlType.kVelocity, 0, feedforward.calculate(desiredState.speedMetersPerSecond * -1));
         } 
         else{ // AUTO 
-            double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio); //TODO update for neos? 
+            double velocity = Conversions.MPStoRPM(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio); //TODO update for neos? 
             drivePIDController.setReference(velocity * -1, ControlType.kVelocity, 0, feedforward.calculate(desiredState.speedMetersPerSecond * -1)); // TODO fix when inverts work
         } 
  
@@ -159,6 +157,7 @@ public class SwerveModule {
         drivePIDController.setP(Constants.Swerve.driveKP);
         drivePIDController.setI(Constants.Swerve.angleKI);
         drivePIDController.setD(Constants.Swerve.driveKD);
+        drivePIDController.setFF(0.0);
     }
  
  
