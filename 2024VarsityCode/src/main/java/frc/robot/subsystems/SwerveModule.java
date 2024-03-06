@@ -18,7 +18,8 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d; 
 import edu.wpi.first.math.kinematics.SwerveModulePosition; 
 import edu.wpi.first.math.kinematics.SwerveModuleState; 
-import edu.wpi.first.wpilibj.DriverStation; 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard; 
  
 public class SwerveModule { 
  
@@ -70,7 +71,10 @@ public class SwerveModule {
         double angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01)) ? mLastAngle : desiredState.angle.getDegrees(); //Prevent rotating module if speed is less than 1%. Prevents jittering. 
         anglePIDController.setReference(angle+180, ControlType.kPosition); 
         mDesiredAngle = angle; 
-        mLastAngle = angle; 
+        mLastAngle = angle;
+        SmartDashboard.putNumber("swerve/mod"+moduleNumber+"/velocitySetpointMPS", desiredState.speedMetersPerSecond);
+        SmartDashboard.putNumber("swerve/mod"+moduleNumber+"/velocitySetpointRPM", Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio));
+        SmartDashboard.putNumber("swerve/mod"+moduleNumber+"/velocity", mDriveEncoder.getVelocity());
     } 
  
  

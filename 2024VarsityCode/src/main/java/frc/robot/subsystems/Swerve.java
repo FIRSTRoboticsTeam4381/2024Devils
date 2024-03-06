@@ -185,8 +185,8 @@ public class Swerve extends SubsystemBase{
         SmartDashboard.putNumber("match/Match Timer", DriverStation.getMatchTime());
 
         for(SwerveModule m : mSwerveMods){
-            SmartDashboard.putNumber("swerve/Mod "+m.moduleNumber+" Angle Current", m.getAngleCurrent());
-            SmartDashboard.putNumber("swerve/Mod "+m.moduleNumber+" Drive Current", m.getDriveCurrent());
+            SmartDashboard.putNumber("swerve/mod"+m.moduleNumber+"/Angle Current", m.getAngleCurrent());
+            SmartDashboard.putNumber("swerve/mod"+m.moduleNumber+"/Drive Current", m.getDriveCurrent());
         }
         
         for(SwerveModule mod : mSwerveMods){
