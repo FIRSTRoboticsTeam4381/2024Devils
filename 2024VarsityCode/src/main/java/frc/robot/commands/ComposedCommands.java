@@ -56,7 +56,7 @@ public class ComposedCommands {
                 )
             ),
             pivot.profiledMove(Pivot.TRANSIT_POS)
-        );
+        ).withName("Ground Intake");
     }
 
     /*
@@ -71,7 +71,7 @@ public class ComposedCommands {
                 shooter.eject() // Stops when cancelled
             ),
             pivot.profiledMove(Pivot.TRANSIT_POS)
-        );
+        ).withName("Human Intake");
     }
 
     /* EJECT */
@@ -84,7 +84,7 @@ public class ComposedCommands {
             shooter.eject(), // Stops when cancelled
             index.eject(), // Stops when cancelled
             intake.eject() // Stops when cancelled
-        );
+        ).withName("Eject Note");
     }
 
     public Command reverseAmp(){
@@ -92,7 +92,7 @@ public class ComposedCommands {
             new InstantCommand(()->shooter.setCurrentLimit(120, 120)),
             shooter.ejectFromAmp(),
             index.eject()
-        );
+        ).withName("Reverse Amp");
     }
 
     /* AMP MODE TOGGLE */
@@ -101,7 +101,7 @@ public class ComposedCommands {
         return new ParallelCommandGroup(
             pivot.profiledMove(Pivot.AMP_POS),
             shooter.ampShoot() // Stops when cancelled
-        );
+        ).withName("Amp Mode");
     }
 
     /* FEED NOTE IF READY */
@@ -116,7 +116,7 @@ public class ComposedCommands {
 
     /* CANCEL ALL COMMANDS */
     public Command cancelAll(){
-        return new InstantCommand(() -> CommandScheduler.getInstance().cancelAll());
+        return new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()).withName("Cancel All");
         /*
         return new ParallelCommandGroup(
             new InstantCommand(() -> pivot.setAngleReference(pivot.getAngle(), 0), pivot),
@@ -127,23 +127,11 @@ public class ComposedCommands {
         */
     }
 
-    private boolean autoAiming = false;
     /* TOGGLE AUTO AIMING */
-    public Command toggleAutoAim(){
-        return new ConditionalCommand(stopAutoAim(), autoAim(), () -> {return autoAiming;});
-    }
     public Command autoAim(){
-        autoAiming = true;
         return new SequentialCommandGroup(
             pivot.profiledMove(45),
             new AutoAim(pivot, ll, swerve)
-        );
-    }
-    public Command stopAutoAim(){
-        autoAiming = false;
-        return new ParallelCommandGroup(
-            pivot.goToTransit(),
-            shooter.instantStopAll()
         );
     }
 }

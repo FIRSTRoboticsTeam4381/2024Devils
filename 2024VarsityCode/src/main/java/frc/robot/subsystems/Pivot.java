@@ -48,6 +48,8 @@ public class Pivot extends SubsystemBase {
 
   private double MAX = 110.0; // TODO
 
+  private double posReference = 0.0;
+
 
   /* CONSTRUCTORS */
 
@@ -130,6 +132,7 @@ public class Pivot extends SubsystemBase {
    */
   public void setAngleReference(double angle, int slot){
     pivotController.setReference(angle, ControlType.kPosition, slot);
+    posReference = angle;
   }
 
   /**
@@ -207,6 +210,7 @@ public class Pivot extends SubsystemBase {
 
     SmartDashboard.putNumber("pivot/Left Current", leftPivot.getOutputCurrent());
     SmartDashboard.putNumber("pivot/Right Current", rightPivot.getOutputCurrent());
+    SmartDashboard.putNumber("pivot/Position Reference", posReference);
 
     //if(leftPivot.getEncoder().getPosition() >= MAX)
   }
