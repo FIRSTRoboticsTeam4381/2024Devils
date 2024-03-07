@@ -5,7 +5,7 @@ package frc.robot;
 
 import frc.lib.util.LogOrDash;
 import frc.robot.autos.Autos;
-import frc.robot.commands.AutoAim;
+import frc.robot.commands.AutoPivot;
 import frc.robot.commands.ComposedCommands;
 import frc.robot.commands.ManualClimb;
 import frc.robot.commands.ManualPivot;
