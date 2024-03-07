@@ -232,10 +232,10 @@ public class Shooter extends SubsystemBase {
 
   public void resetPID(){
     // PID Setup
-    double kp = 0.003;
+    double kp = 0.005;
     double ki = 0.0;
-    double kd = 0.01;
-    double kf = 0.00028;
+    double kd = 0.03;
+    double kf = 0.0003;
     propController = propMotor.getPIDController();
     propController.setP(kp);
     propController.setI(ki);
@@ -243,10 +243,10 @@ public class Shooter extends SubsystemBase {
     propController.setFF(kf);
     propController.setOutputRange(-1, 1);
 
-    kp = 0.003;
+    kp = 0.0018;
     ki = 0.0;
-    kd = 0.01;
-    kf = 0.00028;
+    kd = 0.02;
+    kf = 0.00023;
     topController = topMotor.getPIDController();
     topController.setP(kp);
     topController.setI(ki);

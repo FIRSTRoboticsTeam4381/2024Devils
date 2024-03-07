@@ -18,6 +18,8 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Swerve;
 
+import java.sql.Driver;
+
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
@@ -85,12 +87,9 @@ public class RobotContainer {
 
         /* Autonomous Chooser */
         m_AutoChooser.setDefaultOption("None", Autos.none());
-        m_AutoChooser.addOption("Start3 Alliance Notes", Autos.start3AllianceNotes());
-        m_AutoChooser.addOption("Start1 Three Piece", Autos.start1ThreePiece());
-        m_AutoChooser.addOption("Start2 Three Piece", Autos.start2ThreePiece());
-        m_AutoChooser.addOption("Start4 Chaos", Autos.start4ChaosTwoPiece());
-        m_AutoChooser.addOption("Start4 Three Piece", Autos.start4ThreePiece());
-        m_AutoChooser.addOption("Start Amp Four Piece", Autos.startAmp4Piece());
+        m_AutoChooser.addOption("Start2ThreePiece", Autos.start2ThreePiece());
+        m_AutoChooser.addOption("StartAmp4Piece", Autos.startAmp4Piece());
+        m_AutoChooser.addOption("Start3Middle", Autos.start3Middle());
         m_AutoChooser.addOption("SysId Quas Fwd", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
         m_AutoChooser.addOption("SysId Quas Rev", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse));
         m_AutoChooser.addOption("SysId Dyna Fwd", s_Swerve.sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
@@ -134,6 +133,7 @@ public class RobotContainer {
         specialist.triangle().whileTrue(commands.autoAim());
         specialist.povDown().whileTrue(commands.reverseAmp()).onFalse(new InstantCommand(()->s_Shooter.setCurrentLimit(60, 40)));
         specialist.PS().toggleOnTrue(new ManualClimb(specialist, s_Climb));
+        specialist.povUp().whileTrue(s_Pivot.profiledMove(28.5));
 
         specialist.touchpad().or(driver.touchpad()).onTrue(commands.cancelAll());
 
@@ -148,7 +148,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Intake", commands.groundIntake());
         NamedCommands.registerCommand("StopIntake", s_Intake.instantStop());
         NamedCommands.registerCommand("ShooterSpinUp", s_Shooter.instantSetVelocityReference(1800, false));
-        NamedCommands.registerCommand("AutoAim", new SequentialCommandGroup(s_Pivot.profiledMove(30),commands.autoAim()));
+        NamedCommands.registerCommand("AutoAim", new SequentialCommandGroup(s_Pivot.profiledMove(20),commands.autoAim()));
         NamedCommands.registerCommand("Shoot", s_Index.run());
         NamedCommands.registerCommand("LowerPivot", s_Pivot.profiledMove(0));
     }

@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.454549670868242,
-      "y": 7.237296985292972
+      "x": 1.44283883432246,
+      "y": 7.249007821838753
     },
     "rotation": 90.0
   },
@@ -14,25 +14,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "FromAmpStart"
+            "pathName": "FromAmpPath1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "FromAmp1"
+            "pathName": "FromAmpPath2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "FromAmp2"
+            "pathName": "FromAmpPath3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "FromAmp3"
+            "pathName": "FromAmpPath4"
           }
         }
       ]

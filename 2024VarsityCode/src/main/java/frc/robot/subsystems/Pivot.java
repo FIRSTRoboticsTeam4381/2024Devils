@@ -89,7 +89,7 @@ public class Pivot extends SubsystemBase {
     pivotController.setFF(0.0005, 1);
 
     // Trapezoid Profile Setup
-    motionProfile = new TrapezoidProfile(new Constraints(Conversions.dpsToRpm(3500 * (125.0*50.0/48.0)), Conversions.dpsToRpm(2000 * (125.0*50.0/48.0))));
+    motionProfile = new TrapezoidProfile(new Constraints(Conversions.dpsToRpm(4000 * (125.0*50.0/48.0)), Conversions.dpsToRpm(1500 * (125.0*50.0/48.0))));
     // Torque = 1:5 + 1:5 + 1:5 + 48:50 = 130.21 : 1
     // RPM = 5:1 + 5:1 + 5:1 + 50:48 = 1 : 130.20833333
 

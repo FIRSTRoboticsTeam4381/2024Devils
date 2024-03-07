@@ -79,7 +79,7 @@ public class SwerveModule {
             mDriveMotor.set(percentOutput * -1); // TODO remove when inverting works
         } 
         else{ // AUTO 
-            double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio); //TODO update for neos? 
+            double velocity = Conversions.MPStoRPM(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio); //TODO update for neos? 
             drivePIDController.setReference(velocity * -1, ControlType.kVelocity, 0, feedforward.calculate(desiredState.speedMetersPerSecond * -1)); // TODO fix when inverts work
         } 
  
@@ -88,7 +88,7 @@ public class SwerveModule {
         mDesiredAngle = angle; 
         mLastAngle = angle;
         SmartDashboard.putNumber("swerve/mod"+moduleNumber+"/velocitySetpointMPS", desiredState.speedMetersPerSecond);
-        SmartDashboard.putNumber("swerve/mod"+moduleNumber+"/velocitySetpointRPM", Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio));
+        SmartDashboard.putNumber("swerve/mod"+moduleNumber+"/velocitySetpointRPM", Conversions.MPStoRPM(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio));
         SmartDashboard.putNumber("swerve/mod"+moduleNumber+"/velocity", mDriveEncoder.getVelocity());
     } 
  

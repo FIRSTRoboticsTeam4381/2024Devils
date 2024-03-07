@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5602733209044244,
-      "y": 2.085366889875104
+      "x": 1.3374413054104268,
+      "y": 5.527514849608872
     },
-    "rotation": 0
+    "rotation": 90.0
   },
   "command": {
     "type": "sequential",
@@ -14,13 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "HP3PieceStart"
+            "pathName": "Start2Path1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "PickAndDestroy"
+            "pathName": "Start2Path2"
           }
         }
       ]

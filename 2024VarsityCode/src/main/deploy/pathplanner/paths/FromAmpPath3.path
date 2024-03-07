@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9,
-        "y": 6.14
+        "x": 2.4148382676223257,
+        "y": 6.382405917450922
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9246681749177457,
-        "y": 6.35890044588676
+        "x": 2.004958988519973,
+        "y": 6.148189186535292
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.9,
-        "y": 7.093184562039965
+        "x": 2.9066934025451485,
+        "y": 5.867129109436536
       },
       "prevControl": {
-        "x": 2.694794593888724,
-        "y": 7.112616148841243
+        "x": 2.824717546724679,
+        "y": 5.960815801802787
       },
       "nextControl": {
-        "x": 3.480524393288442,
-        "y": 7.038212764014687
+        "x": 3.082883700143833,
+        "y": 5.665768769323752
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.644266608747887,
-        "y": 5.624616329733554
+        "x": 2.9066934025451485,
+        "y": 5.070792224323394
       },
       "prevControl": {
-        "x": 3.5120954678403105,
-        "y": 5.947701340840964
+        "x": 2.9418259121824937,
+        "y": 5.351852301422149
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,28 +46,16 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.0,
-      "rotationDegrees": 89.07069929887972,
-      "rotateFast": false
+      "waypointRelativePos": 0.2,
+      "rotationDegrees": -72.31335573471638,
+      "rotateFast": true
     }
   ],
-  "constraintZones": [
-    {
-      "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.6,
-      "constraints": {
-        "maxVelocity": 1.0,
-        "maxAcceleration": 1.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0
-      }
-    }
-  ],
+  "constraintZones": [],
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.1,
       "command": {
         "type": "parallel",
         "data": {
@@ -84,7 +72,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 1.3,
+      "waypointRelativePos": 1.6,
       "command": {
         "type": "parallel",
         "data": {
@@ -101,7 +89,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 1.75,
+      "waypointRelativePos": 1.9,
       "command": {
         "type": "parallel",
         "data": {
@@ -118,20 +106,20 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 1.5,
+    "maxVelocity": 0.5,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 360.0,
-    "maxAngularAcceleration": 240.0
+    "maxAngularAcceleration": 120.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -7.765166018425372,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "AlliancesNotes3",
+  "folder": "FromAmp4Piece",
   "previewStartingState": {
-    "rotation": 90.39971210084131,
+    "rotation": 26.02959219151348,
     "velocity": 0
   },
   "useDefaultConstraints": false

@@ -1,0 +1,189 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.3140196323188638,
+        "y": 5.562647359246215
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.454549670868242,
+        "y": 5.574358195791997
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.60221165235483,
+        "y": 5.562647359246215
+      },
+      "prevControl": {
+        "x": 2.3328624118018557,
+        "y": 5.539225686154654
+      },
+      "nextControl": {
+        "x": 2.8715608929078047,
+        "y": 5.586069032337776
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.6444761049293843,
+        "y": 5.562647359246215
+      },
+      "prevControl": {
+        "x": 3.129199296914998,
+        "y": 5.545081104427541
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.55,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.55,
+      "constraints": {
+        "maxVelocity": 0.25,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 240.0,
+        "maxAngularAcceleration": 120.0
+      }
+    },
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 1.55,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 0.25,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 240.0,
+        "maxAngularAcceleration": 120.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ShooterSpinUp"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoAim"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.65,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.4,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoAim"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.9,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 0.75,
+    "maxAcceleration": 1.0,
+    "maxAngularVelocity": 240.0,
+    "maxAngularAcceleration": 120.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Start2ThreePiece",
+  "previewStartingState": {
+    "rotation": 90.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}
