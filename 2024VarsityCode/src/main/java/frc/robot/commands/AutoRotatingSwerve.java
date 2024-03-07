@@ -35,9 +35,7 @@ public class AutoRotatingSwerve extends Command{
      */
     public AutoRotatingSwerve(Swerve s_Swerve, Limelight s_LL, CommandPS4Controller controller, boolean openLoop){
         // TODO
-        rotationController.setP(0.0);
-        rotationController.setI(0.0);
-        rotationController.setD(0.0);
+        rotationController = new PIDController(0.004, 0.0, 0.000);
 
         this.s_Swerve = s_Swerve;
         this.s_LL = s_LL;
@@ -67,6 +65,9 @@ public class AutoRotatingSwerve extends Command{
             yAxis *= 0.5;
             xAxis *= 0.5;
         }
+
+        SmartDashboard.putNumber("autorotate/setpoint", 0.0);
+        SmartDashboard.putNumber("autorotate/offset", s_LL.targetXOffset());
 
         /* Calculates inputs for swerve subsystem */
         translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);

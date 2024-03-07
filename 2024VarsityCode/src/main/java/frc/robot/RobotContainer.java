@@ -6,6 +6,7 @@ package frc.robot;
 import frc.lib.util.LogOrDash;
 import frc.robot.autos.Autos;
 import frc.robot.commands.AutoPivot;
+import frc.robot.commands.AutoRotatingSwerve;
 import frc.robot.commands.ComposedCommands;
 import frc.robot.commands.ManualClimb;
 import frc.robot.commands.ManualPivot;
@@ -134,6 +135,7 @@ public class RobotContainer {
         specialist.povDown().whileTrue(commands.reverseAmp()).onFalse(new InstantCommand(()->s_Shooter.setCurrentLimit(60, 40)));
         specialist.PS().toggleOnTrue(new ManualClimb(specialist, s_Climb));
         specialist.povUp().whileTrue(s_Pivot.profiledMove(28.5));
+        driver.triangle().whileTrue(new AutoRotatingSwerve(s_Swerve, s_LL, driver, true).withName("Teleop Auto Rotate"));
 
         specialist.touchpad().or(driver.touchpad()).onTrue(commands.cancelAll());
 
