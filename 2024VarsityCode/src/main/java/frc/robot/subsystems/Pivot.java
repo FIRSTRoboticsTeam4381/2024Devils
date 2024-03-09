@@ -83,10 +83,10 @@ public class Pivot extends SubsystemBase {
     pivotController.setD(0.002, 0);
     pivotController.setFF(0.0001, 0);
 
-    pivotController.setP(0.01, 1);
-    pivotController.setI(0.0, 1);
-    pivotController.setD(0.03, 1);
-    pivotController.setFF(0.0005, 1);
+    pivotController.setP(0.0125, 1);
+    pivotController.setI(0.000001, 1);
+    pivotController.setD(0.01, 1);
+    pivotController.setFF(0.0004, 1);
 
     // Trapezoid Profile Setup
     motionProfile = new TrapezoidProfile(new Constraints(Conversions.dpsToRpm(4000 * (125.0*50.0/48.0)), Conversions.dpsToRpm(1500 * (125.0*50.0/48.0))));

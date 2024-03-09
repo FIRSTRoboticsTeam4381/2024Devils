@@ -212,7 +212,7 @@ public class Swerve extends SubsystemBase{
         double[] targetAngles = new double[4];
         double[] absoluteAngles = new double[4];
 
-        SmartDashboard.putNumber("swerve/rotation", getYaw().getDegrees());
+        SmartDashboard.putNumber("swerve/rotation", getYaw().getDegrees()-180);
         SmartDashboard.putNumber("match/Match Timer", DriverStation.getMatchTime());
 
         for(SwerveModule m : mSwerveMods){

@@ -30,6 +30,9 @@ public final class Autos {
     public static Command start3Middle(){
         return new PathPlannerAuto("Start3Middle");
     }
+    public static Command start4ThreePiece(){
+        return new PathPlannerAuto("Start4ThreePiece");
+    }
 
     // TODO test of a single path
     public static Command testPath(){

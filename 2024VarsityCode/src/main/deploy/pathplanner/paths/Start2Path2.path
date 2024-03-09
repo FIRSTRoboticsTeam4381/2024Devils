@@ -120,7 +120,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 1.55,
+      "waypointRelativePos": 1.25,
       "command": {
         "type": "parallel",
         "data": {
@@ -137,7 +137,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 2.9,
+      "waypointRelativePos": 2.7,
       "command": {
         "type": "parallel",
         "data": {
@@ -154,7 +154,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 3.5,
+      "waypointRelativePos": 3.2,
       "command": {
         "type": "parallel",
         "data": {

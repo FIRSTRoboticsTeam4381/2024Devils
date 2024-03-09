@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.5528152568430658,
+      "y": 2.0611072320575454
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start4Start"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start4Path1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start4Path2"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

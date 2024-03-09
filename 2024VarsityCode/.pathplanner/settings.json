@@ -4,8 +4,9 @@
   "holonomicMode": true,
   "pathFolders": [
     "FromAmp4Piece",
-    "Start3Middle",
-    "Start2ThreePiece"
+    "Start4ThreePiece",
+    "Start2ThreePiece",
+    "Start3Middle"
   ],
   "autoFolders": [],
   "defaultMaxVel": 5.0,

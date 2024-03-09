@@ -35,7 +35,7 @@ public class AutoRotatingSwerve extends Command{
      */
     public AutoRotatingSwerve(Swerve s_Swerve, Limelight s_LL, CommandPS4Controller controller, boolean openLoop){
         // TODO
-        rotationController = new PIDController(0.004, 0.0, 0.000);
+        rotationController = new PIDController(0.0075, 0.0, 0.001);
 
         this.s_Swerve = s_Swerve;
         this.s_LL = s_LL;
@@ -66,12 +66,24 @@ public class AutoRotatingSwerve extends Command{
             xAxis *= 0.5;
         }
 
-        SmartDashboard.putNumber("autorotate/setpoint", 0.0);
-        SmartDashboard.putNumber("autorotate/offset", s_LL.targetXOffset());
-
         /* Calculates inputs for swerve subsystem */
         translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);
-        rotation = rotationController.calculate(s_LL.targetXOffset(), 0.0) * Constants.Swerve.maxAngularVelocity;
+        rotation = rotationController.calculate(s_Swerve.getYaw().getDegrees()-180, calcAngle()) * Constants.Swerve.maxAngularVelocity;
+        //rotation = 0.0;
         s_Swerve.drive(translation, rotation, true, openLoop);
+    }
+
+    public double calcAngle(){
+        double[] pose = s_LL.cameraPoseFromTarget();
+        double x = pose[0];
+        double y = pose[2];
+        double angle = Math.atan(x/y) * 180.0/Math.PI;
+        return 180-angle;
+    }
+
+    public double[] predictLatencyTranslation(){
+        double x = s_Swerve.getRobotRelativeSpeeds().vyMetersPerSecond * (Math.cos(s_Swerve.getYaw().getRadians()-(2*Math.PI))) * s_LL.captureLatency();
+        double y = s_Swerve.getRobotRelativeSpeeds().vxMetersPerSecond * (Math.cos(s_Swerve.getYaw().getRadians()-(2*Math.PI))) * s_LL.captureLatency();
+        return new double[] {x,y};
     }
 }

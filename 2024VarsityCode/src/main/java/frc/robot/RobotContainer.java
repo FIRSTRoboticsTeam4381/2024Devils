@@ -91,6 +91,7 @@ public class RobotContainer {
         m_AutoChooser.addOption("Start2ThreePiece", Autos.start2ThreePiece());
         m_AutoChooser.addOption("StartAmp4Piece", Autos.startAmp4Piece());
         m_AutoChooser.addOption("Start3Middle", Autos.start3Middle());
+        m_AutoChooser.addOption("Start4ThreePiece", Autos.start4ThreePiece());
         m_AutoChooser.addOption("SysId Quas Fwd", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
         m_AutoChooser.addOption("SysId Quas Rev", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse));
         m_AutoChooser.addOption("SysId Dyna Fwd", s_Swerve.sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
@@ -130,7 +131,7 @@ public class RobotContainer {
         specialist.L1().toggleOnTrue(s_Shooter.shootAvgSpeed()); // Changes this so it will cancel auto aiming
         specialist.povRight().toggleOnTrue(commands.ampMode());
         specialist.povLeft().toggleOnTrue(s_Shooter.ampShoot());
-        specialist.R1().whileTrue(commands.feedNote());
+        driver.R1().whileTrue(commands.feedNote());
         specialist.triangle().whileTrue(commands.autoAim());
         specialist.povDown().whileTrue(commands.reverseAmp()).onFalse(new InstantCommand(()->s_Shooter.setCurrentLimit(60, 40)));
         specialist.PS().toggleOnTrue(new ManualClimb(specialist, s_Climb));
