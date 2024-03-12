@@ -41,7 +41,7 @@ public class Pivot extends SubsystemBase {
   private TrapezoidProfile motionProfile;
 
   // Tested Positions
-  public static final double INTAKE_POS = 85;
+  public static final double INTAKE_POS = 70;
   public static final double HUMAN_POS = 115;
   public static final double AMP_POS = 92;
   public static final double TRANSIT_POS = 10;
@@ -62,8 +62,8 @@ public class Pivot extends SubsystemBase {
     rightPivot.follow(leftPivot, true);
     leftPivot.setIdleMode(IdleMode.kBrake);
     rightPivot.setIdleMode(IdleMode.kBrake);
-    leftPivot.setSmartCurrentLimit(40);
-    rightPivot.setSmartCurrentLimit(40);
+    leftPivot.setSmartCurrentLimit(60);
+    rightPivot.setSmartCurrentLimit(60);
 
     SparkUtilities.optimizeFrames(leftPivot, true, false, true, false, false, true);
     SparkUtilities.optimizeFrames(rightPivot, false, false, true, false, false, false);
@@ -78,21 +78,18 @@ public class Pivot extends SubsystemBase {
     pivotController.setPositionPIDWrappingEnabled(true);
     pivotController.setPositionPIDWrappingMinInput(0);
     pivotController.setPositionPIDWrappingMaxInput(360);
-    pivotController.setP(0.008, 0);
+    pivotController.setP(0.01, 0);
     pivotController.setI(0.0, 0);
     pivotController.setD(0.002, 0);
-    pivotController.setFF(0.0001, 0);
+    pivotController.setFF(0.0013, 0);
 
-    pivotController.setP(0.0125, 1);
-    pivotController.setI(0.000001, 1);
-    pivotController.setD(0.01, 1);
-    pivotController.setFF(0.0004, 1);
+    pivotController.setP(0.01, 1);
+    pivotController.setI(0.0, 1);
+    pivotController.setD(0.001, 1);
+    pivotController.setFF(0.0005, 1);
 
     // Trapezoid Profile Setup
-    motionProfile = new TrapezoidProfile(new Constraints(Conversions.dpsToRpm(4000 * (125.0*50.0/48.0)), Conversions.dpsToRpm(1500 * (125.0*50.0/48.0))));
-    // Torque = 1:5 + 1:5 + 1:5 + 48:50 = 130.21 : 1
-    // RPM = 5:1 + 5:1 + 5:1 + 50:48 = 1 : 130.20833333
-
+    motionProfile = new TrapezoidProfile(new Constraints(3000, 50000));
   }
 
 
@@ -123,7 +120,7 @@ public class Pivot extends SubsystemBase {
    */
   public void setPercOutput(double speed){
     double pos = pivotEncoder.getPosition();
-    if(pos < 10 || pos > 80) speed *= 0.75;
+    if(pos < 15 || pos > 80) speed *= 0.6;
     leftPivot.set(speed);
   }
 
@@ -143,6 +140,7 @@ public class Pivot extends SubsystemBase {
    */
   public void useState(TrapezoidProfile.State state){
     setAngleReference(state.position, 0);
+    //pivotController.setReference(state.velocity*60.0/360.0, ControlType.kVelocity);
   }
 
 
@@ -200,7 +198,6 @@ public class Pivot extends SubsystemBase {
 
 
   /* PERIODIC */
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -209,10 +206,12 @@ public class Pivot extends SubsystemBase {
     SmartDashboard.putNumber("pivot/Pivot Velocity", pivotEncoder.getVelocity());
     SmartDashboard.putNumber("pivot/Relative Position", leftPivot.getEncoder().getPosition());
     SmartDashboard.putString("pivot/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
+    SmartDashboard.putBoolean("pivo/Aiming?", !(this.getCurrentCommand()==null||!this.getCurrentCommand().getName().equals("Auto Aim")));
 
     SmartDashboard.putNumber("pivot/Left Current", leftPivot.getOutputCurrent());
     SmartDashboard.putNumber("pivot/Right Current", rightPivot.getOutputCurrent());
     SmartDashboard.putNumber("pivot/Position Reference", posReference);
+    SmartDashboard.putNumber("pivot/Velocity DPS", pivotEncoder.getVelocity()*360);
 
     //if(leftPivot.getEncoder().getPosition() >= MAX)
   }

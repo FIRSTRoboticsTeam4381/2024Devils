@@ -54,8 +54,7 @@ public class ComposedCommands {
                     intake.run(),
                     index.indexUntilIn(false)
                 )
-            ),
-            pivot.profiledMove(Pivot.TRANSIT_POS)
+            )
         ).withName("Ground Intake");
     }
 
@@ -130,7 +129,7 @@ public class ComposedCommands {
     /* TOGGLE AUTO AIMING */
     public Command autoAim(){
         return new SequentialCommandGroup(
-            pivot.profiledMove(45),
+            pivot.profiledMove(35),
             new AutoPivot(pivot, ll, swerve)
         ).withName("Auto Aim");
     }

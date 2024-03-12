@@ -27,15 +27,12 @@ public class Shooter extends SubsystemBase {
 
   private CANSparkFlex propMotor;
   private CANSparkFlex topMotor;
-  private CANSparkFlex bottomMotor;
 
   private RelativeEncoder propEncoder;
   private RelativeEncoder topEncoder;
-  private RelativeEncoder bottomEncoder;
 
   private SparkPIDController propController;
   private SparkPIDController topController;
-  private SparkPIDController bottomController;
 
   public static final double maxRPM = 6500;
 
@@ -48,29 +45,23 @@ public class Shooter extends SubsystemBase {
     // Motor Setup
     propMotor = new CANSparkFlex(Constants.Shooter.propCAN, MotorType.kBrushless);
     topMotor = new CANSparkFlex(Constants.Shooter.topCAN, MotorType.kBrushless);
-    bottomMotor = new CANSparkFlex(Constants.Shooter.bottomCAN, MotorType.kBrushless);
 
     propMotor.setSmartCurrentLimit(60);
-    bottomMotor.setSmartCurrentLimit(60);
     topMotor.setSmartCurrentLimit(60);
 
     propMotor.setIdleMode(IdleMode.kCoast);
     topMotor.setIdleMode(IdleMode.kCoast);
-    bottomMotor.setIdleMode(IdleMode.kCoast);
 
     propMotor.setInverted(true);
     topMotor.setInverted(true);
-    bottomMotor.setInverted(false);
     //bottomMotor.follow(propMotor, true);
 
     SparkUtilities.optimizeFrames(propMotor, true, true, false, false, false, false);
     SparkUtilities.optimizeFrames(topMotor, false, true, false, false, false, false);
-    SparkUtilities.optimizeFrames(bottomMotor, false, true, false, false, false, false);
 
     // Encoder Setup
     propEncoder = propMotor.getEncoder();
     topEncoder = topMotor.getEncoder();
-    bottomEncoder = bottomMotor.getEncoder();
 
     resetPID();
   }
@@ -91,7 +82,7 @@ public class Shooter extends SubsystemBase {
    * @return Boolean determining if it is okay to feed a note to the shooter
    */
   public boolean readyForNote(){
-    return (setpoint != 0 && (setpoint-Math.abs(propEncoder.getVelocity())<50 && setpoint-Math.abs(topEncoder.getVelocity())<50 && setpoint-Math.abs(bottomEncoder.getVelocity())<50));
+    return (setpoint != 0 && (setpoint-Math.abs(propEncoder.getVelocity())<50 && setpoint-Math.abs(topEncoder.getVelocity())<50));
   }
 
   public double getSetpoint(){
@@ -110,7 +101,6 @@ public class Shooter extends SubsystemBase {
     setpoint = speed*maxRPM;
     propMotor.set(speed);
     topMotor.set(speed * (deflect?-1:1));
-    bottomMotor.set(speed);
   }
 
   /**
@@ -123,14 +113,12 @@ public class Shooter extends SubsystemBase {
     setpoint = velocity;
     propController.setReference(velocity, ControlType.kVelocity);
     topController.setReference(velocity * (deflect?-1.0:1.0), ControlType.kVelocity);
-    bottomController.setReference(velocity, ControlType.kVelocity);
   }
 
   public void setAmpVelocity(){
-    setpoint = 800;
-    propController.setReference(800, ControlType.kVelocity);
-    topController.setReference(-1600, ControlType.kVelocity);
-    bottomController.setReference(1600, ControlType.kVelocity);
+    setpoint = 1600;
+    propController.setReference(1600, ControlType.kVelocity);
+    topController.setReference(-3200, ControlType.kVelocity);
   }
 
   public void setCurrentLimit(int current1, int current2){
@@ -172,11 +160,11 @@ public class Shooter extends SubsystemBase {
    */
   public Command shootAvgSpeed(){
     return new FunctionalCommand(
-      () -> setVelocity(1800.0, false), 
+      () -> setVelocity(4200.0, false), 
       () -> {}, 
       interrupted->setPercOutput(0.0, false), 
       ()->{return false;}, 
-      this).withName("Holding Velocity "+1800);
+      this).withName("Holding Velocity "+4500);
   }
 
   /**
@@ -201,7 +189,7 @@ public class Shooter extends SubsystemBase {
    */
   public Command eject(){
     return new FunctionalCommand(
-      ()->setVelocity(-1000.0, false), 
+      ()->setVelocity(-1800.0, false), 
       ()->{}, 
       (interrupted)->setPercOutput(0.0, false), 
       ()->{return false;}, 
@@ -210,13 +198,14 @@ public class Shooter extends SubsystemBase {
 
   public Command ejectFromAmp(){
     return new FunctionalCommand(
-      ()->setVelocity(-1500.0, true), 
+      ()->setVelocity(-2000.0, true), 
       ()->{}, 
       (interrupted)->setPercOutput(0.0, false), 
       ()->{return false;}, 
       this).withName("Eject from amp");
   }
 
+  /*
   public Command customBangBang(){
     return new SequentialCommandGroup(
       new FunctionalCommand(
@@ -228,38 +217,24 @@ public class Shooter extends SubsystemBase {
       shootAvgSpeed()
     );
   }
+  */
 
 
   public void resetPID(){
     // PID Setup
-    double kp = 0.005;
-    double ki = 0.0;
-    double kd = 0.03;
-    double kf = 0.0003;
     propController = propMotor.getPIDController();
-    propController.setP(kp);
-    propController.setI(ki);
-    propController.setD(kd);
-    propController.setFF(kf);
+    propController.setP(0.001);
+    propController.setI(0.0);
+    propController.setD(0.0);
+    propController.setFF(0.000165);
     propController.setOutputRange(-1, 1);
 
-    kp = 0.0018;
-    ki = 0.0;
-    kd = 0.02;
-    kf = 0.00023;
     topController = topMotor.getPIDController();
-    topController.setP(kp);
-    topController.setI(ki);
-    topController.setD(kd);
-    topController.setFF(kf);
+    topController.setP(0.0005);
+    topController.setI(0.0);
+    topController.setD(0.0);
+    topController.setFF(0.00016);
     topController.setOutputRange(-1, 1);
-
-    bottomController = bottomMotor.getPIDController();
-    bottomController.setP(kp);
-    bottomController.setI(ki);
-    bottomController.setD(kd);
-    bottomController.setFF(kf);
-    bottomController.setOutputRange(-1, 1);
   }
 
 
@@ -271,7 +246,6 @@ public class Shooter extends SubsystemBase {
 
     SmartDashboard.putNumber("shooter/Propellor Velocity", propEncoder.getVelocity());
     SmartDashboard.putNumber("shooter/Top Velocity", topEncoder.getVelocity());
-    SmartDashboard.putNumber("shooter/Bottom Velocity", bottomEncoder.getVelocity());
     SmartDashboard.putString("shooter/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
     SmartDashboard.putNumber("shooter/Error", Math.abs(-setpoint-propEncoder.getVelocity()));
     SmartDashboard.putBoolean("shooter/Shooter Ready", readyForNote());
@@ -280,7 +254,6 @@ public class Shooter extends SubsystemBase {
 
     SmartDashboard.putNumber("shooter/Propellor Current", propMotor.getOutputCurrent());
     SmartDashboard.putNumber("shooter/Top Current", topMotor.getOutputCurrent());
-    SmartDashboard.putNumber("shooter/Bottom Current", bottomMotor.getOutputCurrent());
   }
 
 
@@ -290,8 +263,6 @@ public class Shooter extends SubsystemBase {
       propMotor.burnFlash();
       Thread.sleep(1000);
       topMotor.burnFlash();
-      Thread.sleep(1000);
-      bottomMotor.burnFlash();
       Thread.sleep(1000);
     }catch(InterruptedException e){
       DriverStation.reportError("Thread was interrupted while flashing shooter", e.getStackTrace());

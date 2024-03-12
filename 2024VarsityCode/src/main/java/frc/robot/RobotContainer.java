@@ -60,7 +60,7 @@ public class RobotContainer {
     public static final Index s_Index = new Index();
     public static final Pivot s_Pivot = new Pivot();
     public static final Shooter s_Shooter = new Shooter();
-    public static final Climb s_Climb = new Climb();
+    //public static final Climb s_Climb = new Climb();
     public static final Limelight s_LL = new Limelight();
 
     /* Commands */
@@ -134,8 +134,8 @@ public class RobotContainer {
         driver.R1().whileTrue(commands.feedNote());
         specialist.triangle().whileTrue(commands.autoAim());
         specialist.povDown().whileTrue(commands.reverseAmp()).onFalse(new InstantCommand(()->s_Shooter.setCurrentLimit(60, 40)));
-        specialist.PS().toggleOnTrue(new ManualClimb(specialist, s_Climb));
-        specialist.povUp().whileTrue(s_Pivot.profiledMove(28.5));
+        //specialist.PS().toggleOnTrue(new ManualClimb(specialist, s_Climb));
+        specialist.povUp().whileTrue(s_Pivot.goToTemporaryPosition(28.5));
         driver.triangle().whileTrue(new AutoRotatingSwerve(s_Swerve, s_LL, driver, true).withName("Teleop Auto Rotate"));
 
         specialist.touchpad().or(driver.touchpad()).onTrue(commands.cancelAll());
