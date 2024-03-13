@@ -33,6 +33,7 @@ public class Shooter extends SubsystemBase {
   private SparkPIDController topController;
 
   public static final double maxRPM = 6500;
+  public static final double avgRPM = 4200;
 
   private double setpoint = 0.0;
 
@@ -158,11 +159,11 @@ public class Shooter extends SubsystemBase {
    */
   public Command shootAvgSpeed(){
     return new FunctionalCommand(
-      () -> setVelocity(4200.0, false), 
+      () -> setVelocity(avgRPM, false), 
       () -> {}, 
       interrupted->setPercOutput(0.0, false), 
       ()->{return false;}, 
-      this).withName("Holding Velocity "+4500);
+      this).withName("Holding Velocity "+avgRPM);
   }
 
   /**
