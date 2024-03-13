@@ -21,19 +21,10 @@ public class Climb extends SubsystemBase {
   /* ATTRIBUTES */
   private CANSparkMax rightBaseMotor;
   private CANSparkMax leftBaseMotor;
-  private CANSparkFlex midMotor;
 
   private SparkPIDController baseController;
-  private SparkPIDController middleController;
 
   private RelativeEncoder baseEncoder;
-  private RelativeEncoder midEncoder;
-
-  private double middleReference = 0.0;
-
-  //public static final double MID_READY_POS = 0.0; // TODO
-
-  private static final double MID_MIN = 0.0;
 
   /* CONSTRUCTOR */
 
@@ -42,20 +33,16 @@ public class Climb extends SubsystemBase {
     // Motor Setup
     rightBaseMotor = new CANSparkMax(Constants.Climb.rightClimbCAN, MotorType.kBrushless);
     leftBaseMotor = new CANSparkMax(Constants.Climb.leftClimbCAN, MotorType.kBrushless);
-    midMotor = new CANSparkFlex(Constants.Climb.midClimbCAN, MotorType.kBrushless);
 
     leftBaseMotor.follow(rightBaseMotor, true);
 
     SparkUtilities.optimizeFrames(rightBaseMotor, true, false, true, false, false, false);
     SparkUtilities.optimizeFrames(leftBaseMotor, false, false, false, false, false, false);
-    SparkUtilities.optimizeFrames(midMotor, false, false, true, false, false, false);
 
     // Encoder Setup
     baseEncoder = rightBaseMotor.getEncoder();
-    midEncoder = midMotor.getEncoder();
 
     baseController = rightBaseMotor.getPIDController();
-    middleController = midMotor.getPIDController();
 
     // PID Setup
     // TODO Base controller configuration
@@ -64,33 +51,16 @@ public class Climb extends SubsystemBase {
     baseController.setD(0);
     baseController.setFF(0);
     baseController.setOutputRange(-1, 1);
-
-    // TODO Middle controller configuration
-    middleController.setP(0);
-    middleController.setI(0);
-    middleController.setD(0);
-    middleController.setFF(0);
-    middleController.setOutputRange(-1, 1);
   }
 
   public void setBasePercOutput(double speed){
     rightBaseMotor.set(speed);
   }
-  public void setMidPercOutput(double speed){
-    midMotor.set(speed);
-  }
 
   public void setBaseReference(double position){
     baseController.setReference(position, ControlType.kPosition);
   }
-  public void setMiddleReference(double position){
-    middleReference = position;
-    middleController.setReference(position, ControlType.kPosition);
-  }
 
-  public double getMiddleReference(){
-    return middleReference;
-  }
   public double getBasePosition(){
     return rightBaseMotor.getEncoder().getPosition();
   }
@@ -100,11 +70,9 @@ public class Climb extends SubsystemBase {
     // This method will be called once per scheduler run
 
     SmartDashboard.putNumber("climb/Base Pivot Position", baseEncoder.getPosition());
-    SmartDashboard.putNumber("climb/Mid Pivot Position", midEncoder.getPosition());
 
     SmartDashboard.putNumber("climb/Left Base Current", leftBaseMotor.getOutputCurrent());
     SmartDashboard.putNumber("climb/Right Base Current", rightBaseMotor.getOutputCurrent());
-    SmartDashboard.putNumber("climb/Mid Climb Current", midMotor.getOutputCurrent());
   }
 
 
@@ -114,8 +82,6 @@ public class Climb extends SubsystemBase {
       rightBaseMotor.burnFlash();
       Thread.sleep(1000);
       leftBaseMotor.burnFlash();
-      Thread.sleep(1000);
-      midMotor.burnFlash();
       Thread.sleep(1000);
     }catch(InterruptedException e){
       DriverStation.reportError("Thread was interrupted while flashing climb", e.getStackTrace());

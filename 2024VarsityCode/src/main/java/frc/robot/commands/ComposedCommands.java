@@ -48,8 +48,8 @@ public class ComposedCommands {
     public Command groundIntake(){
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
-                //pivot.goToIntake(),
-                pivot.profiledMove(Pivot.INTAKE_POS),
+                pivot.goToIntake(),
+                //pivot.goToTemporaryPosition(Pivot.INTAKE_POS),
                 new ParallelRaceGroup(
                     intake.run(),
                     index.indexUntilIn(false)
@@ -129,7 +129,7 @@ public class ComposedCommands {
     /* TOGGLE AUTO AIMING */
     public Command autoAim(){
         return new SequentialCommandGroup(
-            pivot.profiledMove(35),
+            //pivot.profiledMove(35),
             new AutoPivot(pivot, ll, swerve)
         ).withName("Auto Aim");
     }

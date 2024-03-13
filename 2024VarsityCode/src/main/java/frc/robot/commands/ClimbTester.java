@@ -36,18 +36,14 @@ public class ClimbTester extends Command {
   @Override
   public void execute() {
     double baseInput = basePivotInput.get();
-    double midInput = midPivotInput.get();
 
     baseInput = Math.abs(baseInput) < Constants.stickDeadband ? 0 : baseInput;
-    midInput = Math.abs(midInput) < Constants.stickDeadband ? 0 : midInput;
 
     // CHANGE Good speeds to run these at
     baseInput *= 0.75;
-    midInput *= 0.75;
 
       s_Climb.setBasePercOutput(baseInput);
 
-      s_Climb.setMidPercOutput(midInput);
   }
 
   // Called once the command ends or is interrupted.

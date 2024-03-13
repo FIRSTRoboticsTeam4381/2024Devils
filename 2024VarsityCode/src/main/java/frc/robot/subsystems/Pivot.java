@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -21,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
-
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.lib.math.Conversions;
 import frc.lib.util.SparkUtilities.SparkUtilities;
 import frc.robot.Constants;
@@ -35,13 +36,14 @@ public class Pivot extends SubsystemBase {
   private CANSparkMax leftPivot;
 
   private AbsoluteEncoder pivotEncoder;
+  private RelativeEncoder relativeEncoder;
 
   private SparkPIDController pivotController;
 
   private TrapezoidProfile motionProfile;
 
   // Tested Positions
-  public static final double INTAKE_POS = 70;
+  public static final double INTAKE_POS = 85;
   public static final double HUMAN_POS = 115;
   public static final double AMP_POS = 92;
   public static final double TRANSIT_POS = 10;
@@ -70,6 +72,10 @@ public class Pivot extends SubsystemBase {
 
     // Encoder Setup
     pivotEncoder = leftPivot.getAbsoluteEncoder(Type.kDutyCycle);
+    relativeEncoder = leftPivot.getEncoder();
+    //relativeEncoder.setPositionConversionFactor(360/4096.0);
+    relativeEncoder.setPositionConversionFactor(1/150.0 * 48.0/50.0 * 360.0);
+    relativeEncoder.setPosition(pivotEncoder.getPosition());
 
     // PID Setup
     pivotController = leftPivot.getPIDController();
@@ -81,15 +87,15 @@ public class Pivot extends SubsystemBase {
     pivotController.setP(0.01, 0);
     pivotController.setI(0.0, 0);
     pivotController.setD(0.002, 0);
-    pivotController.setFF(0.0013, 0);
+    pivotController.setFF(0.0/*0.0013*/, 0);
 
-    pivotController.setP(0.01, 1);
-    pivotController.setI(0.0, 1);
-    pivotController.setD(0.001, 1);
+    pivotController.setP(0.009, 1);
+    pivotController.setI(0.000001, 1);
+    pivotController.setD(0.01, 1);
     pivotController.setFF(0.0005, 1);
 
     // Trapezoid Profile Setup
-    motionProfile = new TrapezoidProfile(new Constraints(3000, 50000));
+    motionProfile = new TrapezoidProfile(new Constraints(60, 120));
   }
 
 
@@ -212,6 +218,7 @@ public class Pivot extends SubsystemBase {
     SmartDashboard.putNumber("pivot/Right Current", rightPivot.getOutputCurrent());
     SmartDashboard.putNumber("pivot/Position Reference", posReference);
     SmartDashboard.putNumber("pivot/Velocity DPS", pivotEncoder.getVelocity()*360);
+    SmartDashboard.putNumber("pivot/Relative Encoder Position", relativeEncoder.getPosition());
 
     //if(leftPivot.getEncoder().getPosition() >= MAX)
   }

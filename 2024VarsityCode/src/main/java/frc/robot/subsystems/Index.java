@@ -32,7 +32,7 @@ public class Index extends SubsystemBase {
   public Index() {
     indexMotor = new CANSparkMax(Constants.Index.indexCAN, MotorType.kBrushless);
     indexEye = new DigitalInput(Constants.Index.indexDIO);
-    indexMotor.setSmartCurrentLimit(30);
+    indexMotor.setSmartCurrentLimit(50);
 
     SparkUtilities.optimizeFrames(indexMotor, false, false, false, false, false, false);
   }

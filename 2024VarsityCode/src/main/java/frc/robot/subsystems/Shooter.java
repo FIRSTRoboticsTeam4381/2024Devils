@@ -82,7 +82,7 @@ public class Shooter extends SubsystemBase {
    * @return Boolean determining if it is okay to feed a note to the shooter
    */
   public boolean readyForNote(){
-    return (setpoint != 0 && (setpoint-Math.abs(propEncoder.getVelocity())<50 && setpoint-Math.abs(topEncoder.getVelocity())<50));
+    return (setpoint != 0 && (setpoint-Math.abs(propEncoder.getVelocity())<100 && setpoint-Math.abs(topEncoder.getVelocity())<100));
   }
 
   public double getSetpoint(){

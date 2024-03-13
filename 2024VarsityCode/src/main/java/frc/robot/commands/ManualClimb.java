@@ -30,13 +30,9 @@ public class ManualClimb extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double negativeJointInput = (controller.getL2Axis()+1.0)/2.0;
-    double positiveJointInput = (controller.getR2Axis()+1.0)/2.0;
     double climbInput = -controller.getRightY();
 
     // Deadbands
-    positiveJointInput = positiveJointInput<Constants.stickDeadband?0.0:positiveJointInput;
-    negativeJointInput = negativeJointInput<Constants.stickDeadband?0.0:negativeJointInput;
     climbInput = Math.abs(climbInput)<Constants.stickDeadband?0.0:climbInput;
 
     /*
@@ -54,7 +50,6 @@ public class ManualClimb extends Command {
     }
 
     climb.setBasePercOutput(climbInput*0.5);
-    climb.setMidPercOutput((positiveJointInput-negativeJointInput)*-0.5);
   }
 
   // Called once the command ends or is interrupted.

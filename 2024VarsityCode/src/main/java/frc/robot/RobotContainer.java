@@ -60,7 +60,7 @@ public class RobotContainer {
     public static final Index s_Index = new Index();
     public static final Pivot s_Pivot = new Pivot();
     public static final Shooter s_Shooter = new Shooter();
-    //public static final Climb s_Climb = new Climb();
+    public static final Climb s_Climb = new Climb();
     public static final Limelight s_LL = new Limelight();
 
     /* Commands */
@@ -131,10 +131,10 @@ public class RobotContainer {
         specialist.L1().toggleOnTrue(s_Shooter.shootAvgSpeed()); // Changes this so it will cancel auto aiming
         specialist.povRight().toggleOnTrue(commands.ampMode());
         specialist.povLeft().toggleOnTrue(s_Shooter.ampShoot());
-        driver.R1().whileTrue(commands.feedNote());
+        specialist.R1().whileTrue(commands.feedNote());
         specialist.triangle().whileTrue(commands.autoAim());
         specialist.povDown().whileTrue(commands.reverseAmp()).onFalse(new InstantCommand(()->s_Shooter.setCurrentLimit(60, 40)));
-        //specialist.PS().toggleOnTrue(new ManualClimb(specialist, s_Climb));
+        specialist.PS().toggleOnTrue(new ManualClimb(specialist, s_Climb));
         specialist.povUp().whileTrue(s_Pivot.goToTemporaryPosition(28.5));
         driver.triangle().whileTrue(new AutoRotatingSwerve(s_Swerve, s_LL, driver, true).withName("Teleop Auto Rotate"));
 
@@ -150,8 +150,8 @@ public class RobotContainer {
     private void registerCommands(){
         NamedCommands.registerCommand("Intake", commands.groundIntake());
         NamedCommands.registerCommand("StopIntake", s_Intake.instantStop());
-        NamedCommands.registerCommand("ShooterSpinUp", s_Shooter.instantSetVelocityReference(1800, false));
-        NamedCommands.registerCommand("AutoAim", new SequentialCommandGroup(s_Pivot.profiledMove(20),commands.autoAim()));
+        NamedCommands.registerCommand("ShooterSpinUp", s_Shooter.instantSetVelocityReference(4200, false));
+        NamedCommands.registerCommand("AutoAim", commands.autoAim());
         NamedCommands.registerCommand("Shoot", s_Index.run());
         NamedCommands.registerCommand("LowerPivot", s_Pivot.profiledMove(0));
     }
