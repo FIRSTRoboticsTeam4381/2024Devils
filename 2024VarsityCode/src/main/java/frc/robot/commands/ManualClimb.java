@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.Constants;
 import frc.robot.subsystems.Climb;
-import frc.robot.subsystems.Pivot;
 
 public class ManualClimb extends Command {
   private CommandPS4Controller controller;

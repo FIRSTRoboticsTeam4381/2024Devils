@@ -6,10 +6,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Pivot;
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 
 public class AutoPivot extends Command {
@@ -18,7 +16,6 @@ public class AutoPivot extends Command {
   private Swerve swerve;
   private Limelight ll;
 
-  private double currentVelocity = 0.0;
   private double currentAngle = 30.0;
 
   /** Creates a new AutoAim. */
@@ -44,9 +41,6 @@ public class AutoPivot extends Command {
         currentAngle = calculatedAngle;
       }
     }
-  }
-  private void calcVelocity(){
-    currentVelocity = 1800;
   }
 
   private double getTargetRelativeVelocity(){
@@ -74,14 +68,12 @@ public class AutoPivot extends Command {
     calcAngle();
     //calcVelocity();
 
-    SmartDashboard.putNumber("autoaim/Calculated Velocity", currentVelocity);
     SmartDashboard.putNumber("autoaim/Calculated Angle", currentAngle);
     SmartDashboard.putNumber("autoaim/Target Relative Velocity", getTargetRelativeVelocity());
     SmartDashboard.putNumber("autoaim/Estimated Latency Position", estimateDistance());
     SmartDashboard.putNumber("autoaim/Predicted Future Position", predictFuturePosition());
 
     pivot.setAngleReference(currentAngle, 1);
-    //shooter.setVelocity(currentVelocity, false);
   }
 
   // Called once the command ends or is interrupted.

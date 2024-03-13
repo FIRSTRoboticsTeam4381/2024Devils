@@ -4,26 +4,18 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
-import frc.lib.math.Conversions;
 import frc.lib.util.SparkUtilities.SparkUtilities;
 import frc.robot.Constants;
 import frc.robot.commands.SparkPosition;
@@ -32,26 +24,21 @@ public class Pivot extends SubsystemBase {
 
   /* ATTRIBUTES */
   
-  private CANSparkMax rightPivot;
-  private CANSparkMax leftPivot;
+  private CANSparkMax leader;
+  private CANSparkMax follower;
 
   private AbsoluteEncoder shooterPivotEncoder;
   private AbsoluteEncoder motorPivotEncoder;
-  //private RelativeEncoder relativeEncoder;
 
   private SparkPIDController pivotController;
 
-  private TrapezoidProfile motionProfile;
-
-  // Tested Positions
-  public static final double INTAKE_POS = 85;
-  public static final double HUMAN_POS = 115;
-  public static final double AMP_POS = 92;
-  public static final double TRANSIT_POS = 10;
-
-  private double MAX = 110.0; // TODO
-
-  private double posReference = 0.0;
+  public class Positions{
+    public static final double intake = 80;
+    public static final double human = 115;
+    public static final double amp = 90;
+    public static final double transit = 10;
+    public static final double podium = 28.5;
+  }
 
 
   /* CONSTRUCTORS */
@@ -59,22 +46,20 @@ public class Pivot extends SubsystemBase {
   /** Creates a new Pivot. */
   public Pivot() {
     // Motor Setup
-    leftPivot = new CANSparkMax(Constants.Pivot.leftPivotCAN, MotorType.kBrushless);
-    rightPivot = new CANSparkMax(Constants.Pivot.rightPivotCAN, MotorType.kBrushless);
+    leader = new CANSparkMax(Constants.Pivot.rightPivotCAN, MotorType.kBrushless);
+    follower = new CANSparkMax(Constants.Pivot.leftPivotCAN, MotorType.kBrushless);
 
-    rightPivot.follow(leftPivot, true);
-    leftPivot.follow(rightPivot, true);
-    rightPivot.setInverted(true);
+    leader.setInverted(true);
+    follower.follow(leader, true);
+    
+    leader.setIdleMode(IdleMode.kBrake);
+    follower.setIdleMode(IdleMode.kBrake);
 
-    leftPivot.setIdleMode(IdleMode.kBrake);
-    rightPivot.setIdleMode(IdleMode.kBrake);
+    leader.setSmartCurrentLimit(60);
+    follower.setSmartCurrentLimit(60);
 
-    leftPivot.setSmartCurrentLimit(60);
-    rightPivot.setSmartCurrentLimit(60);
-
-    SparkUtilities.optimizeFrames(leftPivot, true, false, true, false, false, true);
-    SparkUtilities.optimizeFrames(rightPivot, false, false, true, false, false, true);
-
+    SparkUtilities.optimizeFrames(leader, true, false, true, false, false, true);
+    SparkUtilities.optimizeFrames(follower, false, false, true, false, false, true);
 
     // Encoder Setup
     /*
@@ -83,55 +68,41 @@ public class Pivot extends SubsystemBase {
      * motorPivotEncoder position conversion factor = 360*48.0/50.0
      * make sure they move in the same direction, and figure out the offsets
      */
-    shooterPivotEncoder = leftPivot.getAbsoluteEncoder(Type.kDutyCycle);
+    shooterPivotEncoder = follower.getAbsoluteEncoder(Type.kDutyCycle);
     //shooterPivotEncoder.setPositionConversionFactor(360);
-    motorPivotEncoder = rightPivot.getAbsoluteEncoder(Type.kDutyCycle);
+    motorPivotEncoder = leader.getAbsoluteEncoder(Type.kDutyCycle);
     //motorPivotEncoder.setPositionConversionFactor(360 * 48.0/50.0);
-    //relativeEncoder = leftPivot.getEncoder();
-    //relativeEncoder.setPositionConversionFactor(1/150.0 * 48.0/50.0 * 360.0);
-    //relativeEncoder.setPosition(pivotEncoder.getPosition());
 
     // PID Setup
-    pivotController = rightPivot.getPIDController();
+    pivotController = leader.getPIDController();
     pivotController.setFeedbackDevice(motorPivotEncoder);
     pivotController.setOutputRange(-1, 1);
     pivotController.setPositionPIDWrappingEnabled(true);
     pivotController.setPositionPIDWrappingMinInput(0);
     pivotController.setPositionPIDWrappingMaxInput(360);
-    pivotController.setP(0.01, 0);
+    // Slot 0 = Regular Movement
+    pivotController.setP(0.008, 0);
     pivotController.setI(0.0, 0);
     pivotController.setD(0.002, 0);
-    pivotController.setFF(0.0/*0.0013*/, 0);
-
-    pivotController.setP(0.009, 1);
+    pivotController.setFF(0.0005, 0);
+    // Slot 1 = Auto Aiming - More aggressive and more precise
+    pivotController.setP(0.01, 1);
     pivotController.setI(0.000001, 1);
     pivotController.setD(0.01, 1);
     pivotController.setFF(0.0005, 1);
-
-    // Trapezoid Profile Setup
-    motionProfile = new TrapezoidProfile(new Constraints(60, 120));
   }
 
 
   /* ACCESSORS */
 
-  /**
-   * Get the current angle of the pivot encoder
-   * @return
-   */
-  public double getShooterAngle(){
+  public double getAngle(){
+    return getMotorAngle();
+  }
+  private double getShooterAngle(){
     return shooterPivotEncoder.getPosition();
   }
-  public double getMotorAngle(){
+  private double getMotorAngle(){
     return motorPivotEncoder.getPosition();
-  }
-
-  /**
-   * Get the current Trapezoid Profile state of the pivot arm. Useful for profiled motion
-   * @return
-   */
-  public TrapezoidProfile.State getState(){
-    return new TrapezoidProfile.State(motorPivotEncoder.getPosition(), motorPivotEncoder.getVelocity());
   }
 
 
@@ -141,10 +112,10 @@ public class Pivot extends SubsystemBase {
    * Set a flat percentage-based output to the pivot. Useful for basic manual control
    * @param speed
    */
-  public void setPercOutput(double speed){
-    double pos = motorPivotEncoder.getPosition();
+  public void manualControl(double speed){
+    double pos = getAngle();
     if(pos < 15 || pos > 80) speed *= 0.6;
-    leftPivot.set(speed);
+    leader.set(speed);
   }
 
   /**
@@ -154,100 +125,58 @@ public class Pivot extends SubsystemBase {
    */
   public void setAngleReference(double angle, int slot){
     pivotController.setReference(angle, ControlType.kPosition, slot);
-    posReference = angle;
-  }
-
-  /**
-   * Method to accept a Trapezoid Profile state and set the PID position reference to that state.
-   * @param state
-   */
-  public void useState(TrapezoidProfile.State state){
-    setAngleReference(state.position, 0);
-    //pivotController.setReference(state.velocity*60.0/360.0, ControlType.kVelocity);
   }
 
 
   /* COMMANDS */
-  // No instant commands here, because it will immediately hand off to manual pivot, cancelling the set point making it useless
 
   /**
    * Using  tuned PID control, moves pivot to the passed angle. Releases control over pivot once it is within 3 degrees of the setpoint
    * @param angle Angle to travel to
    * @return
    */
-  private Command goToAngle(double angle){
-    return new SparkPosition(leftPivot, angle, 0, 3, this, motorPivotEncoder::getPosition);
-  }
-  public Command goToIntake(){
-    return goToAngle(INTAKE_POS).withName("Moving to intake");
-  }
-  public Command goToHuman(){
-    return goToAngle(HUMAN_POS).withName("Moving to human");
-  }
-  public Command goToTransit(){
-    return goToAngle(TRANSIT_POS).withName("Moving to transit");
-  }
-  public Command goToAmp(){
-    return goToAngle(AMP_POS).withName("Moving to amp");
+  public Command goToAngle(double angle){
+    return new SparkPosition(leader, angle, 0, 3, this, motorPivotEncoder::getPosition);
   }
 
   /**
-   * Moves the pivot to a provided position until the command is interrupted, at which point the pivot will return back to the transit position
+   * Moves the pivot to a provided position until the command is interrupted, then releases control
    * @param position
    * @return
    */
-  public Command goToTemporaryPosition(double position){
+  public Command holdPosition(double position){
     return new FunctionalCommand(
       ()->setAngleReference(position, 0), 
       ()->{}, 
-      interrupted->setAngleReference(TRANSIT_POS, 0), 
+      interrupted->{}, 
       ()->{return false;}, 
       this).withName("Holding position "+position);
   }
 
-  /**
-   * Move the pivot to a position via a Trapezoid Motion profile. This profile has yet to be tested and configured
-   * @param position
-   * @return
-   */
-  public Command profiledMove(double position){
-    return new TrapezoidProfileCommand(
-      motionProfile, 
-      this::useState, 
-      () -> new TrapezoidProfile.State(position, 0.0),
-      this::getState,
-      this).withName("Profiled Movement to "+position);
-  }
-
 
   /* PERIODIC */
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("pivot/absoluteAngle/shooter", shooterPivotEncoder.getPosition());
-    SmartDashboard.putNumber("pivot/absoluteAngle/motor", motorPivotEncoder.getPosition());
-    //SmartDashboard.putNumber("pivot/Pivot Velocity", pivotEncoder.getVelocity());
-    SmartDashboard.putNumber("pivot/Relative Position", leftPivot.getEncoder().getPosition());
+    // Position
+    SmartDashboard.putNumber("pivot/absoluteAngle/shooter", getAngle());
+    SmartDashboard.putNumber("pivot/absoluteAngle/motor", getAngle());
+    // Command
     SmartDashboard.putString("pivot/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
     SmartDashboard.putBoolean("pivo/Aiming?", !(this.getCurrentCommand()==null||!this.getCurrentCommand().getName().equals("Auto Aim")));
-
-    SmartDashboard.putNumber("pivot/Left Current", leftPivot.getOutputCurrent());
-    SmartDashboard.putNumber("pivot/Right Current", rightPivot.getOutputCurrent());
-    SmartDashboard.putNumber("pivot/Position Reference", posReference);
-    //SmartDashboard.putNumber("pivot/Velocity DPS", pivotEncoder.getVelocity()*360);
-    //SmartDashboard.putNumber("pivot/Relative Encoder Position", relativeEncoder.getPosition());
-
-    //if(leftPivot.getEncoder().getPosition() >= MAX)
+    // Current Draw
+    SmartDashboard.putNumber("pivot/Leader Current", leader.getOutputCurrent());
+    SmartDashboard.putNumber("pivot/Follower Current", follower.getOutputCurrent());
   }
-
-
+  
   public void burnFlash(){
     try{
       Thread.sleep(1000);
-      leftPivot.burnFlash();
+      leader.burnFlash();
       Thread.sleep(1000);
-      rightPivot.burnFlash();
+      follower.burnFlash();
       Thread.sleep(1000);
     }catch(InterruptedException e){
       DriverStation.reportError("Thread was interrupted while flashing pivot", e.getStackTrace());

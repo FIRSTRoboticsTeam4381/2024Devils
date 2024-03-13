@@ -3,7 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;

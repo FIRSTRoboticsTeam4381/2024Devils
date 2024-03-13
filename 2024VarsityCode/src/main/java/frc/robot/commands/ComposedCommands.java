@@ -1,17 +1,13 @@
 package frc.robot.commands;
 
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
@@ -48,7 +44,7 @@ public class ComposedCommands {
     public Command groundIntake(){
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
-                pivot.goToIntake(),
+                pivot.goToAngle(Pivot.Positions.intake),
                 //pivot.goToTemporaryPosition(Pivot.INTAKE_POS),
                 new ParallelRaceGroup(
                     intake.run(),
@@ -65,11 +61,11 @@ public class ComposedCommands {
     public Command humanIntake(){
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
-                pivot.profiledMove(Pivot.HUMAN_POS),
+                pivot.goToAngle(Pivot.Positions.human),
                 index.indexUntilIn(true), // Stops when cancelled
                 shooter.eject() // Stops when cancelled
             ),
-            pivot.profiledMove(Pivot.TRANSIT_POS)
+            pivot.goToAngle(Pivot.Positions.transit)
         ).withName("Human Intake");
     }
 
@@ -88,7 +84,6 @@ public class ComposedCommands {
 
     public Command reverseAmp(){
         return new ParallelCommandGroup(
-            new InstantCommand(()->shooter.setCurrentLimit(120, 120)),
             shooter.ejectFromAmp(),
             index.eject()
         ).withName("Reverse Amp");
@@ -98,7 +93,7 @@ public class ComposedCommands {
 
     public Command ampMode(){
         return new ParallelCommandGroup(
-            pivot.profiledMove(Pivot.AMP_POS),
+            pivot.goToAngle(Pivot.Positions.amp),
             shooter.ampShoot() // Stops when cancelled
         ).withName("Amp Mode");
     }
@@ -116,20 +111,11 @@ public class ComposedCommands {
     /* CANCEL ALL COMMANDS */
     public Command cancelAll(){
         return new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()).withName("Cancel All");
-        /*
-        return new ParallelCommandGroup(
-            new InstantCommand(() -> pivot.setAngleReference(pivot.getAngle(), 0), pivot),
-            shooter.instantStopAll(),
-            index.instantStop(),
-            intake.instantStop()
-        );
-        */
     }
 
     /* TOGGLE AUTO AIMING */
     public Command autoAim(){
         return new SequentialCommandGroup(
-            //pivot.profiledMove(35),
             new AutoPivot(pivot, ll, swerve)
         ).withName("Auto Aim");
     }

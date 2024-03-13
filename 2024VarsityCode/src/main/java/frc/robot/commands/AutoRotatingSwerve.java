@@ -1,18 +1,12 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Swerve;
 
 public class AutoRotatingSwerve extends Command{
@@ -60,8 +54,7 @@ public class AutoRotatingSwerve extends Command{
         xAxis *= slowdown;
 
         /* Slowdown from Pivot */
-        Pivot pivot = RobotContainer.s_Pivot;
-        if(pivot.getMotorAngle() > 65){
+        if(RobotContainer.s_Pivot.getAngle() > 65){
             yAxis *= 0.5;
             xAxis *= 0.5;
         }
