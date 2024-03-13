@@ -61,7 +61,7 @@ public class AutoRotatingSwerve extends Command{
 
         /* Slowdown from Pivot */
         Pivot pivot = RobotContainer.s_Pivot;
-        if(pivot.getAngle() > 65){
+        if(pivot.getMotorAngle() > 65){
             yAxis *= 0.5;
             xAxis *= 0.5;
         }
