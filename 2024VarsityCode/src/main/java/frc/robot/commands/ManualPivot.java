@@ -39,7 +39,7 @@ public class ManualPivot extends Command {
 
     // Manual pivot limits
     if(axis>0.0 && (pivot.getAngle()>115&&pivot.getAngle()<330)) {axis = 0.0;}
-    if(axis<0.0 && (pivot.getAngle()<=2||pivot.getAngle()>330)) {axis = 0.0;}
+    if(axis<0.0 && (pivot.getAngle()<=6||pivot.getAngle()>330)) {axis = 0.0;}
 
     pivot.setPercOutput(axis+basicFeedforward());
   }

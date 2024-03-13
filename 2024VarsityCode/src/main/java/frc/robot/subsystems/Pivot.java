@@ -35,8 +35,9 @@ public class Pivot extends SubsystemBase {
   private CANSparkMax rightPivot;
   private CANSparkMax leftPivot;
 
-  private AbsoluteEncoder pivotEncoder;
-  private RelativeEncoder relativeEncoder;
+  private AbsoluteEncoder shooterPivotEncoder;
+  private AbsoluteEncoder motorPivotEncoder;
+  //private RelativeEncoder relativeEncoder;
 
   private SparkPIDController pivotController;
 
@@ -60,26 +61,39 @@ public class Pivot extends SubsystemBase {
     // Motor Setup
     leftPivot = new CANSparkMax(Constants.Pivot.leftPivotCAN, MotorType.kBrushless);
     rightPivot = new CANSparkMax(Constants.Pivot.rightPivotCAN, MotorType.kBrushless);
-    leftPivot.setInverted(false);
+
     rightPivot.follow(leftPivot, true);
+    leftPivot.follow(rightPivot, true);
+    rightPivot.setInverted(true);
+
     leftPivot.setIdleMode(IdleMode.kBrake);
     rightPivot.setIdleMode(IdleMode.kBrake);
+
     leftPivot.setSmartCurrentLimit(60);
     rightPivot.setSmartCurrentLimit(60);
 
     SparkUtilities.optimizeFrames(leftPivot, true, false, true, false, false, true);
-    SparkUtilities.optimizeFrames(rightPivot, false, false, true, false, false, false);
+    SparkUtilities.optimizeFrames(rightPivot, false, false, true, false, false, true);
+
 
     // Encoder Setup
-    pivotEncoder = leftPivot.getAbsoluteEncoder(Type.kDutyCycle);
-    relativeEncoder = leftPivot.getEncoder();
-    //relativeEncoder.setPositionConversionFactor(360/4096.0);
-    relativeEncoder.setPositionConversionFactor(1/150.0 * 48.0/50.0 * 360.0);
-    relativeEncoder.setPosition(pivotEncoder.getPosition());
+    /*
+     * REV Software Level:
+     * shooterPivotEncoder position conversion factor = 360
+     * motorPivotEncoder position conversion factor = 360*48.0/50.0
+     * make sure they move in the same direction, and figure out the offsets
+     */
+    shooterPivotEncoder = leftPivot.getAbsoluteEncoder(Type.kDutyCycle);
+    //shooterPivotEncoder.setPositionConversionFactor(360);
+    motorPivotEncoder = rightPivot.getAbsoluteEncoder(Type.kDutyCycle);
+    //motorPivotEncoder.setPositionConversionFactor(360 * 48.0/50.0);
+    //relativeEncoder = leftPivot.getEncoder();
+    //relativeEncoder.setPositionConversionFactor(1/150.0 * 48.0/50.0 * 360.0);
+    //relativeEncoder.setPosition(pivotEncoder.getPosition());
 
     // PID Setup
-    pivotController = leftPivot.getPIDController();
-    pivotController.setFeedbackDevice(pivotEncoder);
+    pivotController = rightPivot.getPIDController();
+    pivotController.setFeedbackDevice(motorPivotEncoder);
     pivotController.setOutputRange(-1, 1);
     pivotController.setPositionPIDWrappingEnabled(true);
     pivotController.setPositionPIDWrappingMinInput(0);
@@ -105,8 +119,11 @@ public class Pivot extends SubsystemBase {
    * Get the current angle of the pivot encoder
    * @return
    */
-  public double getAngle(){
-    return pivotEncoder.getPosition();
+  public double getShooterAngle(){
+    return shooterPivotEncoder.getPosition();
+  }
+  public double getMotorAngle(){
+    return motorPivotEncoder.getPosition();
   }
 
   /**
@@ -114,7 +131,7 @@ public class Pivot extends SubsystemBase {
    * @return
    */
   public TrapezoidProfile.State getState(){
-    return new TrapezoidProfile.State(pivotEncoder.getPosition(), pivotEncoder.getVelocity());
+    return new TrapezoidProfile.State(motorPivotEncoder.getPosition(), motorPivotEncoder.getVelocity());
   }
 
 
@@ -125,7 +142,7 @@ public class Pivot extends SubsystemBase {
    * @param speed
    */
   public void setPercOutput(double speed){
-    double pos = pivotEncoder.getPosition();
+    double pos = motorPivotEncoder.getPosition();
     if(pos < 15 || pos > 80) speed *= 0.6;
     leftPivot.set(speed);
   }
@@ -159,7 +176,7 @@ public class Pivot extends SubsystemBase {
    * @return
    */
   private Command goToAngle(double angle){
-    return new SparkPosition(leftPivot, angle, 0, 3, this, pivotEncoder::getPosition);
+    return new SparkPosition(leftPivot, angle, 0, 3, this, motorPivotEncoder::getPosition);
   }
   public Command goToIntake(){
     return goToAngle(INTAKE_POS).withName("Moving to intake");
@@ -208,8 +225,9 @@ public class Pivot extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("pivot/Absolute Angle", pivotEncoder.getPosition());
-    SmartDashboard.putNumber("pivot/Pivot Velocity", pivotEncoder.getVelocity());
+    SmartDashboard.putNumber("pivot/absoluteAngle/shooter", shooterPivotEncoder.getPosition());
+    SmartDashboard.putNumber("pivot/absoluteAngle/motor", motorPivotEncoder.getPosition());
+    //SmartDashboard.putNumber("pivot/Pivot Velocity", pivotEncoder.getVelocity());
     SmartDashboard.putNumber("pivot/Relative Position", leftPivot.getEncoder().getPosition());
     SmartDashboard.putString("pivot/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
     SmartDashboard.putBoolean("pivo/Aiming?", !(this.getCurrentCommand()==null||!this.getCurrentCommand().getName().equals("Auto Aim")));
@@ -217,8 +235,8 @@ public class Pivot extends SubsystemBase {
     SmartDashboard.putNumber("pivot/Left Current", leftPivot.getOutputCurrent());
     SmartDashboard.putNumber("pivot/Right Current", rightPivot.getOutputCurrent());
     SmartDashboard.putNumber("pivot/Position Reference", posReference);
-    SmartDashboard.putNumber("pivot/Velocity DPS", pivotEncoder.getVelocity()*360);
-    SmartDashboard.putNumber("pivot/Relative Encoder Position", relativeEncoder.getPosition());
+    //SmartDashboard.putNumber("pivot/Velocity DPS", pivotEncoder.getVelocity()*360);
+    //SmartDashboard.putNumber("pivot/Relative Encoder Position", relativeEncoder.getPosition());
 
     //if(leftPivot.getEncoder().getPosition() >= MAX)
   }
