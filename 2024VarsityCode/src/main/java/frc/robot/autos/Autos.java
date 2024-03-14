@@ -27,6 +27,9 @@ public final class Autos {
     public static Command start4ThreePiece(){
         return new PathPlannerAuto("Start4ThreePiece");
     }
+    public static Command start1ThreePiece(){
+        return new PathPlannerAuto("Start1ThreePiece");
+    }
 
     // TODO test of a single path
     public static Command testPath(){

@@ -56,6 +56,17 @@
         "maxAngularVelocity": 360.0,
         "maxAngularAcceleration": 120.0
       }
+    },
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 1.65,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 5.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 360.0,
+        "maxAngularAcceleration": 120.0
+      }
     }
   ],
   "eventMarkers": [
@@ -78,7 +89,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 1.25,
+      "waypointRelativePos": 0.85,
       "command": {
         "type": "parallel",
         "data": {
@@ -95,7 +106,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 1.85,
+      "waypointRelativePos": 1.65,
       "command": {
         "type": "parallel",
         "data": {
