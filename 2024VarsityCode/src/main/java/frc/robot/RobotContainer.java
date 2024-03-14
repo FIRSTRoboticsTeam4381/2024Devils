@@ -113,6 +113,7 @@ public class RobotContainer {
         m_AutoChooser.addOption("StartAmp4Piece", Autos.startAmp4Piece());
         m_AutoChooser.addOption("Start3Middle", Autos.start3Middle());
         m_AutoChooser.addOption("Start4ThreePiece", Autos.start4ThreePiece());
+        m_AutoChooser.addOption("Start1ThreePiece", Autos.start1ThreePiece());
         //m_AutoChooser.addOption("SysId Quas Fwd", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
         //m_AutoChooser.addOption("SysId Quas Rev", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse));
         //m_AutoChooser.addOption("SysId Dyna Fwd", s_Swerve.sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
@@ -132,10 +133,10 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
         autoRotate.whileTrue(new AutoRotatingSwerve(s_Swerve, s_LL, driver, true).withName("Teleop Auto Rotate"));
-        shootNote.whileTrue(commands.feedNote());
+        shootNote.or(specialist.R1()).whileTrue(commands.feedNote());
 
-        groundIntake.onTrue(commands.groundIntake());
-        humanIntake.onTrue(commands.humanIntake());
+        groundIntake.toggleOnTrue(commands.groundIntake());
+        humanIntake.toggleOnTrue(commands.humanIntake());
 
         startShooter.toggleOnTrue(s_Shooter.shootAvgSpeed());
         startAmpShooting.toggleOnTrue(s_Shooter.ampShoot());

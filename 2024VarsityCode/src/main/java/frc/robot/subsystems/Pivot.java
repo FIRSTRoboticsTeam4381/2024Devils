@@ -33,7 +33,7 @@ public class Pivot extends SubsystemBase {
   private SparkPIDController pivotController;
 
   public class Positions{
-    public static final double intake = 80;
+    public static final double intake = 85;
     public static final double human = 115;
     public static final double amp = 90;
     public static final double transit = 10;
@@ -81,12 +81,12 @@ public class Pivot extends SubsystemBase {
     pivotController.setPositionPIDWrappingMinInput(0);
     pivotController.setPositionPIDWrappingMaxInput(360);
     // Slot 0 = Regular Movement
-    pivotController.setP(0.008, 0);
+    pivotController.setP(0.01, 0);
     pivotController.setI(0.0, 0);
     pivotController.setD(0.002, 0);
     pivotController.setFF(0.0005, 0);
     // Slot 1 = Auto Aiming - More aggressive and more precise
-    pivotController.setP(0.01, 1);
+    pivotController.setP(0.015, 1);
     pivotController.setI(0.000001, 1);
     pivotController.setD(0.01, 1);
     pivotController.setFF(0.0005, 1);
@@ -161,11 +161,11 @@ public class Pivot extends SubsystemBase {
     // This method will be called once per scheduler run
 
     // Position
-    SmartDashboard.putNumber("pivot/absoluteAngle/shooter", getAngle());
-    SmartDashboard.putNumber("pivot/absoluteAngle/motor", getAngle());
+    SmartDashboard.putNumber("pivot/absoluteAngle/shooter", getShooterAngle());
+    SmartDashboard.putNumber("pivot/absoluteAngle/motor", getMotorAngle());
     // Command
     SmartDashboard.putString("pivot/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
-    SmartDashboard.putBoolean("pivo/Aiming?", !(this.getCurrentCommand()==null||!this.getCurrentCommand().getName().equals("Auto Aim")));
+    SmartDashboard.putBoolean("pivot/Aiming?", !(this.getCurrentCommand()==null||!this.getCurrentCommand().getName().equals("Auto Aim")));
     // Current Draw
     SmartDashboard.putNumber("pivot/Leader Current", leader.getOutputCurrent());
     SmartDashboard.putNumber("pivot/Follower Current", follower.getOutputCurrent());

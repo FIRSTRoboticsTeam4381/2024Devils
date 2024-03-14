@@ -33,7 +33,7 @@ public class Shooter extends SubsystemBase {
   private SparkPIDController topController;
 
   public static final double maxRPM = 6500;
-  public static final double avgRPM = 4200;
+  public static final double avgRPM = 4500;
 
   private double setpoint = 0.0;
 
@@ -81,7 +81,7 @@ public class Shooter extends SubsystemBase {
    * @return Boolean determining if it is okay to feed a note to the shooter
    */
   public boolean readyForNote(){
-    return (setpoint != 0 && (setpoint-Math.abs(propEncoder.getVelocity())<100 && setpoint-Math.abs(topEncoder.getVelocity())<100));
+    return (setpoint != 0 && (setpoint-Math.abs(propEncoder.getVelocity())<300 && setpoint-Math.abs(topEncoder.getVelocity())<300));
   }
 
   public double getSetpoint(){

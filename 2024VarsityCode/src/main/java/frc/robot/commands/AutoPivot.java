@@ -36,7 +36,7 @@ public class AutoPivot extends Command {
   private void calcAngle(){
     double predictedPosition = predictFuturePosition();
     if(ll.distanceFromGoal() >= 0.3){ // Only take predicted position if it is a reasonable positive number. Prevents calculation of infinity.
-      double calculatedAngle = 47.62307316*Math.pow(predictedPosition, -0.4859909159627); // r^2 = 0.995 // despite predicting, still won't move unless a target is in sight. prevents going crazy
+      double calculatedAngle = 55.62307316*Math.pow(predictedPosition, -0.4839909159627); // r^2 = 0.995 // despite predicting, still won't move unless a target is in sight. prevents going crazy
       if(calculatedAngle <= 60){ // Only set current angle to the calculated angle if it was calculated to be less than 60
         currentAngle = calculatedAngle;
       }
@@ -56,7 +56,7 @@ public class AutoPivot extends Command {
   }
 
   private double predictFuturePosition(){
-    final double lengthOfTime = 650; // ms
+    final double lengthOfTime = 400; // ms
     double predictedTravel = getTargetRelativeVelocity() * (lengthOfTime/1000.0);
     double predictedPosition = estimateDistance() - predictedTravel;
     return predictedPosition;
