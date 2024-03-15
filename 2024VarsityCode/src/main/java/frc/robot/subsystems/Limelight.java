@@ -121,6 +121,12 @@ public class Limelight extends SubsystemBase{
             getLimelight().getEntry("stream").setNumber(mode);
         }
     }
+    public void takeSnapshot(){
+        getLimelight().getEntry("snapshot").setNumber(1);
+    }
+    public void resetSnapshot(){
+        getLimelight().getEntry("snapshot").setNumber(0);
+    }
 
 
     /* PERIODIC */

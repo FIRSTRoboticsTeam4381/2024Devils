@@ -52,6 +52,7 @@ public class RobotContainer {
     private final Trigger zeroSwerve = driver.options();
     private final Trigger shootNote = driver.R1();
     private final Trigger autoRotate = driver.triangle();
+    private final Trigger takeSnapshot = driver.PS();
 
     /* Specialist Buttons */
     private final Trigger groundIntake = specialist.cross();
@@ -146,10 +147,12 @@ public class RobotContainer {
             .onFalse(new InstantCommand(()->s_Shooter.setCurrentLimit(60, 60)));
 
         toAmpMode.toggleOnTrue(commands.ampMode());
-        toPodiumPosition.onTrue(s_Pivot.goToAngle(Pivot.Positions.podium));
+        toPodiumPosition.whileTrue(s_Pivot.goToAngle(Pivot.Positions.podium));
         autoAim.whileTrue(commands.autoAim());
 
         toggleClimbing.toggleOnTrue(new ManualClimb(specialist, s_Climb));
+
+        takeSnapshot.onTrue(new InstantCommand(()->s_LL.takeSnapshot())).onFalse(new InstantCommand(()->s_LL.resetSnapshot()));
 
         cancel.onTrue(commands.cancelAll());
     }

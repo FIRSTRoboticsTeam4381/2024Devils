@@ -57,6 +57,6 @@ public class TeleopSwerve extends Command{
         /* Calculates inputs for swerve subsystem */
         translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);
         rotation = rAxis * Constants.Swerve.maxAngularVelocity;
-        s_Swerve.drive(translation, rotation, true, openLoop);
+        s_Swerve.drive(translation, rotation, controller.L1().getAsBoolean()?false:true, openLoop);
     }
 }
