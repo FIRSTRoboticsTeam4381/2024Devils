@@ -4,8 +4,10 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 
 public class Limelight extends SubsystemBase{
+    private double currentAngle = 30;
 
     private NetworkTable getLimelight(){
         return NetworkTableInstance.getDefault().getTable("limelight-devils");
@@ -40,6 +42,35 @@ public class Limelight extends SubsystemBase{
     public double totalLatency(){
         return captureLatency()+pipelineLatency();
     }
+
+    private void calcAngle(){
+        double predictedPosition = predictFuturePosition();
+        if(distanceFromGoal() >= 0.3){ // Only take predicted position if it is a reasonable positive number. Prevents calculation of infinity.
+          double calculatedAngle = 57.62307316*Math.pow(predictedPosition, -0.5549909159627); // r^2 = 0.995 // despite predicting, still won't move unless a target is in sight. prevents going crazy
+          if(calculatedAngle <= 75){ // Only set current angle to the calculated angle if it was calculated to be less than 60
+            currentAngle = calculatedAngle;
+          }
+        }
+      }
+    
+      private double getTargetRelativeVelocity(){
+        double robotVelocity = RobotContainer.s_Swerve.getRobotRelativeSpeeds().vxMetersPerSecond; // Since the Limelight is on the front of the robot, the only helpful velocity is the axis that is facing the target
+        return -robotVelocity;
+      }
+    
+      private double estimateDistance(){
+        double lastDistance = distanceFromGoal();
+        double predictedTravelThroughLatency = getTargetRelativeVelocity() * (totalLatency()/1000.0);
+        double estimatedPostLatencyPosition = lastDistance - predictedTravelThroughLatency;
+        return estimatedPostLatencyPosition;
+      }
+    
+      private double predictFuturePosition(){
+        final double lengthOfTime = 400; // ms
+        double predictedTravel = getTargetRelativeVelocity() * (lengthOfTime/1000.0);
+        double predictedPosition = estimateDistance() - predictedTravel;
+        return predictedPosition;
+      }
 
 
     /* ROBOT POSE ESTIMATION */
@@ -138,6 +169,8 @@ public class Limelight extends SubsystemBase{
         SmartDashboard.putNumber("limelight/goalDistance (Meters)", distanceFromGoal());
         SmartDashboard.putNumber("limelight/goalDistance (Feet)", distanceFromGoal()*3.281);
         SmartDashboard.putNumber("limelight/targetXOffset", targetXOffset());
+        calcAngle();
+        SmartDashboard.putNumber("limelight/Calculated Angle", currentAngle);
     }
 
     private boolean validateInput(int in, int... validRange){
