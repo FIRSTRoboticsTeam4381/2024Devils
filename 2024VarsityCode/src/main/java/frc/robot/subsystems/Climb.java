@@ -16,71 +16,73 @@ import frc.lib.util.SparkUtilities.SparkUtilities;
 import frc.robot.Constants;
 
 public class Climb extends SubsystemBase {
+  // TODO get climbing positions
 
   /* ATTRIBUTES */
-  private CANSparkMax rightBaseMotor;
-  private CANSparkMax leftBaseMotor;
+  private CANSparkMax rightMotor;
+  private CANSparkMax leftMotor;
 
-  private SparkPIDController baseController;
+  private SparkPIDController climbController;
 
-  private RelativeEncoder baseEncoder;
+  private RelativeEncoder climbEncoder;
 
   /* CONSTRUCTOR */
 
   /** Creates a new Climb. */
   public Climb() {
     // Motor Setup
-    rightBaseMotor = new CANSparkMax(Constants.Climb.rightClimbCAN, MotorType.kBrushless);
-    leftBaseMotor = new CANSparkMax(Constants.Climb.leftClimbCAN, MotorType.kBrushless);
+    rightMotor = new CANSparkMax(Constants.Climb.rightClimbCAN, MotorType.kBrushless);
+    leftMotor = new CANSparkMax(Constants.Climb.leftClimbCAN, MotorType.kBrushless);
 
-    leftBaseMotor.follow(rightBaseMotor, true);
+    leftMotor.follow(rightMotor, true);
 
-    SparkUtilities.optimizeFrames(rightBaseMotor, true, false, true, false, false, false);
-    SparkUtilities.optimizeFrames(leftBaseMotor, false, false, false, false, false, false);
+    SparkUtilities.optimizeFrames(rightMotor, true, false, true, false, false, false);
+    SparkUtilities.optimizeFrames(leftMotor, false, false, false, false, false, false);
 
     // Encoder Setup
-    baseEncoder = rightBaseMotor.getEncoder();
+    climbEncoder = rightMotor.getEncoder();
 
-    baseController = rightBaseMotor.getPIDController();
+    climbController = rightMotor.getPIDController();
 
     // PID Setup
     // TODO Base controller configuration
-    baseController.setP(0);
-    baseController.setI(0);
-    baseController.setD(0);
-    baseController.setFF(0);
-    baseController.setOutputRange(-1, 1);
+    climbController.setP(0);
+    climbController.setI(0);
+    climbController.setD(0);
+    climbController.setFF(0);
+    climbController.setOutputRange(-1, 1);
   }
 
   public void setBasePercOutput(double speed){
-    rightBaseMotor.set(speed);
+    rightMotor.set(speed);
   }
 
   public void setBaseReference(double position){
-    baseController.setReference(position, ControlType.kPosition);
+    climbController.setReference(position, ControlType.kPosition);
   }
 
   public double getBasePosition(){
-    return rightBaseMotor.getEncoder().getPosition();
+    return climbEncoder.getPosition();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("climb/Base Pivot Position", baseEncoder.getPosition());
+    SmartDashboard.putNumber("climb/Base Pivot Position", climbEncoder.getPosition());
 
-    SmartDashboard.putNumber("climb/Left Base Current", leftBaseMotor.getOutputCurrent());
-    SmartDashboard.putNumber("climb/Right Base Current", rightBaseMotor.getOutputCurrent());
+    SmartDashboard.putNumber("climb/Left Base Current", rightMotor.getOutputCurrent());
+    SmartDashboard.putNumber("climb/Right Base Current", leftMotor.getOutputCurrent());
+    SmartDashboard.putString("climb/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
   }
 
 
   public void burnFlash(){
     try{
       Thread.sleep(1000);
-      rightBaseMotor.burnFlash();
+      rightMotor.burnFlash();
       Thread.sleep(1000);
-      leftBaseMotor.burnFlash();
+      leftMotor.burnFlash();
       Thread.sleep(1000);
     }catch(InterruptedException e){
       DriverStation.reportError("Thread was interrupted while flashing climb", e.getStackTrace());

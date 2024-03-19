@@ -24,11 +24,10 @@ public class Pivot extends SubsystemBase {
 
   /* ATTRIBUTES */
   
-  private CANSparkMax leader;
-  private CANSparkMax follower;
+  private CANSparkMax rightPivot;
+  private CANSparkMax leftPivot;
 
-  private AbsoluteEncoder shooterPivotEncoder;
-  private AbsoluteEncoder motorPivotEncoder;
+  private AbsoluteEncoder angleEncoder;
 
   private SparkPIDController pivotController;
 
@@ -46,36 +45,29 @@ public class Pivot extends SubsystemBase {
   /** Creates a new Pivot. */
   public Pivot() {
     // Motor Setup
-    leader = new CANSparkMax(Constants.Pivot.rightPivotCAN, MotorType.kBrushless);
-    follower = new CANSparkMax(Constants.Pivot.leftPivotCAN, MotorType.kBrushless);
+    rightPivot = new CANSparkMax(Constants.Pivot.rightPivotCAN, MotorType.kBrushless);
+    leftPivot = new CANSparkMax(Constants.Pivot.leftPivotCAN, MotorType.kBrushless);
 
-    leader.setInverted(true);
-    follower.follow(leader, true);
+    rightPivot.setInverted(true);
+    leftPivot.follow(rightPivot, true);
     
-    leader.setIdleMode(IdleMode.kBrake);
-    follower.setIdleMode(IdleMode.kBrake);
+    rightPivot.setIdleMode(IdleMode.kBrake);
+    leftPivot.setIdleMode(IdleMode.kBrake);
 
-    leader.setSmartCurrentLimit(60);
-    follower.setSmartCurrentLimit(60);
+    rightPivot.setSmartCurrentLimit(60);
+    leftPivot.setSmartCurrentLimit(60);
 
-    SparkUtilities.optimizeFrames(leader, true, false, true, false, false, true);
-    SparkUtilities.optimizeFrames(follower, false, false, true, false, false, true);
+    SparkUtilities.optimizeFrames(rightPivot, true, false, true, false, false, true);
+    SparkUtilities.optimizeFrames(leftPivot, false, false, true, false, false, true);
 
     // Encoder Setup
-    /*
-     * REV Software Level:
-     * shooterPivotEncoder position conversion factor = 360
-     * motorPivotEncoder position conversion factor = 360*48.0/50.0
-     * make sure they move in the same direction, and figure out the offsets
-     */
-    shooterPivotEncoder = follower.getAbsoluteEncoder(Type.kDutyCycle);
-    //shooterPivotEncoder.setPositionConversionFactor(360);
-    motorPivotEncoder = leader.getAbsoluteEncoder(Type.kDutyCycle);
-    //motorPivotEncoder.setPositionConversionFactor(360 * 48.0/50.0);
+    angleEncoder = rightPivot.getAbsoluteEncoder(Type.kDutyCycle); // TODO confirm motor that encoder is plugged in
+    //angleEncoder.setPositionConversionFactor(360);
 
     // PID Setup
-    pivotController = leader.getPIDController();
-    pivotController.setFeedbackDevice(motorPivotEncoder);
+    // TODO retune for new pivot
+    pivotController = rightPivot.getPIDController();
+    pivotController.setFeedbackDevice(angleEncoder);
     pivotController.setOutputRange(-1, 1);
     pivotController.setPositionPIDWrappingEnabled(true);
     pivotController.setPositionPIDWrappingMinInput(0);
@@ -96,13 +88,7 @@ public class Pivot extends SubsystemBase {
   /* ACCESSORS */
 
   public double getAngle(){
-    return getMotorAngle();
-  }
-  private double getShooterAngle(){
-    return shooterPivotEncoder.getPosition();
-  }
-  private double getMotorAngle(){
-    return motorPivotEncoder.getPosition();
+    return angleEncoder.getPosition();
   }
 
 
@@ -115,7 +101,7 @@ public class Pivot extends SubsystemBase {
   public void manualControl(double speed){
     double pos = getAngle();
     if(pos < 15 || pos > 80) speed *= 0.6;
-    leader.set(speed);
+    rightPivot.set(speed);
   }
 
   /**
@@ -136,7 +122,7 @@ public class Pivot extends SubsystemBase {
    * @return
    */
   public Command goToAngle(double angle){
-    return new SparkPosition(leader, angle, 1, 0.5, this, this::getAngle);
+    return new SparkPosition(rightPivot, angle, 1, 0.5, this, this::getAngle);
   }
 
   /**
@@ -161,22 +147,21 @@ public class Pivot extends SubsystemBase {
     // This method will be called once per scheduler run
 
     // Position
-    SmartDashboard.putNumber("pivot/absoluteAngle/shooter", getShooterAngle());
-    SmartDashboard.putNumber("pivot/absoluteAngle/motor", getMotorAngle());
+    SmartDashboard.putNumber("pivot/absoluteAngle/angle", getAngle());
     // Command
     SmartDashboard.putString("pivot/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
     SmartDashboard.putBoolean("pivot/Aiming?", !(this.getCurrentCommand()==null||!this.getCurrentCommand().getName().equals("Auto Aim")));
     // Current Draw
-    SmartDashboard.putNumber("pivot/Leader Current", leader.getOutputCurrent());
-    SmartDashboard.putNumber("pivot/Follower Current", follower.getOutputCurrent());
+    SmartDashboard.putNumber("pivot/Right Current", rightPivot.getOutputCurrent());
+    SmartDashboard.putNumber("pivot/Left Current", leftPivot.getOutputCurrent());
   }
   
   public void burnFlash(){
     try{
       Thread.sleep(1000);
-      leader.burnFlash();
+      rightPivot.burnFlash();
       Thread.sleep(1000);
-      follower.burnFlash();
+      leftPivot.burnFlash();
       Thread.sleep(1000);
     }catch(InterruptedException e){
       DriverStation.reportError("Thread was interrupted while flashing pivot", e.getStackTrace());

@@ -16,7 +16,7 @@ public class AutoPivot extends Command {
   private Swerve swerve;
   private Limelight ll;
 
-  private double currentAngle = 30.0;
+  private double currentAngle = 30.0; // TODO podium angle
 
   /** Creates a new AutoAim. */
   public AutoPivot(Pivot pivot, Limelight ll, Swerve swerve) {

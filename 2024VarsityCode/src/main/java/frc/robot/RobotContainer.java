@@ -46,26 +46,6 @@ public class RobotContainer {
     /* Controllers */
     private final CommandPS4Controller driver = new CommandPS4Controller(0);
     private final CommandPS4Controller specialist = new CommandPS4Controller(1);
-    //private final CommandJoystick testingJoystick = new CommandJoystick(3);
-
-    /* Driver Buttons */
-    private final Trigger zeroSwerve = driver.options();
-    private final Trigger shootNote = driver.R1();
-    private final Trigger autoRotate = driver.triangle();
-    private final Trigger takeSnapshot = driver.PS();
-
-    /* Specialist Buttons */
-    private final Trigger groundIntake = specialist.cross();
-    private final Trigger humanIntake = specialist.square();
-    private final Trigger eject = specialist.circle();
-    private final Trigger autoAim = specialist.triangle();
-    private final Trigger toPodiumPosition = specialist.povUp();
-    private final Trigger toAmpMode = specialist.povRight();
-    private final Trigger ampReverse = specialist.povDown();
-    private final Trigger startAmpShooting = specialist.povLeft();
-    private final Trigger startShooter = specialist.L1();
-    private final Trigger toggleClimbing = specialist.PS();
-    private final Trigger cancel = specialist.touchpad().or(driver.touchpad());
 
     /* Subsystems */
     public static final Swerve s_Swerve = new Swerve();
@@ -130,31 +110,32 @@ public class RobotContainer {
    */
     private void configureButtonBindings(){
         // Button to reset swerve odometry and angle
-        zeroSwerve
+        driver.options()
             .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
-        autoRotate.whileTrue(new AutoRotatingSwerve(s_Swerve, s_LL, driver, true).withName("Teleop Auto Rotate"));
-        shootNote.or(specialist.R1()).whileTrue(commands.feedNote());
+        
+        // Auto Rotation
+        driver.triangle().whileTrue(new AutoRotatingSwerve(s_Swerve, s_LL, driver, true).withName("Teleop Auto Rotate"));
+        // Shoot Note
+        driver.R1().or(specialist.R1()).whileTrue(commands.feedNote());
+        driver.PS().onTrue(new InstantCommand(()->s_LL.takeSnapshot())).onFalse(new InstantCommand(()->s_LL.resetSnapshot()));
 
-        groundIntake.toggleOnTrue(commands.groundIntake());
-        humanIntake.toggleOnTrue(commands.humanIntake());
+        specialist.square().toggleOnTrue(commands.humanIntake());
+        specialist.cross().toggleOnTrue(commands.groundIntake());
+        specialist.circle().whileTrue(commands.ejectNote());
+        specialist.triangle().whileTrue(commands.autoAim());
 
-        startShooter.toggleOnTrue(s_Shooter.shootAvgSpeed());
-        startAmpShooting.toggleOnTrue(s_Shooter.ampShoot());
-        eject.whileTrue(commands.ejectNote());
-        ampReverse.whileTrue(new InstantCommand(()->s_Shooter.setCurrentLimit(80,80))
-                .andThen(commands.reverseAmp()))
-            .onFalse(new InstantCommand(()->s_Shooter.setCurrentLimit(60, 60)));
+        specialist.povRight().onTrue(commands.ampMode());
+        specialist.povDown().whileTrue(new InstantCommand(()->s_Shooter.setCurrentLimit(80,80))
+                                        .andThen(commands.reverseAmp()))
+                            .onFalse(new InstantCommand(()->s_Shooter.setCurrentLimit(60, 60)));
+        specialist.povLeft().toggleOnTrue(s_Shooter.ampShoot());
+        specialist.povUp().onTrue(s_Pivot.goToAngle(90));
 
-        toAmpMode.toggleOnTrue(commands.ampMode());
-        toPodiumPosition.whileTrue(s_Pivot.goToAngle(Pivot.Positions.podium));
-        autoAim.whileTrue(commands.autoAim());
+        specialist.L1().toggleOnTrue(s_Shooter.shootAvgSpeed());
+        specialist.PS().toggleOnTrue(new ManualClimb(specialist, s_Climb));
 
-        toggleClimbing.toggleOnTrue(new ManualClimb(specialist, s_Climb));
-
-        takeSnapshot.onTrue(new InstantCommand(()->s_LL.takeSnapshot())).onFalse(new InstantCommand(()->s_LL.resetSnapshot()));
-
-        cancel.onTrue(commands.cancelAll());
+        driver.touchpad().or(specialist.touchpad()).onTrue(commands.cancelAll());
     }
 
     private void registerCommands(){
