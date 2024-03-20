@@ -28,8 +28,8 @@ public class VisorEffect extends LightingEffect{
      * @param speed Speed that the visor moves. Measured in LED pixels per second. 
      * @param startLocation Specify a starting location for the visor if you want it to start somewhere other than 0
      */
-    public VisorEffect(int startLED, int lastLED, Color visorColor, int visorSize, double speed, int startLocation){
-        super(startLED, lastLED);
+    public VisorEffect(int startLED, int lastLED, Color visorColor, int visorSize, double speed, int startLocation, Type type){
+        super(startLED, lastLED, type);
         this.visorColor = visorColor;
         this.visorSize = visorSize;
 
@@ -48,8 +48,8 @@ public class VisorEffect extends LightingEffect{
      * @param speed Speed that the visor moves. Measured in LED pixels per second. 
      * @param startLocation Specify a starting location for the visor if you want it to start somewhere other than 0
      */
-    public VisorEffect(int bufferLength, Color visorColor, int visorSize, double speed, int startLocation){
-        this(0, bufferLength-1, visorColor, visorSize, speed, 0);
+    public VisorEffect(int bufferLength, Color visorColor, int visorSize, double speed, int startLocation, Type type){
+        this(0, bufferLength-1, visorColor, visorSize, speed, 0, type);
     }
 
     /**
@@ -60,8 +60,8 @@ public class VisorEffect extends LightingEffect{
      * @param visorSize
      * @param speed Speed that the visor moves. Measured in LED pixels per second. 
      */
-    public VisorEffect(int startLED, int lastLED, Color visorColor, int visorSize, double speed){
-        this(startLED, lastLED, visorColor, visorSize, speed, 0);
+    public VisorEffect(int startLED, int lastLED, Color visorColor, int visorSize, double speed, Type type){
+        this(startLED, lastLED, visorColor, visorSize, speed, 0, type);
     }
     
     /**
@@ -71,8 +71,8 @@ public class VisorEffect extends LightingEffect{
      * @param visorSize
      * @param speed Speed that the visor moves. Measured in LED pixels per second. 
      */
-    public VisorEffect(int bufferLength, Color visorColor, int visorSize, double speed){
-        this(bufferLength, visorColor, visorSize, speed, 0);
+    public VisorEffect(int bufferLength, Color visorColor, int visorSize, double speed, Type type){
+        this(bufferLength, visorColor, visorSize, speed, 0, type);
     }
 
 

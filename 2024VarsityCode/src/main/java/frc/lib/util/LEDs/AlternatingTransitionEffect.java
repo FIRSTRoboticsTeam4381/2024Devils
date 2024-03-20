@@ -27,8 +27,8 @@ public class AlternatingTransitionEffect extends LightingEffect{
      * @param waveLength The length of each resulting wave. Think of this like a sine wave, this is the period length. Measured in LED pixels
      * @param speed The speed of the wave effect. Measured in LED pixels per second. Expected range 1-50, values outside of that will cause unknown behavior
      */
-    public AlternatingTransitionEffect(int startLED, int lastLED, Color color1, Color color2, int waveLength, double speed){
-        super(startLED, lastLED);
+    public AlternatingTransitionEffect(int startLED, int lastLED, Color color1, Color color2, int waveLength, double speed, Type type){
+        super(startLED, lastLED, type);
         stepList = new ArrayList<Color>();
         this.timer = 0;
         pixPerMs = speed/100.0;
@@ -53,8 +53,8 @@ public class AlternatingTransitionEffect extends LightingEffect{
      * @param waveLength The length of each resulting wave. Think of this like a sine wave, this is the period length. Measured in LED pixels
      * @param speed The speed of the wave effect. Measured in LED pixels per second. Expected range 1-50, values outside of that will cause unknown behavior
      */
-    public AlternatingTransitionEffect(int bufferLength, Color color1, Color color2, int waveLength, double speed){
-        this(0, bufferLength-1, color1, color2, waveLength, speed);
+    public AlternatingTransitionEffect(int bufferLength, Color color1, Color color2, int waveLength, double speed, Type type){
+        this(0, bufferLength-1, color1, color2, waveLength, speed, type);
     }
 
 

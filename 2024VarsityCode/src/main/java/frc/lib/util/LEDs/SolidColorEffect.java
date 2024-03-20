@@ -18,8 +18,8 @@ public class SolidColorEffect extends LightingEffect{
      * @param lastLED The final LED of the defined range for the effect. Determines how many LEDs the effect occupies
      * @param color The color to set the LEDs to
      */
-    public SolidColorEffect(int startLED, int lastLED, Color color){
-        super(startLED, lastLED);
+    public SolidColorEffect(int startLED, int lastLED, Color color, Type type){
+        super(startLED, lastLED, type);
         this.color = color;
     }
 
@@ -28,8 +28,8 @@ public class SolidColorEffect extends LightingEffect{
      * @param bufferLength The number of pixels for the effect to occupy. Assumes starting at index 0. To specify a start location, use the other constructor.
      * @param color The color to set the LEDs to
      */
-    public SolidColorEffect(int bufferLength, Color color){
-        this(0, bufferLength-1, color);
+    public SolidColorEffect(int bufferLength, Color color, Type type){
+        this(0, bufferLength-1, color, type);
     }
 
 

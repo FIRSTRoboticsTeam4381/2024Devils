@@ -4,18 +4,15 @@
 
 package frc.robot.subsystems;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.LEDs.ConditionalSolidColor;
 import frc.lib.util.LEDs.LEDWrapper;
 import frc.lib.util.LEDs.LightingEffect;
-import frc.lib.util.LEDs.SolidColorEffect;
 
 /* Note for self. The example usage of AddressableLED and AddressableLEDBuffer had
  * not problem with repeatedly using led.set(buffer) every periodic call. This means
@@ -43,29 +40,44 @@ public class LEDs extends SubsystemBase {
         ledStrips.put("climb-right", new LEDWrapper(0, 100));
         ledStrips.put("climb-left", new LEDWrapper(0, 100));
 
-        // Create a list of effects associated with each LED strip
-        for(String s : ledStrips.keySet()){
-            AddressableLED aled = ledStrips.get(s);
-            activeEffects.put(aled, new ArrayList<LightingEffect>());
-            clear(aled);
-        }
-
-
-        activeEffects = new ArrayList<LightingEffect>();
-        activeEffects.add(new SolidColorEffect(ledLength, new Color(0,0,0)));
-
-        this.ledLength = ledLength;
-        led = new AddressableLED(port);
-        led.setLength(ledLength);
-
-        led.setData(updateEffects());
-        led.start();
     }
 
 
-    /* METHODS */
-    private void clear(AddressableLED aled){
-        activeEffects.get(aled).clear();
-        activeEffects.get(aled).add(new SolidColorEffect(aled.))
+    /* COMMANDS */
+    public Command addEffect(String key, LightingEffect e){
+        return new InstantCommand(()->ledStrips.get(key).addEffect(e));
+    }
+    public Command setEffects(String key, LightingEffect... e){
+        return new InstantCommand(()->ledStrips.get(key).setEffects(e));
+    }
+    public Command clearEffects(String key){
+        return new InstantCommand(()->ledStrips.get(key).clearEffects());
+    }
+    public Command addEffectToAll(LightingEffect e){
+        return new ParallelCommandGroup(addEffect("shooter-right",e),
+                                        addEffect("shooter-left",e),
+                                        addEffect("climb-right",e),
+                                        addEffect("climb-left",e)
+                                        );
+    }
+    public Command setEffectsToAll(LightingEffect... e){
+        return new ParallelCommandGroup(setEffects("shooter-right",e),
+                                        setEffects("shooter-left",e),
+                                        setEffects("climb-right",e),
+                                        setEffects("climb-left",e)
+                                        );
+    }
+    public Command clearEffectsFromAll(){
+        return new ParallelCommandGroup(clearEffects("shooter-right"),
+                                        clearEffects("shooter-left"),
+                                        clearEffects("climb-right"),
+                                        clearEffects("climb-left"));
+    }
+    
+    @Override
+    public void periodic(){
+        for(String s : ledStrips.keySet()){
+            ledStrips.get(s).periodic();
+        }
     }
 }

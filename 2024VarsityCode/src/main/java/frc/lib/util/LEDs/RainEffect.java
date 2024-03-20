@@ -25,8 +25,8 @@ public class RainEffect extends LightingEffect{
      * @param rainSpeed Does something
      * @param maxVolume The maximum number of raindrops that can exist at a time.
      */
-    public RainEffect(int startLED, int lastLED, int rainSpeed, int maxVolume){
-        super(startLED, lastLED);
+    public RainEffect(int startLED, int lastLED, int rainSpeed, int maxVolume, Type type){
+        super(startLED, lastLED, type);
         this.rainSpeed = rainSpeed;
         this.maxVolume = maxVolume;
 
@@ -41,8 +41,8 @@ public class RainEffect extends LightingEffect{
      * @param rainSpeed Does something
      * @param maxVolume The maximum number of raindrops that can exist at a time.
      */
-    public RainEffect(int bufferLength, int rainSpeed, int maxVolume){
-        this(0, bufferLength-1, rainSpeed, maxVolume);
+    public RainEffect(int bufferLength, int rainSpeed, int maxVolume, Type type){
+        this(0, bufferLength-1, rainSpeed, maxVolume, type);
     }
 
     /**
@@ -53,8 +53,8 @@ public class RainEffect extends LightingEffect{
      * @param rainSpeed Does something
      * @param maxVolume The maximum number of raindrops that can exist at a time.
      */
-    public RainEffect(int startLED, int lastLED, Color rainColor, int rainSpeed, int maxVolume){
-        this(startLED, lastLED, rainSpeed, maxVolume);
+    public RainEffect(int startLED, int lastLED, Color rainColor, int rainSpeed, int maxVolume, Type type){
+        this(startLED, lastLED, rainSpeed, maxVolume, type);
         this.rainColor = rainColor;
     }
 
@@ -65,8 +65,8 @@ public class RainEffect extends LightingEffect{
      * @param rainSpeed Does something
      * @param maxVolume The maximum number of raindrops that can exist at a time.
      */
-    public RainEffect(int bufferLength, Color rainColor, int rainSpeed, int maxVolume){
-        this(bufferLength, rainSpeed, maxVolume);
+    public RainEffect(int bufferLength, Color rainColor, int rainSpeed, int maxVolume, Type type){
+        this(bufferLength, rainSpeed, maxVolume, type);
         this.rainColor = rainColor;
     }
 
