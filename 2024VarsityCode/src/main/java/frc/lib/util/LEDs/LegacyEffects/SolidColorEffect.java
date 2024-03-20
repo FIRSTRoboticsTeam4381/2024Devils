@@ -1,6 +1,8 @@
-package frc.lib.util.LEDs;
+package frc.lib.util.LEDs.LegacyEffects;
 
 import edu.wpi.first.wpilibj.util.Color;
+import frc.lib.util.LEDs.LightingEffect;
+import frc.lib.util.LEDs.LightingEffect.Type;
 
 /** Set all LEDs in a range to a solid color */
 public class SolidColorEffect extends LightingEffect{

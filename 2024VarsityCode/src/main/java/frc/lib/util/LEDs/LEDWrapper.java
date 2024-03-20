@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.lib.util.LEDs.LegacyEffects.SolidColorEffect;
 import frc.lib.util.LEDs.LightingEffect.Type;
 
 public class LEDWrapper {
@@ -33,9 +34,10 @@ public class LEDWrapper {
 
         for(int i = 1; i < activeEffects.size(); i++){
             Color[] effectPixels = activeEffects.get(i).updatePixels();
-            for(int j = 0; j < pixels.length; j++){
-                if(!sameColor(effectPixels[j], new Color(0,0,0))){ // If the pixel color is not black
-                    pixels[j]=effectPixels[j];
+
+            for(int j = activeEffects.get(i).getFirstLED(); j<=activeEffects.get(i).getLastLED();j++){
+                if(!sameColor(effectPixels[j], new Color(0,0,0))){
+                    pixels[j]=effectPixels[j-activeEffects.get(i).getFirstLED()];
                 }
             }
         }

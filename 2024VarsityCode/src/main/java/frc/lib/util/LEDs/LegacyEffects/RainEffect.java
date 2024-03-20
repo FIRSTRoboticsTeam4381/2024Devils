@@ -1,7 +1,9 @@
-package frc.lib.util.LEDs;
+package frc.lib.util.LEDs.LegacyEffects;
 
 import java.util.ArrayList;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.lib.util.LEDs.LightingEffect;
+import frc.lib.util.LEDs.LightingEffect.Type;
 
 /** An effect that creates random assortments of light speckles */
 public class RainEffect extends LightingEffect{
