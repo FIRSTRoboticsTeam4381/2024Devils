@@ -100,8 +100,9 @@ public class Pivot extends SubsystemBase {
    */
   public void manualControl(double speed){
     double pos = getAngle();
-    if(pos < 15 || pos > 80) speed *= 0.6;
-    rightPivot.set(speed);
+    double var = 2.5;
+    double power = Math.sqrt(1+(var*var) / 1+(var*var)*Math.pow(Math.sin(Math.PI/110*pos),2)) * Math.sin(Math.PI/110 * pos);
+    rightPivot.set(speed*power);
   }
 
   /**
