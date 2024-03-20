@@ -5,12 +5,15 @@
 package frc.robot.subsystems;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.LEDs.ConditionalSolidColor;
+import frc.lib.util.LEDs.LEDWrapper;
 import frc.lib.util.LEDs.LightingEffect;
 import frc.lib.util.LEDs.SolidColorEffect;
 
@@ -21,12 +24,9 @@ import frc.lib.util.LEDs.SolidColorEffect;
 public class LEDs extends SubsystemBase {
 
     /* ATTRIBUTES */
-    
-    private AddressableLED led;
-    private int ledLength = 0;
 
-    private ArrayList<LightingEffect> activeEffects;
-    private ArrayList<LightingEffect> statusEffects;
+    // A map of LED strips and their respective identifier keys
+    private Map<String, LEDWrapper> ledStrips = new HashMap<String, LEDWrapper>();
     
 
     /* CONSTRUCTORS */
@@ -35,8 +35,22 @@ public class LEDs extends SubsystemBase {
      * @param ledLength The number of LEDs on the LED strip
      * @param port The pwm port the strip is plugged into
     */
-    public LEDs(int ledLength, int port) {
-        // Create the effect stack and set the lights to off
+    public LEDs() {
+        // Create list of led strips and respective keys for identifying
+        // TODO get ports and lengths
+        ledStrips.put("shooter-right", new LEDWrapper(0, 100));
+        ledStrips.put("shooter-left", new LEDWrapper(0, 100));
+        ledStrips.put("climb-right", new LEDWrapper(0, 100));
+        ledStrips.put("climb-left", new LEDWrapper(0, 100));
+
+        // Create a list of effects associated with each LED strip
+        for(String s : ledStrips.keySet()){
+            AddressableLED aled = ledStrips.get(s);
+            activeEffects.put(aled, new ArrayList<LightingEffect>());
+            clear(aled);
+        }
+
+
         activeEffects = new ArrayList<LightingEffect>();
         activeEffects.add(new SolidColorEffect(ledLength, new Color(0,0,0)));
 
@@ -50,98 +64,8 @@ public class LEDs extends SubsystemBase {
 
 
     /* METHODS */
-
-    /*
-    public void setupStatusEffects(Shooter shooter, Pivot pivot, Index index){
-        statusEffects = new ArrayList<LightingEffect>();
-
-        ConditionalSolidColor shooterSpeed = new ConditionalSolidColor(shooter::runningAtSpeed, new Color(0,255,0), new Color(0,0,0), 0, 9);
-        ConditionalSolidColor pivotAngle = new ConditionalSolidColor(pivot::angleAtTarget, new Color(0,255,0), new Color(0,0,0), 10, 19);
-        ConditionalSolidColor noteInIndex = new ConditionalSolidColor(index::noteInIndex, new Color(0,255,0), new Color(0,0,0), 20, 29);
-    }
-    */
-
-    /**
-     * Add an effect to the stack. Sends the effect to the bottom of the load order by default
-     * (lower in load order overwrites higher in load order)
-     * @param effect
-     */
-    public void addEffects(LightingEffect... effects){
-        for(int i = 0; i < effects.length; i++){
-            activeEffects.add(effects[i]);
-        }
-    }
-
-    /**
-     * Add an effect to the stack. Specify the position in the load order to send the effect to
-     * (lower in load order (higher index) overwrites effects that load first (lower index))
-     * @param effect
-     * @param position
-     */
-    public void addEffect(int index, LightingEffect... effects){
-        for(int i = 0; i < effects.length; i++){
-            activeEffects.add(index+i, effects[i]);
-        }
-    }
-
-    /**
-     * Remove an effect at the specified index
-     * @param index The index of the effect to remove from the stack
-     */
-    public void removeEffect(int index){
-        activeEffects.remove(index);
-    }
-
-    /**
-     * Clears all of the effects from the stack
-     */
-    public void clearEffects(){
-        activeEffects.clear();
-    }
-
-    /**
-     * Clears all current effects from the stack and adds the provided effects, activating them instantly
-     * @param effects The effects to add to the stack
-     */
-    public void setEffects(LightingEffect... effects){
-        clearEffects();
-        addEffects(effects);
-    }
-
-    /**
-     * A multi-step method that is crucial to the functionality of this effect framework. Creates a new LEDBuffer that will be supplied back
-     * to the calling function. Sets all the LEDs to off, then polls each active effect to get their current status and layers them on
-     * top of each other. Also ensures that effects that have specific positions will only be applied to those positions.
-     * @return The AddressableLEDBuffer that contains every active effect layered on top of each other
-     */
-    public AddressableLEDBuffer updateEffects(){
-        AddressableLEDBuffer buffer = new AddressableLEDBuffer(ledLength);
-        for(int i = 0; i < ledLength; i++){
-            buffer.setRGB(i,0,0,0);
-        }
-        for(LightingEffect e : activeEffects){
-            Color[] effectPixels = e.updatePixels();
-            int location = e.getFirstLED();
-            for(int i = 0; i < effectPixels.length; i++){
-                if(effectPixels[i].red!=0||effectPixels[i].green!=0||effectPixels[i].blue!=0)
-                    buffer.setRGB(i+location, (int)(effectPixels[i].red*255), (int)(effectPixels[i].green*255), (int)(effectPixels[i].blue*255));
-            }
-        }
-        for(LightingEffect e : statusEffects){
-            Color[] effectPixels = e.updatePixels();
-            int location = e.getFirstLED();
-            for(int i = 0; i < effectPixels.length; i++){
-                if(effectPixels[i].red!=0||effectPixels[i].green!=0||effectPixels[i].blue!=0)
-                    buffer.setRGB(i+location, (int)(effectPixels[i].red*255), (int)(effectPixels[i].green*255), (int)(effectPixels[i].blue*255));
-            }
-        }
-
-        return buffer;
-    }
-
-    @Override
-    public void periodic() {
-        // This method will be called once per scheduler run
-        led.setData(updateEffects());
+    private void clear(AddressableLED aled){
+        activeEffects.get(aled).clear();
+        activeEffects.get(aled).add(new SolidColorEffect(aled.))
     }
 }

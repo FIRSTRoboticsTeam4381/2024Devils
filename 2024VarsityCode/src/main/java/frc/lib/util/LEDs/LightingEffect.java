@@ -5,19 +5,26 @@ import edu.wpi.first.wpilibj.util.Color;
 /** Abstract class for defining dynamic lighting effects */
 public abstract class LightingEffect {
 
+    public enum Type{
+        cosmetic,
+        status
+    }
+
     /* ATTRIBUTES */
 
     protected int bufferLength;
     protected int firstLED;
     protected int lastLED;
+    protected Type type;
 
 
     /* CONSTRUCTORS */
 
-    public LightingEffect(int firstLED, int lastLED){
+    public LightingEffect(int firstLED, int lastLED, Type type){
         this.firstLED = firstLED;
         this.lastLED = lastLED;
         this.bufferLength = lastLED-firstLED+1;
+        this.type = type;
     }
 
 
@@ -33,6 +40,10 @@ public abstract class LightingEffect {
 
     public int getLength(){
         return bufferLength;
+    }
+
+    public Type getType(){
+        return type;
     }
 
 
