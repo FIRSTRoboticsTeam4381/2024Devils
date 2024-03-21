@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
@@ -22,42 +23,39 @@ public class ComposedCommands {
     private Pivot pivot;
     private Limelight ll;
     private Swerve swerve;
+    private CommandPS4Controller controller;
 
     // TODO change pivot commands over to profiled motion once that's done
 
-    public ComposedCommands(Intake intake, Index index, Shooter shooter, Pivot pivot, Limelight ll, Swerve swerve){
+    public ComposedCommands(CommandPS4Controller controller, Intake intake, Index index, Shooter shooter, Pivot pivot, Limelight ll, Swerve swerve){
         this.intake = intake;
         this.index = index;
         this.shooter = shooter;
         this.pivot = pivot;
         this.ll = ll;
         this.swerve = swerve;
+        this.controller = controller;
     }
 
 
     /* INTAKE */
 
-    /*
-     * Should be able to run off of a toggleOnTrue because this will be cancelled by either other commands
-     * or the toggle, which would stop the intake running as well as the index.
-     */
-    public Command groundIntake(){
+    public Command groundIntake(Command handoff){
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
                 pivot.goToAngle(Pivot.Positions.intake),
-                //pivot.goToTemporaryPosition(Pivot.INTAKE_POS),
                 new ParallelRaceGroup(
                     intake.run(),
                     index.indexUntilIn(false)
                 )
+            ), // At this point, we have a note
+            new ParallelCommandGroup(
+                handoff, // Hand off to something else to get pivot moving early
+                index.indexUntilReady(false) // Keep index running until note is all the way in
             )
         ).withName("Ground Intake");
     }
 
-    /*
-     * Should also be able to run off of a toggleOnTrue for the same reasons, everything that
-     * needs to stop should stop
-     */
     public Command humanIntake(){
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
@@ -65,15 +63,15 @@ public class ComposedCommands {
                 index.indexUntilIn(true), // Stops when cancelled
                 shooter.eject() // Stops when cancelled
             ),
-            pivot.goToAngle(Pivot.Positions.transit)
+            new ParallelCommandGroup(
+                pivot.goToAngle(Pivot.Positions.transit),
+                index.indexUntilReady(false)
+            )
         ).withName("Human Intake");
     }
 
     /* EJECT */
 
-    /*
-     * Should run off of holding a button, because cancelling on release should stop all three mechanisms
-     */
     public Command ejectNote(){
         return new ParallelCommandGroup(
             shooter.eject(), // Stops when cancelled

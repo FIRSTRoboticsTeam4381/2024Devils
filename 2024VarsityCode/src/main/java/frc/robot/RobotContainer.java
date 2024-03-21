@@ -44,8 +44,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
     /* Controllers */
-    private final CommandPS4Controller driver = new CommandPS4Controller(0);
-    private final CommandPS4Controller specialist = new CommandPS4Controller(1);
+    private static final CommandPS4Controller driver = new CommandPS4Controller(0);
+    private static final CommandPS4Controller specialist = new CommandPS4Controller(1);
 
     /* Subsystems */
     public static final Swerve s_Swerve = new Swerve();
@@ -57,7 +57,7 @@ public class RobotContainer {
     public static final Limelight s_LL = new Limelight();
 
     /* Commands */
-   public static final ComposedCommands commands = new ComposedCommands(s_Intake, s_Index, s_Shooter, s_Pivot, s_LL, s_Swerve);
+   public static final ComposedCommands commands = new ComposedCommands(specialist, s_Intake, s_Index, s_Shooter, s_Pivot, s_LL, s_Swerve);
 
     // Auto Chooser
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -121,7 +121,7 @@ public class RobotContainer {
         driver.PS().onTrue(new InstantCommand(()->s_LL.takeSnapshot())).onFalse(new InstantCommand(()->s_LL.resetSnapshot()));
 
         specialist.square().toggleOnTrue(commands.humanIntake());
-        specialist.cross().toggleOnTrue(commands.groundIntake());
+        specialist.cross().toggleOnTrue(commands.groundIntake(new ManualPivot(specialist::getLeftY, s_Pivot)));
         specialist.circle().whileTrue(commands.ejectNote());
         specialist.triangle().whileTrue(commands.autoAim());
 
@@ -139,7 +139,7 @@ public class RobotContainer {
     }
 
     private void registerCommands(){
-        NamedCommands.registerCommand("Intake", commands.groundIntake());
+        NamedCommands.registerCommand("Intake", commands.groundIntake(commands.autoAim()));
         NamedCommands.registerCommand("StopIntake", s_Intake.instantStop());
         NamedCommands.registerCommand("ShooterSpinUp", s_Shooter.instantSetVelocityReference(Shooter.avgRPM, false));
         NamedCommands.registerCommand("AutoAim", commands.autoAim());

@@ -21,7 +21,7 @@ public class Index extends SubsystemBase {
   /* ATTRIBUTES */
 
   private CANSparkMax indexMotor;
-  private DigitalInput indexEye;
+  private DigitalInput[] eyes = new DigitalInput[2];
 
   public static final double INDEX_SPEED = 0.2;
 
@@ -30,8 +30,9 @@ public class Index extends SubsystemBase {
 
   /** Creates a new Index. */
   public Index() {
+    eyes[0] = new DigitalInput(Constants.Index.indexDIO1);
+    eyes[1] = new DigitalInput(Constants.Index.indexDIO2);
     indexMotor = new CANSparkMax(Constants.Index.indexCAN, MotorType.kBrushless);
-    indexEye = new DigitalInput(Constants.Index.indexDIO);
     indexMotor.setSmartCurrentLimit(50);
 
     SparkUtilities.optimizeFrames(indexMotor, false, false, false, false, false, false);
@@ -40,8 +41,8 @@ public class Index extends SubsystemBase {
 
   /* METHODS */
 
-  private boolean noteStored(){
-    return !indexEye.get();
+  private boolean getEye(int index){
+    return !eyes[index].get();
   }
 
   private void setPercOutput(double speed){
@@ -120,9 +121,18 @@ public class Index extends SubsystemBase {
       ()->setPercOutput(INDEX_SPEED*(reversed?-1:1)),
       ()->{},
       (interrupted)->setPercOutput(0.0),
-      this::noteStored,
+      ()->{return getEye(0);},
       this
     ).withName("IndexUntilIn");
+  }
+  public Command indexUntilReady(boolean reversed){
+    return new FunctionalCommand(
+      ()->setPercOutput(INDEX_SPEED*(reversed?-1:1)),
+      ()->{},
+      (interrupted)->setPercOutput(0.0),
+      ()->{return getEye(1);},
+      this
+    ).withName("IndexUntilReady");
   }
 
   /**
@@ -135,7 +145,7 @@ public class Index extends SubsystemBase {
       ()->setPercOutput(INDEX_SPEED),
       ()->{},
       (interrupted)->setPercOutput(0.0),
-      ()->{return !noteStored();},
+      ()->{return !getEye(0)&&!getEye(1);},
       this
     ).withName("IndexUntilShot");
   }
@@ -147,7 +157,8 @@ public class Index extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putBoolean("index/Note Stored", noteStored());
+    SmartDashboard.putBoolean("index/Eye0", getEye(0));
+    SmartDashboard.putBoolean("index/Eye1", getEye(1));
     SmartDashboard.putString("index/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
 
     SmartDashboard.putNumber("index/Index Current", indexMotor.getOutputCurrent());
