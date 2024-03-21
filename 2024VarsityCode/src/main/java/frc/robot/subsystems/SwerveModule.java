@@ -5,7 +5,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder; 
 import com.revrobotics.SparkAbsoluteEncoder; 
 import com.revrobotics.SparkPIDController; 
-import com.revrobotics.CANSparkBase.ControlType; 
+import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType; 
  
 import frc.lib.math.Conversions; 
@@ -50,6 +51,7 @@ public class SwerveModule {
 
         configAngleMotor(moduleConstants.angleMotorID);
         configDriveMotor(moduleConstants.driveMotorID);
+        setBrakeMode(true);
 
         mLastAngle = getState().angle.getDegrees(); 
     } 
@@ -162,7 +164,7 @@ public class SwerveModule {
         mDriveMotor = new CANSparkFlex(id, MotorType.kBrushless); 
         SparkUtilities.optimizeFrames(mDriveMotor, false, true, true, false, false, false); 
         mDriveMotor.setInverted(false); // TODO Setting this to true breaks it. Manually invert motor sets and encoder reads
-        mDriveMotor.setSmartCurrentLimit(60);
+        setDriveCurrentLimit(60);
         //configDriveMotor();
 
         /* Drive Encoder Config */
@@ -297,5 +299,19 @@ public class SwerveModule {
     }
     public double getDriveCurrent(){
         return mDriveMotor.getOutputCurrent();
+    }
+
+    public void setDriveCurrentLimit(int limit){
+        mDriveMotor.setSmartCurrentLimit(limit);
+    }
+
+    public void setBrakeMode(boolean enabled){
+        if(enabled){
+            mDriveMotor.setIdleMode(IdleMode.kBrake);
+            mAngleMotor.setIdleMode(IdleMode.kBrake);
+        }else{
+            mDriveMotor.setIdleMode(IdleMode.kCoast);
+            mAngleMotor.setIdleMode(IdleMode.kCoast);
+        }
     }
 } 

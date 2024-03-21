@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -119,6 +120,8 @@ public class RobotContainer {
         // Shoot Note
         driver.R1().or(specialist.R1()).whileTrue(commands.feedNote());
         driver.PS().onTrue(new InstantCommand(()->s_LL.takeSnapshot())).onFalse(new InstantCommand(()->s_LL.resetSnapshot()));
+        driver.L1().onTrue(s_Swerve.nitro());
+        driver.cross().onTrue(new InstantCommand(()->s_Swerve.setBrakeMode(true))).onFalse(new InstantCommand(()->s_Swerve.setBrakeMode(false)));
 
         specialist.square().toggleOnTrue(commands.humanIntake());
         specialist.cross().toggleOnTrue(commands.groundIntake(new ManualPivot(specialist::getLeftY, s_Pivot)));

@@ -17,7 +17,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.util.DriftCorrection;
 import frc.lib.util.LogOrDash;
@@ -267,5 +269,23 @@ public class Swerve extends SubsystemBase{
                 mod.burnFlash();
             }
         }, this).ignoringDisable(true);
+    }
+
+    private void setDriveCurrentLimit(int limit){
+        for(SwerveModule m : mSwerveMods){
+            m.setDriveCurrentLimit(limit);
+        }
+    }
+    public Command nitro(){
+        return new SequentialCommandGroup(
+            new InstantCommand(()->setDriveCurrentLimit(80)),
+            new WaitCommand(5),
+            new InstantCommand(()->setDriveCurrentLimit(60))
+        );
+    }
+    public void setBrakeMode(boolean enabled){
+        for(SwerveModule m : mSwerveMods){
+            m.setBrakeMode(enabled);
+        }
     }
 }
