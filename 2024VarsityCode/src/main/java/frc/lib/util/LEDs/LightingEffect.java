@@ -13,10 +13,11 @@ public abstract class LightingEffect {
      * @param length Length of the lighting effect
      * @param type Type, either cosmetic or status. Status effects are always shown on top
      */
-    public LightingEffect(int location, int length, Type type){
+    protected LightingEffect(int location, int length, Type type){
         this.type = type;
         setLocation(location);
         setLength(length);
+        pixels = new Color[length];
     }
 
     public void setLocation(int l){
@@ -41,8 +42,8 @@ public abstract class LightingEffect {
     }
 
     protected void colorFill(Color c){
-        for(Color p : pixels){
-            p = c;
+        for(int i = 0; i < pixels.length; i++){
+            pixels[i] = c;
         }
     }
 

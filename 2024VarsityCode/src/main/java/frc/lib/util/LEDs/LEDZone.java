@@ -17,6 +17,7 @@ public class LEDZone {
         setLocation(location);
         this.key = key;
         pixels = new Color[length];
+        activeEffects = new ArrayList<LightingEffect>();
     }
 
     public void addEffect(LightingEffect... es){
@@ -38,7 +39,7 @@ public class LEDZone {
     }
     public void clearEffects(){
         activeEffects.clear();
-        addEffect(new SolidColorEffect(0, length, new Color(0,0,0), Type.cosmetic));
+        activeEffects.add(new SolidColorEffect(0, length, new Color(0,0,0), Type.cosmetic));
     }
 
     public void setLocation(int l){
@@ -63,7 +64,7 @@ public class LEDZone {
 
         for(int i = 0; i < activeEffects.size(); i++){
             Color[] effectPixels = activeEffects.get(i).getPixels();
-            for(int j = 0; j < activeEffects.get(i).getLength(); i++){
+            for(int j = 0; j < activeEffects.get(i).getLength(); j++){
                 if(i==0 || !equal(effectPixels[j], new Color(0,0,0))){
                     pixels[j+activeEffects.get(i).getLocation()] = effectPixels[j];
                 }
@@ -76,6 +77,7 @@ public class LEDZone {
     }
 
     public static boolean equal(Color c1, Color c2){
+        if(c1==null || c2==null) return false;
         return c1.red==c2.red && c1.green==c2.green && c1.blue==c2.blue;
     }
 }

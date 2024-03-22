@@ -42,7 +42,7 @@ public class SolidColorEffect extends LightingEffect{
 
     @Override
     public void update() {
-        color = new Color(color.red*scaler.get(), color.green*scaler.get(), color.blue*scaler.get());
+        Color color = new Color(this.color.red*scaler.get(), this.color.green*scaler.get(), this.color.blue*scaler.get());
 
 
         /* If the recalculated color is the same as the last one, the scaler hasn't changed
