@@ -8,12 +8,27 @@ public class SolidColorEffect extends LightingEffect{
     private Color color;
     private Supplier<Double> scaler;
 
+    /**
+     * 
+     * @param location Location of the lighting effect within the LED zone. 0 is the first LED in the strip
+     * @param length Length of the lighting effect
+     * @param color The color to fill. Enter the color at max brightness, as the scaler will only reduce this color
+     * @param brightnessScaler A double supplier that returns the percentage brightness to have this color display at
+     * @param type Type, either cosmetic or status. Status effects are always shown on top
+     */
     public SolidColorEffect(int location, int length, Color color, Supplier<Double> brightnessScaler, Type type){
         super(location, length, type);
         setColor(color);
         scaler = brightnessScaler;
     }
 
+    /**
+     * 
+     * @param location Location of the lighting effect within the LED zone. 0 is the first LED in the strip
+     * @param length Length of the lighting effect
+     * @param color The color to fill
+     * @param type Type, either cosmetic or status. Status effects are always shown on top
+     */
     public SolidColorEffect(int location, int length, Color color, Type type){
         this(location, length, color, ()->{return 1.0;}, type);
     }
@@ -28,10 +43,13 @@ public class SolidColorEffect extends LightingEffect{
     @Override
     public void update() {
         color = new Color(color.red*scaler.get(), color.green*scaler.get(), color.blue*scaler.get());
+
+
+        /* If the recalculated color is the same as the last one, the scaler hasn't changed
+         * so there's no need to adjust every pixel
+         */
         if(!LEDZone.equal(color, pixels[0])){
-            for(int i = 0; i < length; i++){
-                pixels[i] = color;
-            }
+            colorFill(color);
         }
     }
     

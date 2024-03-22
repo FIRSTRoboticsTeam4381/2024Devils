@@ -7,6 +7,12 @@ public abstract class LightingEffect {
     protected Type type;
     protected Color[] pixels;
 
+    /**
+     * 
+     * @param location Location of the lighting effect within the LED zone. 0 is the first LED in the strip
+     * @param length Length of the lighting effect
+     * @param type Type, either cosmetic or status. Status effects are always shown on top
+     */
     public LightingEffect(int location, int length, Type type){
         this.type = type;
         setLocation(location);
@@ -32,6 +38,12 @@ public abstract class LightingEffect {
 
     public Color[] getPixels(){
         return pixels;
+    }
+
+    protected void colorFill(Color c){
+        for(Color p : pixels){
+            p = c;
+        }
     }
 
     public abstract void update();
