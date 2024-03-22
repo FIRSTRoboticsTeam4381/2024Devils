@@ -4,80 +4,54 @@
 
 package frc.robot.subsystems;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.LEDs.LEDWrapper;
-import frc.lib.util.LEDs.LightingEffect;
+import frc.lib.util.LEDs.LEDZone;
+import frc.robot.Constants;
 
-/* Note for self. The example usage of AddressableLED and AddressableLEDBuffer had
- * not problem with repeatedly using led.set(buffer) every periodic call. This means
- * that a new buffer can be created every periodic and set to the LEDs
- */
 public class LEDs extends SubsystemBase {
+  private AddressableLED leds;
+  private int totalLength;
+  private LEDZone[] lightingZones;
 
-    /* ATTRIBUTES */
+  /** Creates a new LEDs. */
+  public LEDs() {
+    leds = new AddressableLED(Constants.ledPort);
+    lightingZones = new LEDZone[] {
+      new LEDZone("shooter-right", 0, 100),
+      new LEDZone("shooter-left", 100, 100),
+      new LEDZone("climb-right", 200, 100),
+      new LEDZone("climb-left", 300, 100)
+    };
 
-    // A map of LED strips and their respective identifier keys
-    private Map<String, LEDWrapper> ledStrips = new HashMap<String, LEDWrapper>();
-    
+    {
+      int sum = 0;
+      for(LEDZone z : lightingZones){
+        sum+=z.getLength();
+      }
+      totalLength = sum;
+    }
+    leds.setLength(totalLength);
+  }
 
-    /* CONSTRUCTORS */
-
-    /** Creates a new LEDs.
-     * @param ledLength The number of LEDs on the LED strip
-     * @param port The pwm port the strip is plugged into
-    */
-    public LEDs() {
-        // Create list of led strips and respective keys for identifying
-        // TODO get ports and lengths
-        ledStrips.put("shooter-right", new LEDWrapper(0, 100));
-        ledStrips.put("shooter-left", new LEDWrapper(0, 100));
-        ledStrips.put("climb-right", new LEDWrapper(0, 100));
-        ledStrips.put("climb-left", new LEDWrapper(0, 100));
-
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+    Color[] pixels = new Color[totalLength];
+    for(LEDZone z : lightingZones){
+      z.update();
+      Color[] zonePixels = z.getPixels();
+      for(int i = 0; i < z.getLength(); i++){
+        pixels[i+z.getLocation()] = zonePixels[i];
+      }
     }
 
-
-    /* COMMANDS */
-    public Command addEffect(String key, LightingEffect e){
-        return new InstantCommand(()->ledStrips.get(key).addEffect(e));
+    AddressableLEDBuffer buffer = new AddressableLEDBuffer(totalLength);
+    for(int i = 0; i < totalLength; i++){
+      buffer.setRGB(i, (int)pixels[i].red, (int)pixels[i].green, (int)pixels[i].blue);
     }
-    public Command setEffects(String key, LightingEffect... e){
-        return new InstantCommand(()->ledStrips.get(key).setEffects(e));
-    }
-    public Command clearEffects(String key){
-        return new InstantCommand(()->ledStrips.get(key).clearEffects());
-    }
-    public Command addEffectToAll(LightingEffect e){
-        return new ParallelCommandGroup(addEffect("shooter-right",e),
-                                        addEffect("shooter-left",e),
-                                        addEffect("climb-right",e),
-                                        addEffect("climb-left",e)
-                                        );
-    }
-    public Command setEffectsToAll(LightingEffect... e){
-        return new ParallelCommandGroup(setEffects("shooter-right",e),
-                                        setEffects("shooter-left",e),
-                                        setEffects("climb-right",e),
-                                        setEffects("climb-left",e)
-                                        );
-    }
-    public Command clearEffectsFromAll(){
-        return new ParallelCommandGroup(clearEffects("shooter-right"),
-                                        clearEffects("shooter-left"),
-                                        clearEffects("climb-right"),
-                                        clearEffects("climb-left"));
-    }
-    
-    @Override
-    public void periodic(){
-        for(String s : ledStrips.keySet()){
-            ledStrips.get(s).periodic();
-        }
-    }
+    leds.setData(buffer);
+  }
 }
