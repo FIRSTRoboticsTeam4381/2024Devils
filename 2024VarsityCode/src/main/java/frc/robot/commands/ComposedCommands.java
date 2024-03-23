@@ -46,6 +46,7 @@ public class ComposedCommands {
     public Command groundIntake(Command handoff){
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
+                leds.intakeWaiting(),
                 pivot.goToAngle(Pivot.Positions.intake),
                 new ParallelRaceGroup(
                     intake.run(),
@@ -62,6 +63,7 @@ public class ComposedCommands {
     public Command humanIntake(){
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
+                leds.intakeWaiting(),
                 pivot.goToAngle(Pivot.Positions.human),
                 index.indexUntilIn(true), // Stops when cancelled
                 shooter.eject() // Stops when cancelled
@@ -94,6 +96,7 @@ public class ComposedCommands {
 
     public Command ampMode(){
         return new ParallelCommandGroup(
+            leds.shooterStatus(),
             pivot.goToAngle(Pivot.Positions.amp),
             shooter.ampShoot() // Stops when cancelled
         ).withName("Amp Mode");
@@ -102,8 +105,8 @@ public class ComposedCommands {
     /* START SHOOTER */
     public Command startShooter(){
         return new ParallelCommandGroup(
+            leds.shooterStatus(),
             shooter.shootAvgSpeed()
-            
         );
     }
 

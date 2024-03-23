@@ -42,7 +42,7 @@ public class Index extends SubsystemBase {
 
   /* METHODS */
 
-  private boolean getEye(int index){
+  public boolean getEye(int index){
     return !eyes[index].get();
   }
 

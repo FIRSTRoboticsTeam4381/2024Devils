@@ -22,6 +22,10 @@ public class LEDZone {
 
     public void addEffect(LightingEffect... es){
         for(LightingEffect e : es){
+            if(e.getLocation()+e.getLength()>length){
+                e.setLength(length-e.getLocation());
+            }
+            
             if(e.getType()==Type.status){
                 activeEffects.add(e);
             }else{
@@ -40,6 +44,14 @@ public class LEDZone {
     public void clearEffects(){
         activeEffects.clear();
         activeEffects.add(new SolidColorEffect(0, length, new Color(0,0,0), Type.cosmetic));
+    }
+    public void removeEffect(int i){
+        activeEffects.remove(i);
+    }
+    public void removeEffect(LightingEffect... es){
+        for(LightingEffect e : es){
+            activeEffects.remove(e);
+        }
     }
 
     public void setLocation(int l){

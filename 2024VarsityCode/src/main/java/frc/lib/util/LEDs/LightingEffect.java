@@ -17,7 +17,6 @@ public abstract class LightingEffect {
         this.type = type;
         setLocation(location);
         setLength(length);
-        pixels = new Color[length];
     }
 
     public void setLocation(int l){
@@ -25,6 +24,7 @@ public abstract class LightingEffect {
     }
     public void setLength(int l){
         length = l;
+        pixels = new Color[l];
     }
 
     public int getLocation(){
