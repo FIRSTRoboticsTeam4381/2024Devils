@@ -11,6 +11,7 @@ import frc.robot.commands.ManualClimb;
 import frc.robot.commands.ManualPivot;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Pivot;
@@ -56,9 +57,10 @@ public class RobotContainer {
     public static final Shooter s_Shooter = new Shooter();
     public static final Climb s_Climb = new Climb();
     public static final Limelight s_LL = new Limelight();
+    public static final LEDs s_LED = new LEDs();
 
     /* Commands */
-   public static final ComposedCommands commands = new ComposedCommands(specialist, s_Intake, s_Index, s_Shooter, s_Pivot, s_LL, s_Swerve);
+   public static final ComposedCommands commands = new ComposedCommands(specialist, s_Intake, s_Index, s_Shooter, s_Pivot, s_LL, s_Swerve, s_LED);
 
     // Auto Chooser
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();

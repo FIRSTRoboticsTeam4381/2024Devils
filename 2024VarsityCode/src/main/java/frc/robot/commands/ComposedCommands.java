@@ -103,6 +103,7 @@ public class ComposedCommands {
     public Command startShooter(){
         return new ParallelCommandGroup(
             shooter.shootAvgSpeed()
+            
         );
     }
 

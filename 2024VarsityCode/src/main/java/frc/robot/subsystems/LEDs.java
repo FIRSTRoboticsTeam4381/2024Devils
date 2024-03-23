@@ -4,10 +4,13 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.Consumer;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.LEDs.LEDZone;
@@ -65,6 +68,15 @@ public class LEDs extends SubsystemBase {
   }
   public Command clearEffects(){
     return new InstantCommand(()->clear());
+  }
+
+  public Command temporaryEffect(Runnable onStart, Consumer<Boolean> onStop){
+    return new FunctionalCommand(
+      onStart,
+      ()->{},
+      onStop,
+      ()->{return false;}
+    );
   }
 
   private LEDZone search(String key){

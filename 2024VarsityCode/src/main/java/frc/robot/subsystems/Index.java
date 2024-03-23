@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.SparkUtilities.SparkUtilities;
 import frc.robot.Constants;
@@ -23,7 +24,7 @@ public class Index extends SubsystemBase {
   private CANSparkMax indexMotor;
   private DigitalInput[] eyes = new DigitalInput[2];
 
-  public static final double INDEX_SPEED = 0.2;
+  public static final double INDEX_SPEED = 0.4;
 
 
   /* CONSTRUCTORS */
@@ -140,7 +141,7 @@ public class Index extends SubsystemBase {
    * @param reversed Which direction to intake through. If intaking normally, this is false.
    * @return
    */
-  public Command indexUntilShot(boolean reversed){
+  public Command indexUntilShot(){
     return new FunctionalCommand(
       ()->setPercOutput(INDEX_SPEED),
       ()->{},
@@ -148,6 +149,19 @@ public class Index extends SubsystemBase {
       ()->{return !getEye(0)&&!getEye(1);},
       this
     ).withName("IndexUntilShot");
+  }
+
+  public Command oneEyeIndex(boolean reversed){
+    return new SequentialCommandGroup(
+      indexUntilIn(reversed),
+      new FunctionalCommand(
+        ()->setPercOutput(INDEX_SPEED), 
+        ()->{}, 
+        (interrupted)->setPercOutput(0.0), 
+        ()->{return !getEye(0);}, 
+        this),
+      indexUntilIn(true)
+    );
   }
 
 
