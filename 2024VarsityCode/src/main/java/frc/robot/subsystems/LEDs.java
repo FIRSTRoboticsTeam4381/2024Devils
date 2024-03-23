@@ -7,8 +7,11 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.LEDs.LEDZone;
+import frc.lib.util.LEDs.LightingEffect;
 import frc.robot.Constants;
 
 public class LEDs extends SubsystemBase {
@@ -34,6 +37,43 @@ public class LEDs extends SubsystemBase {
       totalLength = sum;
     }
     leds.setLength(totalLength);
+  }
+
+  public void add(String key, LightingEffect... effects){
+    search(key).addEffect(effects);
+  }
+  public void set(String key, LightingEffect... effects){
+    search(key).setEffect(effects);
+  }
+  public void clear(String key){
+    search(key).clearEffects();
+  }
+  public void clear(){
+    for(LEDZone z : lightingZones){
+      z.clearEffects();
+    }
+  }
+
+  public Command addEffects(String key, LightingEffect... effects){
+    return new InstantCommand(()->add(key, effects));
+  }
+  public Command setEffects(String key, LightingEffect... effects){
+    return new InstantCommand(()->set(key, effects));
+  }
+  public Command clearEffects(String key){
+    return new InstantCommand(()->clear(key));
+  }
+  public Command clearEffects(){
+    return new InstantCommand(()->clear());
+  }
+
+  private LEDZone search(String key){
+    for(LEDZone z : lightingZones){
+      if(z.getKey().equals(key)){
+        return z;
+      }
+    }
+    return null;
   }
 
   @Override

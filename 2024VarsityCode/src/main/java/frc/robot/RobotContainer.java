@@ -135,7 +135,7 @@ public class RobotContainer {
         specialist.povLeft().toggleOnTrue(s_Shooter.ampShoot());
         specialist.povUp().onTrue(s_Pivot.goToAngle(90));
 
-        specialist.L1().toggleOnTrue(s_Shooter.shootAvgSpeed());
+        specialist.L1().toggleOnTrue(commands.startShooter());
         specialist.PS().toggleOnTrue(new ManualClimb(specialist, s_Climb));
 
         driver.touchpad().or(specialist.touchpad()).onTrue(commands.cancelAll());

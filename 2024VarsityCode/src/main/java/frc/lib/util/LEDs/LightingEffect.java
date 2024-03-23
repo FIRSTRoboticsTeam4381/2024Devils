@@ -51,6 +51,7 @@ public abstract class LightingEffect {
 
     public enum Type{
         cosmetic,
-        status
+        status,
+        unspec
     }
 }

@@ -56,6 +56,9 @@ public class LEDZone {
     public int getLength(){
         return length;
     }
+    public String getKey(){
+        return key;
+    }
 
     public void update(){
         for(LightingEffect e : activeEffects){

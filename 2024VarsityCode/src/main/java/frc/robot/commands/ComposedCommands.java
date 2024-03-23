@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
@@ -23,17 +24,19 @@ public class ComposedCommands {
     private Pivot pivot;
     private Limelight ll;
     private Swerve swerve;
+    private LEDs leds;
     private CommandPS4Controller controller;
 
     // TODO change pivot commands over to profiled motion once that's done
 
-    public ComposedCommands(CommandPS4Controller controller, Intake intake, Index index, Shooter shooter, Pivot pivot, Limelight ll, Swerve swerve){
+    public ComposedCommands(CommandPS4Controller controller, Intake intake, Index index, Shooter shooter, Pivot pivot, Limelight ll, Swerve swerve, LEDs leds){
         this.intake = intake;
         this.index = index;
         this.shooter = shooter;
         this.pivot = pivot;
         this.ll = ll;
         this.swerve = swerve;
+        this.leds=leds;
         this.controller = controller;
     }
 
@@ -94,6 +97,13 @@ public class ComposedCommands {
             pivot.goToAngle(Pivot.Positions.amp),
             shooter.ampShoot() // Stops when cancelled
         ).withName("Amp Mode");
+    }
+
+    /* START SHOOTER */
+    public Command startShooter(){
+        return new ParallelCommandGroup(
+            shooter.shootAvgSpeed()
+        );
     }
 
     /* FEED NOTE IF READY */
