@@ -55,8 +55,9 @@ public class ComposedCommands {
             ), // At this point, we have a note
             new ParallelCommandGroup(
                 handoff, // Hand off to something else to get pivot moving early
-                index.indexUntilReady(false) // Keep index running until note is all the way in
-            )
+                index.indexUntilShot() // Keep index running until note is all the way in
+            ),
+            index.indexUntilIn(true)
         ).withName("Ground Intake");
     }
 
@@ -69,8 +70,8 @@ public class ComposedCommands {
                 shooter.eject() // Stops when cancelled
             ),
             new ParallelCommandGroup(
-                pivot.goToAngle(Pivot.Positions.transit),
-                index.indexUntilReady(false)
+                pivot.goToAngle(Pivot.Positions.transit)
+                //index.indexUntilReady(false)
             )
         ).withName("Human Intake");
     }
