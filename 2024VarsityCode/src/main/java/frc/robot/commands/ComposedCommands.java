@@ -24,19 +24,19 @@ public class ComposedCommands {
     private Pivot pivot;
     private Limelight ll;
     private Swerve swerve;
-    private LEDs leds;
+    //private LEDs leds;
     private CommandPS4Controller controller;
 
     // TODO change pivot commands over to profiled motion once that's done
 
-    public ComposedCommands(CommandPS4Controller controller, Intake intake, Index index, Shooter shooter, Pivot pivot, Limelight ll, Swerve swerve, LEDs leds){
+    public ComposedCommands(CommandPS4Controller controller, Intake intake, Index index, Shooter shooter, Pivot pivot, Limelight ll, Swerve swerve){
         this.intake = intake;
         this.index = index;
         this.shooter = shooter;
         this.pivot = pivot;
         this.ll = ll;
         this.swerve = swerve;
-        this.leds=leds;
+        //this.leds=leds;
         this.controller = controller;
     }
 
@@ -46,7 +46,7 @@ public class ComposedCommands {
     public Command groundIntake(Command handoff){
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
-                leds.intakeWaiting(),
+                //leds.intakeWaiting(),
                 pivot.goToAngle(Pivot.Positions.intake),
                 new ParallelRaceGroup(
                     intake.run(),
@@ -55,23 +55,22 @@ public class ComposedCommands {
             ), // At this point, we have a note
             new ParallelCommandGroup(
                 handoff, // Hand off to something else to get pivot moving early
-                index.indexUntilShot() // Keep index running until note is all the way in
-            ),
-            index.indexUntilIn(true)
+                index.indexUntilReady(false) // Keep index running until note is all the way in
+            )
         ).withName("Ground Intake");
     }
 
     public Command humanIntake(){
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
-                leds.intakeWaiting(),
+                //leds.intakeWaiting(),
                 pivot.goToAngle(Pivot.Positions.human),
                 index.indexUntilIn(true), // Stops when cancelled
                 shooter.eject() // Stops when cancelled
             ),
             new ParallelCommandGroup(
-                pivot.goToAngle(Pivot.Positions.transit)
-                //index.indexUntilReady(false)
+                pivot.goToAngle(Pivot.Positions.transit),
+                index.indexUntilReady(false)
             )
         ).withName("Human Intake");
     }
@@ -97,7 +96,7 @@ public class ComposedCommands {
 
     public Command ampMode(){
         return new ParallelCommandGroup(
-            leds.shooterStatus(),
+            //leds.shooterStatus(),
             pivot.goToAngle(Pivot.Positions.amp),
             shooter.ampShoot() // Stops when cancelled
         ).withName("Amp Mode");
@@ -106,7 +105,7 @@ public class ComposedCommands {
     /* START SHOOTER */
     public Command startShooter(){
         return new ParallelCommandGroup(
-            leds.shooterStatus(),
+            //leds.shooterStatus(),
             shooter.shootAvgSpeed()
         );
     }

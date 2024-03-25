@@ -61,10 +61,10 @@ public class RobotContainer {
     public static final Shooter s_Shooter = new Shooter();
     public static final Climb s_Climb = new Climb();
     public static final Limelight s_LL = new Limelight();
-    public static final LEDs s_LED = new LEDs();
+    //public static final LEDs s_LED = new LEDs();
 
     /* Commands */
-   public static final ComposedCommands commands = new ComposedCommands(specialist, s_Intake, s_Index, s_Shooter, s_Pivot, s_LL, s_Swerve, s_LED);
+   public static final ComposedCommands commands = new ComposedCommands(specialist, s_Intake, s_Index, s_Shooter, s_Pivot, s_LL, s_Swerve);
 
     // Auto Chooser
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -91,8 +91,8 @@ public class RobotContainer {
         setupAutoOptions();
 
         // LED Status Effects
-        s_LED.clear();
-        CommandScheduler.getInstance().schedule(s_LED.noteStoredConditional());
+        //s_LED.clear();
+        //CommandScheduler.getInstance().schedule(s_LED.noteStoredConditional());
     }
 
     private void setupAutoOptions(){
