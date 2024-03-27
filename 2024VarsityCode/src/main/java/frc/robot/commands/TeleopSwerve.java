@@ -48,7 +48,7 @@ public class TeleopSwerve extends Command{
         rAxis *= slowdown;
 
         /* Slowdown from Pivot */
-        if(RobotContainer.s_Pivot.getAngle() > 65){
+        if(RobotContainer.s_Pivot.getAngle() > 65 && RobotContainer.s_Pivot.getAngle() < 350){
             yAxis *= 0.5;
             xAxis *= 0.5;
             rAxis *= 0.5;

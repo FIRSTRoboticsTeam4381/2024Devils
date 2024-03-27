@@ -43,10 +43,12 @@ public class ManualClimb extends Command {
     }
     */
 
+    /*
     if(climb.getBasePosition()<=0.0 && climbInput<0.0)
     {
       climbInput = 0;
     }
+    */
 
     climb.setBasePercOutput(climbInput*0.5);
   }

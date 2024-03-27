@@ -32,7 +32,7 @@ public class Pivot extends SubsystemBase {
   private SparkPIDController pivotController;
 
   public class Positions{
-    public static final double intake = 85;
+    public static final double intake = 40;
     public static final double human = 115;
     public static final double amp = 90;
     public static final double transit = 10;
@@ -48,8 +48,8 @@ public class Pivot extends SubsystemBase {
     rightPivot = new CANSparkMax(Constants.Pivot.rightPivotCAN, MotorType.kBrushless);
     leftPivot = new CANSparkMax(Constants.Pivot.leftPivotCAN, MotorType.kBrushless);
 
-    rightPivot.setInverted(true);
-    leftPivot.follow(rightPivot, true);
+    leftPivot.setInverted(true);
+    rightPivot.follow(leftPivot, true);
     
     rightPivot.setIdleMode(IdleMode.kBrake);
     leftPivot.setIdleMode(IdleMode.kBrake);
@@ -57,16 +57,16 @@ public class Pivot extends SubsystemBase {
     rightPivot.setSmartCurrentLimit(60);
     leftPivot.setSmartCurrentLimit(60);
 
-    SparkUtilities.optimizeFrames(rightPivot, true, false, true, false, false, true);
-    SparkUtilities.optimizeFrames(leftPivot, false, false, true, false, false, true);
+    SparkUtilities.optimizeFrames(rightPivot, false, false, true, false, false, false);
+    SparkUtilities.optimizeFrames(leftPivot, true, false, true, false, false, true);
 
     // Encoder Setup
-    angleEncoder = rightPivot.getAbsoluteEncoder(Type.kDutyCycle); // TODO confirm motor that encoder is plugged in
+    angleEncoder = leftPivot.getAbsoluteEncoder(Type.kDutyCycle); // TODO confirm motor that encoder is plugged in
     //angleEncoder.setPositionConversionFactor(360);
 
     // PID Setup
     // TODO retune for new pivot
-    pivotController = rightPivot.getPIDController();
+    pivotController = leftPivot.getPIDController();
     pivotController.setFeedbackDevice(angleEncoder);
     pivotController.setOutputRange(-1, 1);
     pivotController.setPositionPIDWrappingEnabled(true);
@@ -102,7 +102,7 @@ public class Pivot extends SubsystemBase {
     double pos = getAngle();
     double var = 2.5;
     double power = Math.sqrt(1+(var*var) / 1+(var*var)*Math.pow(Math.sin(Math.PI/110*pos),2)) * Math.sin(Math.PI/110 * pos);
-    rightPivot.set(speed*power);
+    leftPivot.set(speed/**power*/);
   }
 
   /**
@@ -123,7 +123,7 @@ public class Pivot extends SubsystemBase {
    * @return
    */
   public Command goToAngle(double angle){
-    return new SparkPosition(rightPivot, angle, 1, 0.5, this, this::getAngle);
+    return new SparkPosition(leftPivot, angle, 1, 0.5, this, this::getAngle);
   }
 
   /**

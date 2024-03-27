@@ -33,13 +33,13 @@ public class ManualPivot extends Command {
   public void execute() {
     double axis = joystick.get();
     axis = Math.abs(axis)<Constants.stickDeadband ? 0.0 : axis;
-    axis *= -0.4;
+    axis *= -0.7;
 
     SmartDashboard.putNumber("Pivot Axis", axis);
 
     // Manual pivot limits
-    if(axis>0.0 && (pivot.getAngle()>115&&pivot.getAngle()<330)) {axis = 0.0;}
-    if(axis<0.0 && (pivot.getAngle()<=6||pivot.getAngle()>330)) {axis = 0.0;}
+    if(axis>0.0 && (pivot.getAngle()>100&&pivot.getAngle()<330)) {axis = 0.0;}
+    if(axis<0.0 && (pivot.getAngle()<=2||pivot.getAngle()>330)) {axis = 0.0;}
 
     pivot.manualControl(axis+basicFeedforward());
   }

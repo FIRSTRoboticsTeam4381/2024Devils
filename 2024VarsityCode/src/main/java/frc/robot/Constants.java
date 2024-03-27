@@ -34,8 +34,8 @@ public final class Constants {
 
     public static final class Index{
         public static final int indexCAN = 47;
-        public static final int indexDIO1 = 0;
-        public static final int indexDIO2 = 1;
+        public static final int indexDIO1 = 9;
+        public static final int indexDIO2 = 8;
     }
 
     public static final class Pivot{
@@ -46,13 +46,11 @@ public final class Constants {
     public static final class Shooter{
         public static final int propCAN = 48;
         public static final int topCAN = 49;
-        public static final int bottomCAN = 50;
     }
 
     public static final class Climb{
         public static final int rightClimbCAN = 53;
         public static final int leftClimbCAN = 54; 
-        public static final int midClimbCAN = 55;
     }
 
     public static final class Swerve{

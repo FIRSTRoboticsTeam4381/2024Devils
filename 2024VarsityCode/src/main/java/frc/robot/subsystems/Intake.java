@@ -35,6 +35,8 @@ public class Intake extends SubsystemBase {
     intake.setSmartCurrentLimit(50);
     helper.setSmartCurrentLimit(30);
 
+    helper.setInverted(false);
+
     //helper.follow(intake);
 
     SparkUtilities.optimizeFrames(intake, false, false, false, false, false, false);
@@ -46,7 +48,7 @@ public class Intake extends SubsystemBase {
 
   private void setPercOutput(double speed){
     intake.set(-speed);
-    helper.set(-speed*0.25);
+    helper.set(-speed*0.5);
   }
 
 

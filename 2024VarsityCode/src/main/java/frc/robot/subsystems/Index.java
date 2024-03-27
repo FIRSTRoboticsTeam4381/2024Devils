@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,7 +23,7 @@ public class Index extends SubsystemBase {
   /* ATTRIBUTES */
 
   private CANSparkMax indexMotor;
-  private DigitalInput[] eyes = new DigitalInput[2];
+  private DigitalInput[] eyes;
 
   public static final double INDEX_SPEED = 0.4;
 
@@ -31,8 +32,15 @@ public class Index extends SubsystemBase {
 
   /** Creates a new Index. */
   public Index() {
+    eyes = new DigitalInput[2];
     eyes[0] = new DigitalInput(Constants.Index.indexDIO1);
     eyes[1] = new DigitalInput(Constants.Index.indexDIO2);
+    //DigitalOutput eye1 = new DigitalOutput(0);
+    //DigitalOutput eye2 = new DigitalOutput(8);
+    //eye1.set(true);
+    //eye2.set(true);
+    //eye1.close();
+    //eye2.close();
     indexMotor = new CANSparkMax(Constants.Index.indexCAN, MotorType.kBrushless);
     indexMotor.setSmartCurrentLimit(50);
 
@@ -122,7 +130,7 @@ public class Index extends SubsystemBase {
       ()->setPercOutput(INDEX_SPEED*(reversed?-1:1)),
       ()->{},
       (interrupted)->setPercOutput(0.0),
-      ()->{return getEye(0);},
+      ()->{return reversed?getEye(0):getEye(0)||getEye(1);},
       this
     ).withName("IndexUntilIn");
   }

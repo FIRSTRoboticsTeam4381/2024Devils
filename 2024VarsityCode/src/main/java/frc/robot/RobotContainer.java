@@ -4,9 +4,6 @@
 package frc.robot;
 
 import frc.lib.util.LogOrDash;
-import frc.lib.util.LEDs.ConditionalColorEffect;
-import frc.lib.util.LEDs.LightingEffect;
-import frc.lib.util.LEDs.LightingEffect.Type;
 import frc.robot.autos.Autos;
 import frc.robot.commands.AutoRotatingSwerve;
 import frc.robot.commands.ComposedCommands;
@@ -14,7 +11,6 @@ import frc.robot.commands.ManualClimb;
 import frc.robot.commands.ManualPivot;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Pivot;
@@ -32,13 +28,10 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 // TODO climb positions for auto climbing
 // TODO flip pivot encoder
