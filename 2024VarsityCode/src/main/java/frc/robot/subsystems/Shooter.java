@@ -157,13 +157,13 @@ public class Shooter extends SubsystemBase {
    * until the command is interrupted. Has no natural end case, so must be interrupted
    * @return
    */
-  public Command shootAvgSpeed(){
+  public Command shoot(double rpm){
     return new FunctionalCommand(
-      () -> setVelocity(avgRPM, false), 
+      () -> setVelocity(rpm, false), 
       () -> {}, 
       interrupted->setPercOutput(0.0, false), 
       ()->{return false;}, 
-      this).withName("Holding Velocity "+avgRPM);
+      this).withName("Holding Velocity "+rpm);
   }
 
   /**

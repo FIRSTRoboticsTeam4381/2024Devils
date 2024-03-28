@@ -123,7 +123,7 @@ public class ComposedCommands {
     public Command startShooter(){
         return new ParallelCommandGroup(
             //leds.shooterStatus(),
-            shooter.shootAvgSpeed()
+            shooter.shoot(5000)
         );
     }
 
