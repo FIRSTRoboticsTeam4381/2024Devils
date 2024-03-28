@@ -8,16 +8,18 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.lib.util.Controls.JoystickLimiter;
 import frc.robot.Constants;
 import frc.robot.subsystems.Pivot;
 
 public class ManualPivot extends Command {
-  private Supplier<Double> joystick;
+  //private Supplier<Double> joystick;
+  private JoystickLimiter joystick;
   private Pivot pivot;
 
   /** Creates a new JoystickControl. */
   public ManualPivot(Supplier<Double> joystickAxis, Pivot pivot) {
-    this.joystick = joystickAxis;
+    joystick = new JoystickLimiter(joystickAxis, 0.1);
     this.pivot = pivot;
     
     // Use addRequirements() here to declare subsystem dependencies.
@@ -33,7 +35,7 @@ public class ManualPivot extends Command {
   public void execute() {
     double axis = joystick.get();
     axis = Math.abs(axis)<Constants.stickDeadband ? 0.0 : axis;
-    axis *= -0.7;
+    axis *= 0.7;
 
     SmartDashboard.putNumber("Pivot Axis", axis);
 

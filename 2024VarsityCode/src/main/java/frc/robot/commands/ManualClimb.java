@@ -4,18 +4,21 @@
 
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import frc.lib.util.Controls.JoystickLimiter;
 import frc.robot.Constants;
 import frc.robot.subsystems.Climb;
 
 public class ManualClimb extends Command {
-  private CommandPS4Controller controller;
+  private JoystickLimiter joystick;
   private Climb climb;
 
   /** Creates a new ManualClimb. */
-  public ManualClimb(CommandPS4Controller specialsController, Climb climb) {
-    controller = specialsController;
+  public ManualClimb(Supplier<Double> joystickAxis, Climb climb) {
+    joystick = new JoystickLimiter(joystickAxis, 0.1);
     this.climb = climb;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -29,7 +32,7 @@ public class ManualClimb extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double climbInput = -controller.getRightY();
+    double climbInput = joystick.get();
 
     // Deadbands
     climbInput = Math.abs(climbInput)<Constants.stickDeadband?0.0:climbInput;
