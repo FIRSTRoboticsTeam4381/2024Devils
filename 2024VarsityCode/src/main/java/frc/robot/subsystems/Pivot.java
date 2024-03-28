@@ -75,13 +75,13 @@ public class Pivot extends SubsystemBase {
     // Slot 0 = Regular Movement
     pivotController.setP(0.01, 0);
     pivotController.setI(0.0, 0);
-    pivotController.setD(0.002, 0);
-    pivotController.setFF(0.0005, 0);
+    pivotController.setD(0.04, 0);
+    pivotController.setFF(0.0, 0);
     // Slot 1 = Auto Aiming - More aggressive and more precise
-    pivotController.setP(0.015, 1);
+    pivotController.setP(0.03, 1);
     pivotController.setI(0.0, 1);
-    pivotController.setD(0.008, 1);
-    pivotController.setFF(0.0005, 1);
+    pivotController.setD(0.006, 1);
+    pivotController.setFF(0.0, 1);
   }
 
 
@@ -123,7 +123,7 @@ public class Pivot extends SubsystemBase {
    * @return
    */
   public Command goToAngle(double angle){
-    return new SparkPosition(leftPivot, angle, 1, 0.5, this, this::getAngle);
+    return new SparkPosition(leftPivot, angle, 0, 0.5, this, this::getAngle);
   }
 
   /**

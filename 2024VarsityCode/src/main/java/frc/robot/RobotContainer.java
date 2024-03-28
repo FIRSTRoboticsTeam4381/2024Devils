@@ -66,6 +66,7 @@ public class RobotContainer {
     public RobotContainer(){
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true).withName("Teleop"));
         s_Pivot.setDefaultCommand(new ManualPivot(specialist::getLeftY, s_Pivot).withName("Manual Pivot"));
+        s_Climb.setDefaultCommand(new ManualClimb(specialist, s_Climb));
 
         SmartDashboard.putData("PDP", new PowerDistribution());
         SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
@@ -131,7 +132,7 @@ public class RobotContainer {
         specialist.circle().whileTrue(commands.ejectNote());
         specialist.triangle().whileTrue(commands.autoAim());
 
-        specialist.povRight().onTrue(commands.ampMode());
+        specialist.povRight().toggleOnTrue(commands.ampMode());
         specialist.povDown().whileTrue(new InstantCommand(()->s_Shooter.setCurrentLimit(80,80))
                                         .andThen(commands.reverseAmp()))
                             .onFalse(new InstantCommand(()->s_Shooter.setCurrentLimit(60, 60)));
@@ -139,7 +140,6 @@ public class RobotContainer {
         specialist.povUp().onTrue(s_Pivot.goToAngle(90));
 
         specialist.L1().toggleOnTrue(commands.startShooter());
-        specialist.PS().toggleOnTrue(new ManualClimb(specialist, s_Climb));
 
         driver.touchpad().or(specialist.touchpad()).onTrue(commands.cancelAll());
     }

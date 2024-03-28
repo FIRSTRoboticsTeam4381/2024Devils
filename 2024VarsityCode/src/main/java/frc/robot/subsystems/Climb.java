@@ -34,6 +34,7 @@ public class Climb extends SubsystemBase {
     rightMotor = new CANSparkMax(Constants.Climb.rightClimbCAN, MotorType.kBrushless);
     leftMotor = new CANSparkMax(Constants.Climb.leftClimbCAN, MotorType.kBrushless);
 
+    rightMotor.setInverted(false);
     leftMotor.follow(rightMotor, true);
 
     SparkUtilities.optimizeFrames(rightMotor, true, false, true, false, false, false);

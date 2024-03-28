@@ -42,7 +42,7 @@ public class ComposedCommands {
 
 
     /* INTAKE */
-
+/*
     public Command groundIntake(Command handoff){
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
@@ -53,11 +53,28 @@ public class ComposedCommands {
                     index.indexUntilIn(false)
                 )
             ), // At this point, we have a note
-            new ParallelCommandGroup(
+            new ParallelRaceGroup(
+                intake.run(),
                 handoff, // Hand off to something else to get pivot moving early
                 index.indexUntilReady(false) // Keep index running until note is all the way in
             )
         ).withName("Ground Intake");
+    }
+    */
+    public Command groundIntake(Command handoff){
+        return new ParallelRaceGroup(
+            intake.run(),
+            new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                    index.indexUntilIn(false),
+                    pivot.goToAngle(Pivot.Positions.intake)
+                ),
+                new ParallelRaceGroup(
+                    index.indexUntilReady(false),
+                    handoff
+                )
+            )
+        );
     }
 
     public Command humanIntake(){
@@ -128,7 +145,7 @@ public class ComposedCommands {
     /* TOGGLE AUTO AIMING */
     public Command autoAim(){
         return new SequentialCommandGroup(
-            new AutoPivot(pivot, ll, swerve)
+            new AutoShooter(pivot, shooter, ll, swerve)
         ).withName("Auto Aim");
     }
 }

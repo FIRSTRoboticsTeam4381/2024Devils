@@ -33,7 +33,7 @@ public class Shooter extends SubsystemBase {
   private SparkPIDController topController;
 
   public static final double maxRPM = 6500;
-  public static final double avgRPM = 5600;
+  public static final double avgRPM = 6100;
 
   private double setpoint = 0.0;
 
@@ -96,7 +96,7 @@ public class Shooter extends SubsystemBase {
    * @param speed Speed (-1.0 - 1.0) to output to the motors
    * @param deflect Whether the top motor should be flipped so as to allow the note to be deflected through the top
    */
-  private void setPercOutput(double speed, boolean deflect){
+  public void setPercOutput(double speed, boolean deflect){
     setpoint = speed*maxRPM;
     propMotor.set(speed);
     topMotor.set(speed * (deflect?-1:1));

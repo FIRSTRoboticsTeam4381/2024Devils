@@ -34,23 +34,12 @@ public class ManualClimb extends Command {
     // Deadbands
     climbInput = Math.abs(climbInput)<Constants.stickDeadband?0.0:climbInput;
 
-    /*
-    // Disable Control if pivot is too low
-    if(pivot.getAngle()<60){
-      positiveJointInput = 0.0;
-      negativeJointInput = 0.0;
-      climbInput = 0.0;
-    }
-    */
-
-    /*
-    if(climb.getBasePosition()<=0.0 && climbInput<0.0)
+    if(climb.getBasePosition()<=3.0 && climbInput<0.0)
     {
       climbInput = 0;
     }
-    */
 
-    climb.setBasePercOutput(climbInput*0.5);
+    climb.setBasePercOutput(climbInput*0.75);
   }
 
   // Called once the command ends or is interrupted.
