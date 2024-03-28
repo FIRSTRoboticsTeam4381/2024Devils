@@ -64,7 +64,7 @@ public class Limelight extends SubsystemBase{
         return estimatedPosition;
       }
       public double predictFuturePosition(){
-        final double lengthOfTime = 525;
+        final double lengthOfTime = 500;
         double predictedTravel = getTargetRelativeVelocity() * (lengthOfTime/1000.0);
         double predictedPosition = estimateDistance() - predictedTravel;
         return predictedPosition;

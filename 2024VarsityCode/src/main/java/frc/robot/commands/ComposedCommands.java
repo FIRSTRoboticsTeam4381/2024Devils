@@ -65,7 +65,7 @@ public class ComposedCommands {
         return new ParallelRaceGroup(
             intake.run(),
             new SequentialCommandGroup(
-                new ParallelCommandGroup(
+                new ParallelRaceGroup(
                     index.indexUntilIn(false),
                     pivot.goToAngle(Pivot.Positions.intake)
                 ),

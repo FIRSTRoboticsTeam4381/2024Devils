@@ -78,7 +78,7 @@ public class Pivot extends SubsystemBase {
     pivotController.setD(0.04, 0);
     pivotController.setFF(0.0, 0);
     // Slot 1 = Auto Aiming - More aggressive and more precise
-    pivotController.setP(0.03, 1);
+    pivotController.setP(0.027, 1);
     pivotController.setI(0.0, 1);
     pivotController.setD(0.006, 1);
     pivotController.setFF(0.0, 1);
