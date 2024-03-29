@@ -128,20 +128,20 @@ public class RobotContainer {
         driver.L1().onTrue(s_Swerve.nitro());
         driver.cross().onTrue(new InstantCommand(()->s_Swerve.setBrakeMode(true))).onFalse(new InstantCommand(()->s_Swerve.setBrakeMode(false)));
 
-        specialist.square().toggleOnTrue(commands.subwooferMode());
+        specialist.square().onTrue(commands.subwooferMode());
         specialist.cross().toggleOnTrue(commands.groundIntake(new ManualPivot(specialist::getLeftY, s_Pivot)));
         specialist.circle().whileTrue(commands.ejectNote());
         specialist.triangle().whileTrue(commands.autoAim());
 
-        specialist.povRight().toggleOnTrue(commands.ampMode());
+        specialist.povRight().onTrue(commands.ampMode());
         specialist.povDown().whileTrue(new InstantCommand(()->s_Shooter.setCurrentLimit(80,80))
                                         .andThen(commands.reverseAmp()))
                             .onFalse(new InstantCommand(()->s_Shooter.setCurrentLimit(60, 60)));
         specialist.povLeft().toggleOnTrue(s_Shooter.ampShoot());
-        specialist.povUp().toggleOnTrue(commands.podiumMode());
+        specialist.povUp().onTrue(commands.podiumMode());
 
         specialist.L1().toggleOnTrue(commands.startShooter());
-        specialist.PS().toggleOnTrue(commands.allianceLineMode());
+        specialist.PS().onTrue(commands.allianceLineMode());
 
         driver.touchpad().or(specialist.touchpad()).onTrue(commands.cancelAll());
     }
