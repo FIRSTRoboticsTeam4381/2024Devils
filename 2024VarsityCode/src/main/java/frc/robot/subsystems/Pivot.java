@@ -54,8 +54,8 @@ public class Pivot extends SubsystemBase {
     rightPivot.setIdleMode(IdleMode.kBrake);
     leftPivot.setIdleMode(IdleMode.kBrake);
 
-    rightPivot.setSmartCurrentLimit(60);
-    leftPivot.setSmartCurrentLimit(60);
+    rightPivot.setSmartCurrentLimit(80);
+    leftPivot.setSmartCurrentLimit(80);
 
     SparkUtilities.optimizeFrames(rightPivot, false, false, true, false, false, false);
     SparkUtilities.optimizeFrames(leftPivot, true, false, true, false, false, true);
@@ -122,8 +122,8 @@ public class Pivot extends SubsystemBase {
    * @param angle Angle to travel to
    * @return
    */
-  public Command goToAngle(double angle){
-    return new SparkPosition(leftPivot, angle, 0, 0.5, this, this::getAngle);
+  public Command goToAngle(double angle, int slot){
+    return new SparkPosition(leftPivot, angle, slot, 0.5, this, this::getAngle);
   }
 
   /**

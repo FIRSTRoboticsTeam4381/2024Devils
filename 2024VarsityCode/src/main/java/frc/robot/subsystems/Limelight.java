@@ -169,7 +169,10 @@ public class Limelight extends SubsystemBase{
         SmartDashboard.putNumber("limelight/goalDistance (Meters)", distanceFromGoal());
         SmartDashboard.putNumber("limelight/goalDistance (Feet)", distanceFromGoal()*3.281);
         SmartDashboard.putNumber("limelight/targetXOffset", targetXOffset());
-        SmartDashboard.putNumber("limelight/Calculated Angle", currentAngle);
+        SmartDashboard.putNumber("limelight/Estimate Error", estimateError());
+        SmartDashboard.putNumber("limelight/Estimated Distance", estimateDistance());
+        SmartDashboard.putNumber("limelight/Predicted Position", predictFuturePosition());
+        //SmartDashboard.putNumber("limelight/Calculated Angle", currentAngle);
     }
 
     private boolean validateInput(int in, int... validRange){

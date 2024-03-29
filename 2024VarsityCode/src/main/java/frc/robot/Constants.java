@@ -60,7 +60,7 @@ public final class Constants {
         /* Drivetrain Constants */
         public static final double trackWidth = Units.inchesToMeters(21.25);
         public static final double wheelBase = Units.inchesToMeters(21.25);
-        public static final double wheelDiameter = Units.inchesToMeters(3.86);
+        public static final double wheelDiameter = Units.inchesToMeters(3.83);
         public static final double wheelCircumference = wheelDiameter * Math.PI;
 
         public static final double openLoopRamp = 0.25;
@@ -78,7 +78,7 @@ public final class Constants {
         // TODO check - auto - PIDs need to be configured
         public static final HolonomicPathFollowerConfig holonomicConfig = new HolonomicPathFollowerConfig(
             new PIDConstants(5.0, 0.0, 0.0), // TODO Translation PID constants
-            new PIDConstants(3, 0.0, 0.0), // TODO Rotation PID constants
+            new PIDConstants(5.0, 0.0, 0.0), // TODO Rotation PID constants
             5.95,
             0.382,
             new ReplanningConfig() // Default path replanning config. See the API for the options here

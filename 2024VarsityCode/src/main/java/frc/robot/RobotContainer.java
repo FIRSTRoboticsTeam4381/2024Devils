@@ -100,6 +100,7 @@ public class RobotContainer {
         m_AutoChooser.addOption("Start3Middle", Autos.start3Middle());
         m_AutoChooser.addOption("Start4ThreePiece", Autos.start4ThreePiece());
         m_AutoChooser.addOption("Start1ThreePiece", Autos.start1ThreePiece());
+        m_AutoChooser.addOption("Start3ThreePiece", Autos.start3ThreePiece());
         //m_AutoChooser.addOption("SysId Quas Fwd", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
         //m_AutoChooser.addOption("SysId Quas Rev", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse));
         //m_AutoChooser.addOption("SysId Dyna Fwd", s_Swerve.sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
@@ -127,7 +128,7 @@ public class RobotContainer {
         driver.L1().onTrue(s_Swerve.nitro());
         driver.cross().onTrue(new InstantCommand(()->s_Swerve.setBrakeMode(true))).onFalse(new InstantCommand(()->s_Swerve.setBrakeMode(false)));
 
-        specialist.square().toggleOnTrue(commands.humanIntake());
+        specialist.square().toggleOnTrue(commands.subwooferMode());
         specialist.cross().toggleOnTrue(commands.groundIntake(new ManualPivot(specialist::getLeftY, s_Pivot)));
         specialist.circle().whileTrue(commands.ejectNote());
         specialist.triangle().whileTrue(commands.autoAim());
@@ -137,9 +138,10 @@ public class RobotContainer {
                                         .andThen(commands.reverseAmp()))
                             .onFalse(new InstantCommand(()->s_Shooter.setCurrentLimit(60, 60)));
         specialist.povLeft().toggleOnTrue(s_Shooter.ampShoot());
-        specialist.povUp().onTrue(s_Pivot.goToAngle(90));
+        specialist.povUp().toggleOnTrue(commands.podiumMode());
 
         specialist.L1().toggleOnTrue(commands.startShooter());
+        specialist.PS().toggleOnTrue(commands.allianceLineMode());
 
         driver.touchpad().or(specialist.touchpad()).onTrue(commands.cancelAll());
     }
@@ -150,7 +152,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("ShooterSpinUp", s_Shooter.instantSetVelocityReference(Shooter.avgRPM, false));
         NamedCommands.registerCommand("AutoAim", commands.autoAim());
         NamedCommands.registerCommand("Shoot", s_Index.run());
-        NamedCommands.registerCommand("LowerPivot", s_Pivot.goToAngle(25.0));
+        NamedCommands.registerCommand("LowerPivot", s_Pivot.goToAngle(0, 1));
     }
 
     private void configMotorSettingButtons(){

@@ -67,7 +67,7 @@ public class ComposedCommands {
             new SequentialCommandGroup(
                 new ParallelRaceGroup(
                     index.indexUntilIn(false),
-                    pivot.goToAngle(Pivot.Positions.intake)
+                    pivot.goToAngle(Pivot.Positions.intake, 0)
                 ),
                 new ParallelRaceGroup(
                     index.indexUntilReady(false),
@@ -81,12 +81,12 @@ public class ComposedCommands {
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
                 //leds.intakeWaiting(),
-                pivot.goToAngle(Pivot.Positions.human),
+                pivot.goToAngle(Pivot.Positions.human, 0),
                 index.indexUntilIn(true), // Stops when cancelled
                 shooter.eject() // Stops when cancelled
             ),
             new ParallelCommandGroup(
-                pivot.goToAngle(Pivot.Positions.transit),
+                pivot.goToAngle(Pivot.Positions.transit, 0),
                 index.indexUntilReady(false)
             )
         ).withName("Human Intake");
@@ -114,10 +114,32 @@ public class ComposedCommands {
     public Command ampMode(){
         return new ParallelCommandGroup(
             //leds.shooterStatus(),
-            pivot.goToAngle(Pivot.Positions.amp),
+            pivot.goToAngle(Pivot.Positions.amp, 0),
             shooter.ampShoot() // Stops when cancelled
         ).withName("Amp Mode");
     }
+
+    /* PODIUM MODE */
+
+    public Command podiumMode(){
+        return new ParallelCommandGroup(
+            pivot.goToAngle(32, 1),
+            shooter.shoot(4670)
+        ).withName("Podium Mode");
+    }
+    public Command subwooferMode(){
+        return new ParallelCommandGroup(
+            pivot.goToAngle(46.5, 1),
+            shooter.shoot(4000)
+        ).withName("Subwoofer Mode");
+    }
+    public Command allianceLineMode(){
+        return new ParallelCommandGroup(
+            pivot.goToAngle(35,1),
+            shooter.shoot(4475)
+        ).withName("Alliance Line Mode");
+    }
+    
 
     /* START SHOOTER */
     public Command startShooter(){
