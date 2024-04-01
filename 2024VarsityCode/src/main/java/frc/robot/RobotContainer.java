@@ -137,7 +137,7 @@ public class RobotContainer {
         specialist.povDown().whileTrue(new InstantCommand(()->s_Shooter.setCurrentLimit(80,80))
                                         .andThen(commands.reverseAmp()))
                             .onFalse(new InstantCommand(()->s_Shooter.setCurrentLimit(60, 60)));
-        specialist.povLeft().toggleOnTrue(s_Shooter.ampShoot());
+        specialist.povLeft().toggleOnTrue(s_Shooter.trapShoot());
         specialist.povUp().onTrue(commands.podiumMode());
 
         specialist.L1().toggleOnTrue(commands.startShooter());

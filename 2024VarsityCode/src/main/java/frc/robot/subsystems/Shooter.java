@@ -185,6 +185,15 @@ public class Shooter extends SubsystemBase {
       this
     ).withName("Amp Deflect");
   }
+  public Command trapShoot(){
+    return new FunctionalCommand(
+      ()->setTrapVelocity(),
+      ()->{},
+      (interrupted)->setPercOutput(0, false),
+      ()->{return false;},
+      this
+    ).withName("Amp Deflect");
+  }
 
   /**
    * Spins shooter motors in reverse to assist in ejecting or to intake a note through the front. Uses a PID.
