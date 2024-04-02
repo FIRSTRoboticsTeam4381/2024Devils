@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 2.6603258931025917,
-        "y": 6.887585009517068
+        "x": 2.9535367487282747,
+        "y": 6.9328152351026535
       },
       "prevControl": {
-        "x": 2.545627047498412,
-        "y": 6.658187318308708
+        "x": 2.838837903124095,
+        "y": 6.703417543894294
       },
       "nextControl": {
-        "x": 2.6750115754256556,
-        "y": 6.916956374163195
+        "x": 2.9682224310513385,
+        "y": 6.962186599748781
       },
       "isLocked": false,
       "linkedName": null
@@ -89,7 +89,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 1.9,
+      "waypointRelativePos": 1.75,
       "command": {
         "type": "parallel",
         "data": {
@@ -117,7 +117,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Experiment4",
+  "folder": "Start2SixPiece",
   "previewStartingState": {
     "rotation": 0.0,
     "velocity": 0

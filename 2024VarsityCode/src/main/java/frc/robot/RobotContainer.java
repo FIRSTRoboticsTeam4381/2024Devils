@@ -6,6 +6,7 @@ package frc.robot;
 import frc.lib.util.LogOrDash;
 import frc.robot.autos.Autos;
 import frc.robot.commands.AutoRotatingSwerve;
+import frc.robot.commands.AutoShooter;
 import frc.robot.commands.ComposedCommands;
 import frc.robot.commands.ManualClimb;
 import frc.robot.commands.ManualPivot;
@@ -103,7 +104,7 @@ public class RobotContainer {
         m_AutoChooser.addOption("Experiment1", Autos.experiment1());
         m_AutoChooser.addOption("Experiment2", Autos.experiment2());
         m_AutoChooser.addOption("Experiment3", Autos.experiment3());
-        m_AutoChooser.addOption("Experiment4", Autos.experiment4());
+        m_AutoChooser.addOption("Start2SixPiece", Autos.start2SixPiece());
         //m_AutoChooser.addOption("SysId Quas Fwd", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
         //m_AutoChooser.addOption("SysId Quas Rev", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse));
         //m_AutoChooser.addOption("SysId Dyna Fwd", s_Swerve.sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
@@ -134,7 +135,7 @@ public class RobotContainer {
         specialist.square().onTrue(commands.subwooferMode());
         specialist.cross().toggleOnTrue(commands.groundIntake(new ManualPivot(specialist::getLeftY, s_Pivot)));
         specialist.circle().whileTrue(commands.ejectNote());
-        specialist.triangle().whileTrue(commands.autoAim());
+        specialist.triangle().whileTrue(new AutoShooter(s_Pivot, s_Shooter, s_LL, s_Swerve, true));
 
         specialist.povRight().onTrue(commands.ampMode());
         specialist.povDown().whileTrue(new InstantCommand(()->s_Shooter.setCurrentLimit(80,80))
@@ -150,10 +151,10 @@ public class RobotContainer {
     }
 
     private void registerCommands(){
-        NamedCommands.registerCommand("Intake", commands.groundIntake(commands.autoAim()));
+        NamedCommands.registerCommand("Intake", commands.groundIntake(new AutoShooter(s_Pivot, s_Shooter, s_LL, s_Swerve, false)));
         NamedCommands.registerCommand("StopIntake", s_Intake.instantStop());
         NamedCommands.registerCommand("ShooterSpinUp", s_Shooter.instantSetVelocityReference(4000, false));
-        NamedCommands.registerCommand("AutoAim", commands.autoAim());
+        NamedCommands.registerCommand("AutoAim", new AutoShooter(s_Pivot, s_Shooter, s_LL, s_Swerve, false));
         NamedCommands.registerCommand("Shoot", s_Index.run());
         NamedCommands.registerCommand("LowerPivot", s_Pivot.goToAngle(0, 1));
     }

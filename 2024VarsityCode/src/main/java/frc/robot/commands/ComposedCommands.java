@@ -222,9 +222,9 @@ public class ComposedCommands {
     }
 
     /* TOGGLE AUTO AIMING */
-    public Command autoAim(){
+    public Command autoAim(boolean stopOnEnd){
         return new SequentialCommandGroup(
-            new AutoShooter(pivot, shooter, ll, swerve)
+            new AutoShooter(pivot, shooter, ll, swerve, stopOnEnd)
         ).withName("Auto Aim");
     }
 

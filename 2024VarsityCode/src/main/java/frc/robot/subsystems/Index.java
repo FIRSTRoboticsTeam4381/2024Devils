@@ -25,7 +25,7 @@ public class Index extends SubsystemBase {
   private CANSparkMax indexMotor;
   private DigitalInput[] eyes;
 
-  public static final double INDEX_SPEED = 0.5;
+  public static final double INDEX_SPEED = 0.6;
 
 
   /* CONSTRUCTORS */

@@ -16,15 +16,15 @@
     },
     {
       "anchor": {
-        "x": 3.152620970006561,
+        "x": 3.211175152735468,
         "y": 5.565873600441298
       },
       "prevControl": {
-        "x": 2.6084574823958957,
+        "x": 2.667011665124803,
         "y": 5.565873600441298
       },
       "nextControl": {
-        "x": 3.196678016975754,
+        "x": 3.255232199704661,
         "y": 5.565873600441298
       },
       "isLocked": false,
@@ -117,7 +117,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Experiment4",
+  "folder": "Start2SixPiece",
   "previewStartingState": {
     "rotation": -21.50143432404787,
     "velocity": 0

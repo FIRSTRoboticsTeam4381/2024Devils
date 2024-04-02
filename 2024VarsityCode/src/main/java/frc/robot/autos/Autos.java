@@ -50,8 +50,8 @@ public final class Autos {
     public static Command experiment3(){
         return new PathPlannerAuto("Experiment3");
     }
-    public static Command experiment4(){
-        return new PathPlannerAuto("Experiment4");
+    public static Command start2SixPiece(){
+        return new PathPlannerAuto("Start2SixPiece");
     }
 
     // TODO test of a single path
