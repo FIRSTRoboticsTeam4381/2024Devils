@@ -48,17 +48,15 @@ public class ComposedCommands {
 
     /* INTAKE */
     public Command groundIntake(Command handoff){
-        return new ParallelRaceGroup(
-            intake.run(),
-            new SequentialCommandGroup(
-                new ParallelRaceGroup(
-                    index.indexUntilIn(false),
-                    pivot.goToAngle(Pivot.Positions.intake, 0)
-                ),
-                new ParallelRaceGroup(
-                    index.indexUntilReady(false),
-                    handoff
-                )
+        return new SequentialCommandGroup(
+            new ParallelRaceGroup( // Just get the note into the index
+                intake.run(),
+                pivot.goToAngle(Pivot.Positions.intake, 1),
+                index.indexUntilIn(false)
+            ),
+            new ParallelRaceGroup( // Get note up to the shooter wheels
+                handoff,
+                index.indexUntilReady(false)
             )
         );
     }

@@ -124,7 +124,7 @@ public class Pivot extends SubsystemBase {
    * @return
    */
   public Command goToAngle(double angle, int slot){
-    return new SparkPosition(leftPivot, angle, slot, 0.5, this, this::getAngle);
+    return new SparkPosition(leftPivot, angle, slot, 1.0, this, this::getAngle);
   }
 
   /**
