@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
@@ -64,6 +65,15 @@ public class AutoRotatingSwerve extends Command{
         rotation = rotationController.calculate(s_Swerve.getYaw().getDegrees()-180, calcAngle()) * Constants.Swerve.maxAngularVelocity;
         //rotation = 0.0;
         s_Swerve.drive(translation, rotation, true, openLoop);
+    }
+
+    private void fieldSpeeds(){
+        Rotation2d rotation = s_Swerve.getYaw();
+        double robotY = s_Swerve.getRobotRelativeSpeeds().vxMetersPerSecond;
+        double robotX = s_Swerve.getRobotRelativeSpeeds().vyMetersPerSecond;
+
+        double fieldY = robotY*rotation.getCos() + robotX*rotation.getSin();
+        double fieldX = robotY*rotation.getSin() + robotX*rotation.getCos();
     }
 
     public double calcAngle(){

@@ -1,6 +1,8 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.Constants;
@@ -56,7 +58,21 @@ public class TeleopSwerve extends Command{
 
         /* Calculates inputs for swerve subsystem */
         translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);
+        SmartDashboard.putNumber("teleopSwerve/Controller yVel", translation.getX());
+        SmartDashboard.putNumber("teleopSwerve/Controller xVel", translation.getY());
+        fieldSpeeds();
         rotation = rAxis * Constants.Swerve.maxAngularVelocity;
         s_Swerve.drive(translation, rotation, controller.L1().getAsBoolean()?false:true, openLoop);
+    }
+
+    private void fieldSpeeds(){
+        Rotation2d rotation = s_Swerve.getYaw();
+        double robotY = s_Swerve.getRobotRelativeSpeeds().vxMetersPerSecond;
+        double robotX = s_Swerve.getRobotRelativeSpeeds().vyMetersPerSecond;
+
+        double fieldY = robotY*rotation.getCos() + robotX*rotation.getSin();
+        double fieldX = robotY*rotation.getSin() + robotX*rotation.getCos();
+        SmartDashboard.putNumber("teleopSwerve/Calculated yVel", fieldY);
+        SmartDashboard.putNumber("teleopSwerve/Calculated xVel", fieldX);
     }
 }

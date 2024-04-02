@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.63,
-        "y": 6.18
+        "x": 1.23,
+        "y": 4.34
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3652386446096694,
-        "y": 6.726042503963363
+        "x": 1.6470138128111684,
+        "y": 4.317590602980848
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.108714034959377,
-        "y": 7.25472706759367
+        "x": 2.542840434518079,
+        "y": 4.067934003488759
       },
       "prevControl": {
-        "x": 7.418486965775364,
-        "y": 7.107870244363029
+        "x": 1.9260417769493865,
+        "y": 4.067934003488759
       },
       "nextControl": {
-        "x": 8.411726173420352,
-        "y": 7.319197735351325
+        "x": 2.586897481487272,
+        "y": 4.067934003488759
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.64,
-        "y": 6.35890044588676
+        "x": 2.54,
+        "y": 4.949074942872605
       },
       "prevControl": {
-        "x": 5.742112975245627,
-        "y": 6.623242727701913
+        "x": 2.2903434005079104,
+        "y": 4.625989931765195
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,15 +47,15 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1,
-      "rotationDegrees": 8.365886124032471,
-      "rotateFast": false
+      "rotationDegrees": 0,
+      "rotateFast": true
     }
   ],
   "constraintZones": [],
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.55,
+      "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
         "data": {
@@ -72,7 +72,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 1.4,
+      "waypointRelativePos": 1.3,
       "command": {
         "type": "parallel",
         "data": {
@@ -89,7 +89,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 1.75,
+      "waypointRelativePos": 1.9,
       "command": {
         "type": "parallel",
         "data": {
@@ -107,20 +107,20 @@
   ],
   "globalConstraints": {
     "maxVelocity": 5.0,
-    "maxAcceleration": 2.5,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 120.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 8.365886124032572,
+    "rotation": -8.880659150520325,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Start1ThreePiece",
+  "folder": "Experiment3",
   "previewStartingState": {
-    "rotation": 15.722215540122233,
+    "rotation": -49.07616032022108,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

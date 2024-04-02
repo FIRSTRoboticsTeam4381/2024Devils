@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.091513737949015,
-        "y": 6.921104398556871
+        "x": 1.456099942611335,
+        "y": 7.328155479208991
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.051802334703099,
-        "y": 6.358984244359359
+        "x": 2.23,
+        "y": 6.5938713630557855
       },
       "prevControl": {
-        "x": 1.548236363234494,
-        "y": 6.651755158003897
+        "x": 1.8922293065695253,
+        "y": 6.755413868609491
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,8 +31,8 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.5,
-      "rotationDegrees": 48.17415333602155,
-      "rotateFast": false
+      "rotationDegrees": 41.96482042125569,
+      "rotateFast": true
     }
   ],
   "constraintZones": [],
@@ -44,12 +44,6 @@
         "type": "parallel",
         "data": {
           "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "ShooterSpinUp"
-              }
-            },
             {
               "type": "named",
               "data": {
@@ -79,14 +73,14 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 0.75,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 1.15,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 120.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 23.459024081461568,
+    "rotation": 29.538782259558168,
     "rotateFast": false
   },
   "reversed": false,

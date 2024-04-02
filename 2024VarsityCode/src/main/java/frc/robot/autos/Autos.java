@@ -34,12 +34,24 @@ public final class Autos {
         return new PathPlannerAuto("Start4ThreePiece");
         //return Commands.none();
     }
-    public static Command start1ThreePiece(){
-        //return new PathPlannerAuto("Start1ThreePiece");
-        return Commands.none();
+    public static Command start1FourPiece(){
+        return new PathPlannerAuto("Start1FourPiece");
+        //return Commands.none();
     }
     public static Command start2FourPiece(){
         return new PathPlannerAuto("Start2FourPiece");
+    }
+    public static Command experiment1(){
+        return new PathPlannerAuto("Experiment1");
+    }
+    public static Command experiment2(){
+        return new PathPlannerAuto("Experiment2");
+    }
+    public static Command experiment3(){
+        return new PathPlannerAuto("Experiment3");
+    }
+    public static Command experiment4(){
+        return new PathPlannerAuto("Experiment4");
     }
 
     // TODO test of a single path
