@@ -54,7 +54,9 @@ public class Climb extends SubsystemBase {
     climbController.setOutputRange(-1, 1);
   }
 
-  public void setBasePercOutput(double speed){
+  public void manualControl(double speed){
+    if(getPosition()<=0 && speed < 0.0) {speed = 0;}
+    
     rightMotor.set(speed);
   }
 
@@ -62,7 +64,7 @@ public class Climb extends SubsystemBase {
     climbController.setReference(position, ControlType.kPosition);
   }
 
-  public double getBasePosition(){
+  public double getPosition(){
     return climbEncoder.getPosition();
   }
 

@@ -29,6 +29,8 @@ public class AutoShooter extends Command {
     this.swerve = swerve;
     this.shooter = shooter;
 
+    currentVelocity = shooter.getVelocity();
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(pivot, shooter);
   }

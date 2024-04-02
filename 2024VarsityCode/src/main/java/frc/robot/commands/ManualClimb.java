@@ -30,18 +30,10 @@ public class ManualClimb extends Command {
   @Override
   public void execute() {
     double climbInput = -controller.getRightY();
-
     // Deadbands
     climbInput = Math.abs(climbInput)<Constants.stickDeadband?0.0:climbInput;
 
-    /*
-    if(climb.getBasePosition()<=3.0 && climbInput<0.0)
-    {
-      climbInput = 0;
-    }
-    */
-
-    climb.setBasePercOutput(climbInput*0.75);
+    climb.manualControl(climbInput*0.75);
   }
 
   // Called once the command ends or is interrupted.
