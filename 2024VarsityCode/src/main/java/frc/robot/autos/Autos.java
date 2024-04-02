@@ -31,12 +31,15 @@ public final class Autos {
         return new PathPlannerAuto("Start3ThreePiece");
     }
     public static Command start4ThreePiece(){
-        //return new PathPlannerAuto("Start4ThreePiece");
-        return Commands.none();
+        return new PathPlannerAuto("Start4ThreePiece");
+        //return Commands.none();
     }
     public static Command start1ThreePiece(){
         //return new PathPlannerAuto("Start1ThreePiece");
         return Commands.none();
+    }
+    public static Command start2FourPiece(){
+        return new PathPlannerAuto("Start2FourPiece");
     }
 
     // TODO test of a single path

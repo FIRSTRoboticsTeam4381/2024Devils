@@ -41,7 +41,7 @@ public class AutoShooter extends Command {
     double llDistance = ll.distanceFromGoal();
     double predictedPosition = ll.predictFuturePosition();
     if(llDistance >= 0.3 && llDistance <= 9){ // Only take predicted position if it is a reasonable positive number. Prevents calculation of infinity.
-      double calculatedAngle = 51.16053558 * Math.pow(predictedPosition, -0.5133988343)+1; // r^2 = 0.995 // despite predicting, still won't move unless a target is in sight. prevents going crazy
+      double calculatedAngle = 51.16053558 * Math.pow(predictedPosition, -0.5133988343)+0.75; // r^2 = 0.995 // despite predicting, still won't move unless a target is in sight. prevents going crazy
       if(calculatedAngle <= 75){ // Only set current angle to the calculated angle if it was calculated to be less than 60
         currentAngle = calculatedAngle;
       }

@@ -4,10 +4,11 @@
   "holonomicMode": true,
   "pathFolders": [
     "FromAmp4Piece",
-    "Start3ThreePiece",
+    "Start2FourPiece",
     "Start1ThreePiece",
     "Start2ThreePiece",
     "Start3Middle",
+    "Start3ThreePiece",
     "Start4ThreePiece"
   ],
   "autoFolders": [],
