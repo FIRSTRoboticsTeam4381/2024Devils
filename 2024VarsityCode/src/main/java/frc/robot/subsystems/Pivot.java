@@ -32,7 +32,7 @@ public class Pivot extends SubsystemBase {
   private SparkPIDController pivotController;
 
   public class Positions{
-    public static final double intake = 45;
+    public static final double intake = 43;
     public static final double human = 115;
     public static final double amp = 90;
     public static final double transit = 10;
