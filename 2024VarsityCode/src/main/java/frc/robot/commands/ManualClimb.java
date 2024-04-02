@@ -37,10 +37,12 @@ public class ManualClimb extends Command {
     // Deadbands
     climbInput = Math.abs(climbInput)<Constants.stickDeadband?0.0:climbInput;
 
+    /*
     if(climb.getBasePosition()<=3.0 && climbInput<0.0)
     {
       climbInput = 0;
     }
+    */
 
     climb.setBasePercOutput(climbInput*0.75);
   }

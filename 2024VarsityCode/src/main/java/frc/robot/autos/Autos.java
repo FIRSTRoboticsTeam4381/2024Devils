@@ -20,20 +20,26 @@ public final class Autos {
         return Commands.none();
     }
     public static Command startAmp4Piece(){
-        //return new PathPlannerAuto("FromAmp");
-        return Commands.none();
+        return new PathPlannerAuto("FromAmp");
+        //return Commands.none();
     }
     public static Command start3Middle(){
-        //return new PathPlannerAuto("Start3Middle");
-        return Commands.none();
+        return new PathPlannerAuto("Start3Middle");
+        //return Commands.none();
+    }
+    public static Command start3ThreePiece(){
+        return new PathPlannerAuto("Start3ThreePiece");
     }
     public static Command start4ThreePiece(){
-        //return new PathPlannerAuto("Start4ThreePiece");
-        return Commands.none();
+        return new PathPlannerAuto("Start4ThreePiece");
+        //return Commands.none();
     }
     public static Command start1ThreePiece(){
         //return new PathPlannerAuto("Start1ThreePiece");
         return Commands.none();
+    }
+    public static Command start2FourPiece(){
+        return new PathPlannerAuto("Start2FourPiece");
     }
 
     // TODO test of a single path

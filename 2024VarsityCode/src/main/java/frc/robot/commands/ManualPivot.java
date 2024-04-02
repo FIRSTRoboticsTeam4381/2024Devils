@@ -40,8 +40,8 @@ public class ManualPivot extends Command {
     SmartDashboard.putNumber("Pivot Axis", axis);
 
     // Manual pivot limits
-    if(axis>0.0 && (pivot.getAngle()>100&&pivot.getAngle()<330)) {axis = 0.0;}
-    if(axis<0.0 && (pivot.getAngle()<=2||pivot.getAngle()>330)) {axis = 0.0;}
+    if(axis>0.0 && (pivot.getAngle()>95&&pivot.getAngle()<330)) {axis = 0.0;}
+    if(axis<0.0 && (pivot.getAngle()<=5||pivot.getAngle()>330)) {axis = 0.0;}
 
     pivot.manualControl(axis+basicFeedforward());
   }

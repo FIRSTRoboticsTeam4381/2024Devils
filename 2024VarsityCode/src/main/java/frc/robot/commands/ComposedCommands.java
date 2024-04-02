@@ -26,6 +26,7 @@ public class ComposedCommands {
     private Swerve swerve;
     //private LEDs leds;
     private CommandPS4Controller controller;
+    private State state = State.None;
 
     // TODO change pivot commands over to profiled motion once that's done
 
@@ -40,34 +41,19 @@ public class ComposedCommands {
         this.controller = controller;
     }
 
+    public Command setRobotState(State state){
+        return new InstantCommand(()->this.state=state);
+    }
+
 
     /* INTAKE */
-/*
-    public Command groundIntake(Command handoff){
-        return new SequentialCommandGroup(
-            new ParallelCommandGroup(
-                //leds.intakeWaiting(),
-                pivot.goToAngle(Pivot.Positions.intake),
-                new ParallelRaceGroup(
-                    intake.run(),
-                    index.indexUntilIn(false)
-                )
-            ), // At this point, we have a note
-            new ParallelRaceGroup(
-                intake.run(),
-                handoff, // Hand off to something else to get pivot moving early
-                index.indexUntilReady(false) // Keep index running until note is all the way in
-            )
-        ).withName("Ground Intake");
-    }
-    */
     public Command groundIntake(Command handoff){
         return new ParallelRaceGroup(
             intake.run(),
             new SequentialCommandGroup(
                 new ParallelRaceGroup(
                     index.indexUntilIn(false),
-                    pivot.goToAngle(Pivot.Positions.intake)
+                    pivot.goToAngle(Pivot.Positions.intake, 0)
                 ),
                 new ParallelRaceGroup(
                     index.indexUntilReady(false),
@@ -81,12 +67,12 @@ public class ComposedCommands {
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
                 //leds.intakeWaiting(),
-                pivot.goToAngle(Pivot.Positions.human),
+                pivot.goToAngle(Pivot.Positions.human, 0),
                 index.indexUntilIn(true), // Stops when cancelled
                 shooter.eject() // Stops when cancelled
             ),
             new ParallelCommandGroup(
-                pivot.goToAngle(Pivot.Positions.transit),
+                pivot.goToAngle(Pivot.Positions.transit, 0),
                 index.indexUntilReady(false)
             )
         ).withName("Human Intake");
@@ -110,14 +96,106 @@ public class ComposedCommands {
     }
 
     /* AMP MODE TOGGLE */
-
+    /*
     public Command ampMode(){
         return new ParallelCommandGroup(
             //leds.shooterStatus(),
-            pivot.goToAngle(Pivot.Positions.amp),
+            pivot.goToAngle(Pivot.Positions.amp, 0),
             shooter.ampShoot() // Stops when cancelled
         ).withName("Amp Mode");
     }
+    */
+    public Command ampMode(){
+        return new ConditionalCommand(
+            new ParallelCommandGroup(
+                pivot.goToAngle(Pivot.Positions.amp, 0),
+                shooter.ampShoot(),
+                setRobotState(State.Amp)
+            ),
+            new ParallelCommandGroup(
+                shooter.instantStopAll(),
+                pivot.goToAngle(0, 0),
+                setRobotState(State.None)
+            ),
+            ()->{return state!=State.Amp;}
+        );
+    }
+
+    /* PODIUM MODE */
+    /*
+    public Command podiumMode(){
+        return new ParallelCommandGroup(
+            pivot.goToAngle(32, 1),
+            shooter.shoot(4670)
+        ).withName("Podium Mode");
+    }
+    */
+    public Command podiumMode(){
+        return new ConditionalCommand(
+            new ParallelCommandGroup(
+                pivot.goToAngle(32, 1),
+                shooter.shoot(4670),
+                setRobotState(State.Podium)
+            ), 
+            new ParallelCommandGroup(
+                pivot.goToAngle(0, 0),
+                shooter.instantStopAll(),
+                setRobotState(State.None)
+            ), 
+            ()->{return state!=State.Podium;}
+        );
+    }
+
+    /* SUBWOOFER MODE */
+    /*
+    public Command subwooferMode(){
+        return new ParallelCommandGroup(
+            pivot.goToAngle(46.5, 1),
+            shooter.shoot(4000)
+        ).withName("Subwoofer Mode");
+    }
+    */
+    public Command subwooferMode(){
+        return new ConditionalCommand(
+            new ParallelCommandGroup(
+                pivot.goToAngle(46.5, 1),
+                shooter.shoot(4000),
+                setRobotState(State.Subwoofer)
+            ), 
+            new ParallelCommandGroup(
+                pivot.goToAngle(0, 0),
+                shooter.instantStopAll(),
+                setRobotState(State.None)
+            ), 
+            ()->{return state!=State.Subwoofer;}
+        );
+    }
+
+    /* ALLIANCE LINE MODE */
+    /*
+    public Command allianceLineMode(){
+        return new ParallelCommandGroup(
+            pivot.goToAngle(35,1),
+            shooter.shoot(4475)
+        ).withName("Alliance Line Mode");
+    }
+    */
+    public Command allianceLineMode(){
+        return new ConditionalCommand(
+            new ParallelCommandGroup(
+                pivot.goToAngle(35, 1),
+                shooter.shoot(4475),
+                setRobotState(State.Alliance)
+            ), 
+            new ParallelCommandGroup(
+                pivot.goToAngle(0, 0),
+                shooter.instantStopAll(),
+                setRobotState(State.None)
+            ), 
+            ()->{return state!=State.Alliance;}
+        );
+    }
+    
 
     /* START SHOOTER */
     public Command startShooter(){
@@ -147,5 +225,18 @@ public class ComposedCommands {
         return new SequentialCommandGroup(
             new AutoShooter(pivot, shooter, ll, swerve)
         ).withName("Auto Aim");
+    }
+
+    private enum State{
+        GroundIntake,
+        HumanIntake,
+        Ejecting,
+        AmpEjecting,
+        Amp,
+        Podium,
+        Subwoofer,
+        Alliance,
+        AutoAim,
+        None
     }
 }

@@ -117,7 +117,12 @@ public class Shooter extends SubsystemBase {
   public void setAmpVelocity(){
     setpoint = 1600;
     propController.setReference(1600, ControlType.kVelocity);
-    topController.setReference(-3200, ControlType.kVelocity);
+    topController.setReference(-4000, ControlType.kVelocity);
+  }
+  public void setTrapVelocity(){
+    setpoint = 1200;
+    propController.setReference(1200, ControlType.kVelocity);
+    topController.setReference(-3000, ControlType.kVelocity);
   }
 
   public void setCurrentLimit(int current1, int current2){
@@ -174,6 +179,15 @@ public class Shooter extends SubsystemBase {
   public Command ampShoot(){
     return new FunctionalCommand(
       ()->setAmpVelocity(),
+      ()->{},
+      (interrupted)->setPercOutput(0, false),
+      ()->{return false;},
+      this
+    ).withName("Amp Deflect");
+  }
+  public Command trapShoot(){
+    return new FunctionalCommand(
+      ()->setTrapVelocity(),
       ()->{},
       (interrupted)->setPercOutput(0, false),
       ()->{return false;},

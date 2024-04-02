@@ -32,7 +32,7 @@ public class Pivot extends SubsystemBase {
   private SparkPIDController pivotController;
 
   public class Positions{
-    public static final double intake = 40;
+    public static final double intake = 45;
     public static final double human = 115;
     public static final double amp = 90;
     public static final double transit = 10;
@@ -73,9 +73,9 @@ public class Pivot extends SubsystemBase {
     pivotController.setPositionPIDWrappingMinInput(0);
     pivotController.setPositionPIDWrappingMaxInput(360);
     // Slot 0 = Regular Movement
-    pivotController.setP(0.01, 0);
+    pivotController.setP(0.015, 0);
     pivotController.setI(0.0, 0);
-    pivotController.setD(0.04, 0);
+    pivotController.setD(0.01, 0);
     pivotController.setFF(0.0, 0);
     // Slot 1 = Auto Aiming - More aggressive and more precise
     pivotController.setP(0.027, 1);
@@ -99,9 +99,9 @@ public class Pivot extends SubsystemBase {
    * @param speed
    */
   public void manualControl(double speed){
-    double pos = getAngle();
-    double var = 2.5;
-    double power = Math.sqrt(1+(var*var) / 1+(var*var)*Math.pow(Math.sin(Math.PI/110*pos),2)) * Math.sin(Math.PI/110 * pos);
+    //double pos = getAngle();
+    //double var = 2.5;
+    //double power = Math.sqrt(1+(var*var) / 1+(var*var)*Math.pow(Math.sin(Math.PI/110*pos),2)) * Math.sin(Math.PI/110 * pos);
     leftPivot.set(speed/**power*/);
   }
 
@@ -122,8 +122,8 @@ public class Pivot extends SubsystemBase {
    * @param angle Angle to travel to
    * @return
    */
-  public Command goToAngle(double angle){
-    return new SparkPosition(leftPivot, angle, 0, 0.5, this, this::getAngle);
+  public Command goToAngle(double angle, int slot){
+    return new SparkPosition(leftPivot, angle, slot, 0.5, this, this::getAngle);
   }
 
   /**

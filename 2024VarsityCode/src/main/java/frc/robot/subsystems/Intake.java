@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase {
   private CANSparkMax intake;
   private CANSparkMax helper;
 
-  public static final double INTAKE_SPEED = 0.85;
+  public static final double INTAKE_SPEED = 0.9;
 
 
   /* CONSTRUCTORS */
@@ -32,7 +32,7 @@ public class Intake extends SubsystemBase {
   public Intake() {
     intake = new CANSparkMax(Constants.Intake.primaryIntakeCAN, MotorType.kBrushless);
     helper = new CANSparkMax(Constants.Intake.helperIntakeCAN, MotorType.kBrushless);
-    intake.setSmartCurrentLimit(50);
+    intake.setSmartCurrentLimit(40);
     helper.setSmartCurrentLimit(30);
 
     helper.setInverted(false);
@@ -48,7 +48,7 @@ public class Intake extends SubsystemBase {
 
   private void setPercOutput(double speed){
     intake.set(-speed);
-    helper.set(-speed*0.5);
+    helper.set(-speed*0.4);
   }
 
 
