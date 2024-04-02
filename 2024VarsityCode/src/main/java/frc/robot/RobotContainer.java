@@ -66,7 +66,7 @@ public class RobotContainer {
     public RobotContainer(){
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true).withName("Teleop"));
         s_Pivot.setDefaultCommand(new ManualPivot(specialist::getLeftY, s_Pivot).withName("Manual Pivot"));
-        s_Climb.setDefaultCommand(new ManualClimb(specialist, s_Climb));
+        s_Climb.setDefaultCommand(new ManualClimb(specialist::getRightY, s_Climb));
 
         SmartDashboard.putData("PDP", new PowerDistribution());
         SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
