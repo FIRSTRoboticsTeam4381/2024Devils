@@ -31,15 +31,15 @@ public class AutoShooter extends Command {
     this.shooter = shooter;
     this.stopOnEnd = stopOnEnd;
 
-    currentVelocity = shooter.getVelocity();
-
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(pivot, shooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    currentVelocity = shooter.getVelocity();
+  }
 
   private void calcAngle(){
     double llDistance = ll.distanceFromGoal();
