@@ -43,8 +43,8 @@ public final class Autos {
     public static Command start2CenterThreePiece(){
         return new PathPlannerAuto("Start2Center3Piece");
     }
-    public static Command experiment3(){
-        return new PathPlannerAuto("Experiment3");
+    public static Command start3CenterFourPiece(){
+        return new PathPlannerAuto("Start3CenterFourPiece");
     }
     public static Command start2SixPiece(){
         return new PathPlannerAuto("Start2SixPiece");

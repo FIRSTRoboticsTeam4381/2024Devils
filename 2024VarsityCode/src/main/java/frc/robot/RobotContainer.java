@@ -102,7 +102,7 @@ public class RobotContainer {
         m_AutoChooser.addOption("Start2FourPiece", Autos.start2FourPiece());
         m_AutoChooser.addOption("Experiment1", Autos.experiment1());
         m_AutoChooser.addOption("Start2CenterThreePiece", Autos.start2CenterThreePiece());
-        m_AutoChooser.addOption("Experiment3", Autos.experiment3());
+        m_AutoChooser.addOption("Start3CenterFourPiece", Autos.start3CenterFourPiece());
         m_AutoChooser.addOption("Start2SixPiece", Autos.start2SixPiece());
         //m_AutoChooser.addOption("SysId Quas Fwd", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
         //m_AutoChooser.addOption("SysId Quas Rev", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse));
