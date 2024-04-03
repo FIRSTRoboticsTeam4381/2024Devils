@@ -55,7 +55,7 @@ public class Climb extends SubsystemBase {
   }
 
   public void manualControl(double speed){
-    if(getPosition()<=0 && speed < 0.0) {speed = 0;}
+    //if(getPosition()<=0 && speed < 0.0) {speed = 0;}
     
     rightMotor.set(speed);
   }

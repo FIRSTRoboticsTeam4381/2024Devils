@@ -34,7 +34,7 @@ public class Pivot extends SubsystemBase {
   public class Positions{
     public static final double intake = 47;
     public static final double human = 115;
-    public static final double amp = 90;
+    public static final double amp = 110;
     public static final double transit = 10;
     public static final double podium = 34;
   }

@@ -19,10 +19,6 @@ public final class Autos {
         //return new PathPlannerAuto("Start2ThreePiece");
         return Commands.none();
     }
-    public static Command startAmp4Piece(){
-        return new PathPlannerAuto("FromAmp");
-        //return Commands.none();
-    }
     public static Command start3Middle(){
         return new PathPlannerAuto("Start3Middle");
         //return Commands.none();

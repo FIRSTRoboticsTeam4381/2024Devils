@@ -95,7 +95,6 @@ public class RobotContainer {
 
         m_AutoChooser.setDefaultOption("None", Autos.none());
         m_AutoChooser.addOption("Start2ThreePiece", Autos.start2ThreePiece());
-        m_AutoChooser.addOption("StartAmp4Piece", Autos.startAmp4Piece());
         m_AutoChooser.addOption("Start3Middle", Autos.start3Middle());
         m_AutoChooser.addOption("Start4ThreePiece", Autos.start4ThreePiece());
         m_AutoChooser.addOption("Start1FourPiece", Autos.start1FourPiece());
@@ -132,20 +131,20 @@ public class RobotContainer {
         driver.L1().onTrue(s_Swerve.nitro());
         driver.cross().onTrue(new InstantCommand(()->s_Swerve.setBrakeMode(true))).onFalse(new InstantCommand(()->s_Swerve.setBrakeMode(false)));
 
-        specialist.square().onTrue(commands.subwooferMode());
+        specialist.square().toggleOnTrue(commands.subwooferMode());
         specialist.cross().toggleOnTrue(commands.groundIntake(new ManualPivot(specialist::getLeftY, s_Pivot)));
         specialist.circle().whileTrue(commands.ejectNote());
         specialist.triangle().whileTrue(new AutoShooter(s_Pivot, s_Shooter, s_LL, s_Swerve, true));
 
-        specialist.povRight().onTrue(commands.ampMode());
+        specialist.povRight().toggleOnTrue(commands.ampMode());
         specialist.povDown().whileTrue(new InstantCommand(()->s_Shooter.setCurrentLimit(80,80))
                                         .andThen(commands.reverseAmp()))
                             .onFalse(new InstantCommand(()->s_Shooter.setCurrentLimit(60, 60)));
         specialist.povLeft().toggleOnTrue(s_Shooter.trapShoot());
-        specialist.povUp().onTrue(commands.podiumMode());
+        specialist.povUp().toggleOnTrue(commands.podiumMode());
 
         specialist.L1().toggleOnTrue(commands.startShooter());
-        specialist.PS().onTrue(commands.allianceLineMode());
+        specialist.PS().toggleOnTrue(commands.allianceLineMode());
 
         driver.touchpad().or(specialist.touchpad()).onTrue(commands.cancelAll());
     }

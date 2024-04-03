@@ -28,6 +28,12 @@
           "data": {
             "pathName": "Experiment3Path2"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Experiment3Path3"
+          }
         }
       ]
     }

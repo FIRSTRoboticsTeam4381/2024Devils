@@ -107,19 +107,11 @@ public class ComposedCommands {
     }
     */
     public Command ampMode(){
-        return new ConditionalCommand(
-            new ParallelCommandGroup(
+            return new ParallelCommandGroup(
                 pivot.goToAngle(Pivot.Positions.amp, 0),
                 shooter.ampShoot(),
                 setRobotState(State.Amp)
-            ),
-            new ParallelCommandGroup(
-                shooter.instantStopAll(),
-                pivot.goToAngle(0, 0),
-                setRobotState(State.None)
-            ),
-            ()->{return state!=State.Amp;}
-        );
+            );
     }
 
     /* PODIUM MODE */
@@ -132,19 +124,11 @@ public class ComposedCommands {
     }
     */
     public Command podiumMode(){
-        return new ConditionalCommand(
-            new ParallelCommandGroup(
+            return new ParallelCommandGroup(
                 pivot.goToAngle(32, 1),
                 shooter.shoot(4670),
                 setRobotState(State.Podium)
-            ), 
-            new ParallelCommandGroup(
-                pivot.goToAngle(0, 0),
-                shooter.instantStopAll(),
-                setRobotState(State.None)
-            ), 
-            ()->{return state!=State.Podium;}
-        );
+            );
     }
 
     /* SUBWOOFER MODE */
@@ -157,19 +141,11 @@ public class ComposedCommands {
     }
     */
     public Command subwooferMode(){
-        return new ConditionalCommand(
-            new ParallelCommandGroup(
+            return new ParallelCommandGroup(
                 pivot.goToAngle(46.5, 1),
                 shooter.shoot(4000),
                 setRobotState(State.Subwoofer)
-            ), 
-            new ParallelCommandGroup(
-                pivot.goToAngle(0, 0),
-                shooter.instantStopAll(),
-                setRobotState(State.None)
-            ), 
-            ()->{return state!=State.Subwoofer;}
-        );
+            );
     }
 
     /* ALLIANCE LINE MODE */
@@ -182,19 +158,11 @@ public class ComposedCommands {
     }
     */
     public Command allianceLineMode(){
-        return new ConditionalCommand(
-            new ParallelCommandGroup(
+            return new ParallelCommandGroup(
                 pivot.goToAngle(35, 1),
                 shooter.shoot(4475),
                 setRobotState(State.Alliance)
-            ), 
-            new ParallelCommandGroup(
-                pivot.goToAngle(0, 0),
-                shooter.instantStopAll(),
-                setRobotState(State.None)
-            ), 
-            ()->{return state!=State.Alliance;}
-        );
+            );
     }
     
 

@@ -115,14 +115,14 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setAmpVelocity(){
-    setpoint = 1600;
-    propController.setReference(1600, ControlType.kVelocity);
-    topController.setReference(-4000, ControlType.kVelocity);
+    setpoint = 1800;
+    propController.setReference(1800, ControlType.kVelocity);
+    topController.setReference(-4500, ControlType.kVelocity);
   }
   public void setTrapVelocity(){
-    setpoint = 1200;
-    propController.setReference(1200, ControlType.kVelocity);
-    topController.setReference(-3000, ControlType.kVelocity);
+    setpoint = 1400;
+    propController.setReference(1400, ControlType.kVelocity);
+    topController.setReference(-3500, ControlType.kVelocity);
   }
 
   public void setCurrentLimit(int current1, int current2){
