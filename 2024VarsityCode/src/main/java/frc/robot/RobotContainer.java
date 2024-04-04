@@ -97,7 +97,7 @@ public class RobotContainer {
         m_AutoChooser.addOption("RED-Start1Pickup3", Autos.start1A1M1M2Red());
         m_AutoChooser.addOption("RED-Start2Pickup2", Autos.start2A2M2Red());
         m_AutoChooser.addOption("RED-Start2Pickup3", Autos.start2A2M1M2Red());
-        m_AutoChooser.addOption("RED-Start2Pickup6", Autos.start2A3A2A1M2M1Red());
+        m_AutoChooser.addOption("RED-Start2Pickup5", Autos.start2A3A2A1M2M1Red());
         m_AutoChooser.addOption("RED-Start2UnderStage", Autos.start2A2M3M2Red());
         m_AutoChooser.addOption("RED-Start3Pickup3", Autos.start3A3M3A2Red());
         m_AutoChooser.addOption("RED-Start3OutOfTheWay", Autos.start3M3M2Red());
@@ -106,7 +106,7 @@ public class RobotContainer {
         m_AutoChooser.addOption("BLUE-Start1Pickup3", Autos.start1A1M1M2Blue());
         m_AutoChooser.addOption("BLUE-Start2Pickup2", Autos.start2A2M2Blue());
         m_AutoChooser.addOption("BLUE-Start2Pickup3", Autos.start2A2M1M2Blue());
-        m_AutoChooser.addOption("BLUE-Start2Pickup6", Autos.start2A3A2A1M2M1Blue());
+        m_AutoChooser.addOption("BLUE-Start2Pickup5", Autos.start2A3A2A1M2M1Blue());
         m_AutoChooser.addOption("BLUE-Start2UnderStage", Autos.start2A2M3M2Blue());
         m_AutoChooser.addOption("BLUE-Start3Pickup3", Autos.start3A3M3A2Blue());
         m_AutoChooser.addOption("BLUE-Start3OutOfTheWay", Autos.start3M3M2Red());
