@@ -53,9 +53,20 @@ public class Limelight extends SubsystemBase{
         double estimatedError = 0.1294509025 * Math.pow(1.235817166, distance);
         return estimatedError;
       }
+
+      private double estimateErrorRed(){
+        double distance = distanceFromGoal();
+        double estimatedError = 0.046136349*distance*distance + -0.1901477288*distance + 0.4475928182;
+        return estimatedError;
+      }
+      private double estimateErrorBlue(){
+        double distance = distanceFromGoal();
+        double estimatedError = 0.0115684023*distance*distance + 0.0179131454*distance + 0.1411925354;
+        return estimatedError;
+      }
       private double estimateDistance(){
         double lastDistance = distanceFromGoal();
-        double error = estimateError();
+        double error = estimateErrorRed();
         double latency = totalLatency();
         double velocity = getTargetRelativeVelocity();
         double estimatedRealDistance = lastDistance+error;
