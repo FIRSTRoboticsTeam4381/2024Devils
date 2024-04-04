@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.48255023756837656,
+      "y": 4.063660281386183
+    },
+    "rotation": -90.06847447445683
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start3Start-Blue"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start3ExperimentPath1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start3ExperimentPath2-Blue"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start3ExperimentPath3-Blue"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Start3",
+  "choreoAuto": false
+}

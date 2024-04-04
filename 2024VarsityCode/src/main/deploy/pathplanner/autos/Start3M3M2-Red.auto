@@ -14,19 +14,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start3Start"
+            "pathName": "Start3Start-Red"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Start3Middle3"
+            "pathName": "Start3Middle3-Red"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Start3Middle2"
+            "pathName": "Start3Middle2-Red"
           }
         }
       ]

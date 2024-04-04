@@ -14,25 +14,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start3Start"
+            "pathName": "Start3Start-Red"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Experiment3Path1"
+            "pathName": "Start3ExperimentPath1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Experiment3Path2"
+            "pathName": "Start3ExperimentPath2-Red"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Experiment3Path3"
+            "pathName": "Start3ExperimentPath3-Red"
           }
         }
       ]
