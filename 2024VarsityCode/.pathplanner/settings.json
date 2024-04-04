@@ -4,17 +4,20 @@
   "holonomicMode": true,
   "pathFolders": [
     "Experiment1",
-    "Start2Center3Piece",
     "Experiment3",
-    "Start1ThreePiece",
-    "Start2FourPiece",
+    "Start1",
+    "Start2",
     "Start2SixPiece",
-    "Start2ThreePiece",
     "Start3Middle",
     "Start3ThreePiece",
     "Start4ThreePiece"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Start4",
+    "Start1",
+    "Start2",
+    "Start3"
+  ],
   "defaultMaxVel": 5.0,
   "defaultMaxAccel": 2.0,
   "defaultMaxAngVel": 360.0,

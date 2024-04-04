@@ -3,9 +3,9 @@
   "startingPose": {
     "position": {
       "x": 1.325730468864645,
-      "y": 5.539225686154654
+      "y": 5.550936522700434
     },
-    "rotation": 90.13134259019063
+    "rotation": 89.14490260373326
   },
   "command": {
     "type": "sequential",
@@ -14,36 +14,30 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Experiment4Path1"
+            "pathName": "Start2Path1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Experiment4Path2"
+            "pathName": "Start2Path2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Experiment4Path3"
+            "pathName": "Start2CenterPath1-Blue"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Experiment4Path4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Experiment4Path5"
+            "pathName": "Start2CenterPath2-Blue"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Start2",
   "choreoAuto": false
 }

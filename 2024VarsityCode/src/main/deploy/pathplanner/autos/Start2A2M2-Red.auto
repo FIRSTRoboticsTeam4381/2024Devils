@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3374413054104268,
+      "y": 5.527514849608872
+    },
+    "rotation": 90.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start2Path1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start2Path2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start2M2-Red"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Start2",
+  "choreoAuto": false
+}

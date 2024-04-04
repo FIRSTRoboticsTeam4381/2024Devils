@@ -5,7 +5,7 @@
       "x": 0.48255023756837656,
       "y": 4.063660281386183
     },
-    "rotation": -90.06847447445683
+    "rotation": -88.72696997994328
   },
   "command": {
     "type": "sequential",
@@ -20,24 +20,18 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Experiment3Path1"
+            "pathName": "Start3Middle3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Experiment3Path2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Experiment3Path3"
+            "pathName": "Start3Middle2"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Start3",
   "choreoAuto": false
 }

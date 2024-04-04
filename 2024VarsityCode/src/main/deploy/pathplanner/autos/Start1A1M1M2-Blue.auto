@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.325730468864645,
-      "y": 5.550936522700434
+      "x": 0.49426107411415826,
+      "y": 7.026501927468906
     },
-    "rotation": 89.14490260373326
+    "rotation": 90.0
   },
   "command": {
     "type": "sequential",
@@ -14,30 +14,30 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start2FourStart"
+            "pathName": "Start1Path1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Start2Four1"
+            "pathName": "Start1Path2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Start2CenterPath1"
+            "pathName": "Start1Path3-Blue"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Start2CenterPath2"
+            "pathName": "Start1Path4-Blue"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Start1",
   "choreoAuto": false
 }

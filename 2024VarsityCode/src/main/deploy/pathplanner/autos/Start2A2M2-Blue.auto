@@ -22,10 +22,16 @@
           "data": {
             "pathName": "Start2Path2"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start2M2-Blue"
+          }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Start2",
   "choreoAuto": false
 }
