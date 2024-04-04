@@ -94,16 +94,23 @@ public class RobotContainer {
         PathPlannerLogging.setLogActivePathCallback((poses) -> {s_Swerve.mField.getObject("path").setPoses(poses);});
 
         m_AutoChooser.setDefaultOption("None", Autos.none());
-        m_AutoChooser.addOption("Start2ThreePiece", Autos.start2ThreePiece());
-        m_AutoChooser.addOption("Start3Middle", Autos.start3Middle());
-        m_AutoChooser.addOption("Start4ThreePiece", Autos.start4ThreePiece());
-        m_AutoChooser.addOption("Start1FourPiece", Autos.start1FourPiece());
-        m_AutoChooser.addOption("Start3ThreePiece", Autos.start3ThreePiece());
-        m_AutoChooser.addOption("Start2FourPiece", Autos.start2FourPiece());
-        m_AutoChooser.addOption("Experiment1", Autos.experiment1());
-        m_AutoChooser.addOption("Start2CenterThreePiece", Autos.start2CenterThreePiece());
-        m_AutoChooser.addOption("Start3CenterFourPiece", Autos.start3CenterFourPiece());
-        m_AutoChooser.addOption("Start2SixPiece", Autos.start2SixPiece());
+        m_AutoChooser.addOption("RED-Start1Pickup3", Autos.start1A1M1M2Red());
+        m_AutoChooser.addOption("RED-Start2Pickup2", Autos.start2A2M2Red());
+        m_AutoChooser.addOption("RED-Start2Pickup3", Autos.start2A2M1M2Red());
+        m_AutoChooser.addOption("RED-Start2Pickup6", Autos.start2A3A2A1M2M1Red());
+        m_AutoChooser.addOption("RED-Start2UnderStage", Autos.start2A2M3M2Red());
+        m_AutoChooser.addOption("RED-Start3Pickup3", Autos.start3A3M3A2Red());
+        m_AutoChooser.addOption("RED-Start3OutOfTheWay", Autos.start3M3M2Red());
+        m_AutoChooser.addOption("RED-Start4Pickup2", Autos.start4M4M5Red());
+
+        m_AutoChooser.addOption("BLUE-Start1Pickup3", Autos.start1A1M1M2Blue());
+        m_AutoChooser.addOption("BLUE-Start2Pickup2", Autos.start2A2M2Blue());
+        m_AutoChooser.addOption("BLUE-Start2Pickup3", Autos.start2A2M1M2Blue());
+        m_AutoChooser.addOption("BLUE-Start2Pickup6", Autos.start2A3A2A1M2M1Blue());
+        m_AutoChooser.addOption("BLUE-Start2UnderStage", Autos.start2A2M3M2Blue());
+        m_AutoChooser.addOption("BLUE-Start3Pickup3", Autos.start3A3M3A2Blue());
+        m_AutoChooser.addOption("BLUE-Start3OutOfTheWay", Autos.start3M3M2Red());
+        m_AutoChooser.addOption("BLUE-Start4Pickup2", Autos.start4M4M5Blue());
         //m_AutoChooser.addOption("SysId Quas Fwd", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
         //m_AutoChooser.addOption("SysId Quas Rev", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse));
         //m_AutoChooser.addOption("SysId Dyna Fwd", s_Swerve.sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));

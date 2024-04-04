@@ -14,40 +14,53 @@ public final class Autos {
   // TODO register commands in subsystem constructores using NamedCommands.registerCommand()
   // TODO use AutoBuilder.buildAutoChooser() to choose autos??
 
-    // TODO test of full auto
-    public static Command start2ThreePiece(){
-        //return new PathPlannerAuto("Start2ThreePiece");
-        return Commands.none();
+    public static Command start1A1M1M2Blue(){
+        return new PathPlannerAuto("Start1A1M1M2-Blue");
     }
-    public static Command start3Middle(){
-        return new PathPlannerAuto("Start3Middle");
-        //return Commands.none();
+    public static Command start1A1M1M2Red(){
+        return new PathPlannerAuto("Start1A1M1M2-Red");
     }
-    public static Command start3ThreePiece(){
-        return new PathPlannerAuto("Start3ThreePiece");
+    public static Command start2A2M1M2Blue(){
+        return new PathPlannerAuto("Start2A2M1M2-Blue");
     }
-    public static Command start4ThreePiece(){
-        return new PathPlannerAuto("Start4ThreePiece");
-        //return Commands.none();
+    public static Command start2A2M1M2Red(){
+        return new PathPlannerAuto("Start2A2m1m2-Red");
     }
-    public static Command start1FourPiece(){
-        return new PathPlannerAuto("Start1FourPiece");
-        //return Commands.none();
+    public static Command start2A2M2Blue(){
+        return new PathPlannerAuto("Start2A2M2-Blue");
     }
-    public static Command start2FourPiece(){
-        return new PathPlannerAuto("Start2FourPiece");
+    public static Command start2A2M2Red(){
+        return new PathPlannerAuto("Start2A2M2-Red");
     }
-    public static Command experiment1(){
-        return new PathPlannerAuto("Experiment1");
+    public static Command start2A2M3M2Blue(){
+        return new PathPlannerAuto("Start2A2M3M2-Blue");
     }
-    public static Command start2CenterThreePiece(){
-        return new PathPlannerAuto("Start2Center3Piece");
+    public static Command start2A2M3M2Red(){
+        return new PathPlannerAuto("Start2A2M3M2-Red");
     }
-    public static Command start3CenterFourPiece(){
-        return new PathPlannerAuto("Start3CenterFourPiece");
+    public static Command start2A3A2A1M2M1Blue(){
+        return new PathPlannerAuto("Start2A3A2A1M2M1-Blue");
     }
-    public static Command start2SixPiece(){
-        return new PathPlannerAuto("Start2SixPiece");
+    public static Command start2A3A2A1M2M1Red(){
+        return new PathPlannerAuto("Start2A3A2A1M2M1-Red");
+    }
+    public static Command start3A3M3A2Blue(){
+        return new PathPlannerAuto("Start3A3M3A2-Blue");
+    }
+    public static Command start3A3M3A2Red(){
+        return new PathPlannerAuto("Start3A3M3A2-Red");
+    }
+    public static Command start3M3M2Blue(){
+        return new PathPlannerAuto("Start3M3M2-Blue");
+    }
+    public static Command start3M3M2Red(){
+        return new PathPlannerAuto("Start3M3M2-Red");
+    }
+    public static Command start4M4M5Blue(){
+        return new PathPlannerAuto("Start4M4M5-Blue");
+    }
+    public static Command start4M4M5Red(){
+        return new PathPlannerAuto("Start4m4m5-Red");
     }
 
     // TODO test of a single path
