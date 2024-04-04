@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase {
   private CANSparkMax intake;
   private CANSparkMax helper;
 
-  public static final double INTAKE_SPEED = 0.95;
+  public static final double INTAKE_SPEED = 0.75;
 
 
   /* CONSTRUCTORS */

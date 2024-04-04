@@ -42,7 +42,7 @@ public class Index extends SubsystemBase {
     //eye1.close();
     //eye2.close();
     indexMotor = new CANSparkMax(Constants.Index.indexCAN, MotorType.kBrushless);
-    indexMotor.setSmartCurrentLimit(50);
+    indexMotor.setSmartCurrentLimit(40);
 
     SparkUtilities.optimizeFrames(indexMotor, false, false, false, false, false, false);
   }

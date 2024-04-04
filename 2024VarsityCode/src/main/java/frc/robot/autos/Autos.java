@@ -24,7 +24,7 @@ public final class Autos {
         return new PathPlannerAuto("Start2A2M1M2-Blue");
     }
     public static Command start2A2M1M2Red(){
-        return new PathPlannerAuto("Start2A2m1m2-Red");
+        return new PathPlannerAuto("Start2A2M1M2-Red");
     }
     public static Command start2A2M2Blue(){
         return new PathPlannerAuto("Start2A2M2-Blue");
@@ -60,7 +60,7 @@ public final class Autos {
         return new PathPlannerAuto("Start4M4M5-Blue");
     }
     public static Command start4M4M5Red(){
-        return new PathPlannerAuto("Start4m4m5-Red");
+        return new PathPlannerAuto("Start4M4M5-Red");
     }
 
     // TODO test of a single path

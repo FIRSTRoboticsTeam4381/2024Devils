@@ -54,8 +54,8 @@ public class Pivot extends SubsystemBase {
     rightPivot.setIdleMode(IdleMode.kBrake);
     leftPivot.setIdleMode(IdleMode.kBrake);
 
-    rightPivot.setSmartCurrentLimit(60);
-    leftPivot.setSmartCurrentLimit(60);
+    rightPivot.setSmartCurrentLimit(50);
+    leftPivot.setSmartCurrentLimit(50);
 
     SparkUtilities.optimizeFrames(rightPivot, false, false, true, false, false, false);
     SparkUtilities.optimizeFrames(leftPivot, true, false, true, false, false, true);
