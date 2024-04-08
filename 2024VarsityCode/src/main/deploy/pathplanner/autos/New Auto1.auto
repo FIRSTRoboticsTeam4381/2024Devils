@@ -1,0 +1,61 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7636103146671328,
+      "y": 6.722020177278586
+    },
+    "rotation": 61.189206257026925
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAim"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NewAuto1Path1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NewAuto1Path2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NewAuto1Path3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NewAuto1Path4"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

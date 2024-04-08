@@ -25,7 +25,7 @@ public class Index extends SubsystemBase {
   private CANSparkMax indexMotor;
   private DigitalInput[] eyes;
 
-  public static final double INDEX_SPEED = 0.6;
+  public static final double INDEX_SPEED = 0.65;
 
 
   /* CONSTRUCTORS */
@@ -42,7 +42,7 @@ public class Index extends SubsystemBase {
     //eye1.close();
     //eye2.close();
     indexMotor = new CANSparkMax(Constants.Index.indexCAN, MotorType.kBrushless);
-    indexMotor.setSmartCurrentLimit(40);
+    indexMotor.setSmartCurrentLimit(30);
 
     SparkUtilities.optimizeFrames(indexMotor, false, false, false, false, false, false);
   }
