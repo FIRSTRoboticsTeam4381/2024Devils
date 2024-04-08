@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 
 /**
@@ -163,6 +164,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("ShooterSpinUp", s_Shooter.instantSetVelocityReference(4000, false));
         NamedCommands.registerCommand("AutoAim", new AutoShooter(s_Pivot, s_Shooter, s_LL, s_Swerve, false));
         NamedCommands.registerCommand("Shoot", s_Index.run());
+        NamedCommands.registerCommand("ShootUntilOut", s_Index.indexUntilShot());
         NamedCommands.registerCommand("LowerPivot", s_Pivot.goToAngle(0, 1));
     }
 

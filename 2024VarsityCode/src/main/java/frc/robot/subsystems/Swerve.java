@@ -205,6 +205,7 @@ public class Swerve extends SubsystemBase{
     @Override
     public void periodic(){
         mSwerveOdometry.update(getYaw(), getPositions());
+        SmartDashboard.putBoolean("swerve/Gyro Calibrated", !gyro.isCalibrating());
 
         LogOrDash.logNumber("Gyro Angle", getYaw().getDegrees());
 
