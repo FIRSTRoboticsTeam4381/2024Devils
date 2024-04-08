@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDs;
@@ -22,6 +23,7 @@ public class ComposedCommands {
     private Index index;
     private Shooter shooter;
     private Pivot pivot;
+    private Climb climb;
     private Limelight ll;
     private Swerve swerve;
     //private LEDs leds;
@@ -30,13 +32,14 @@ public class ComposedCommands {
 
     // TODO change pivot commands over to profiled motion once that's done
 
-    public ComposedCommands(CommandPS4Controller controller, Intake intake, Index index, Shooter shooter, Pivot pivot, Limelight ll, Swerve swerve){
+    public ComposedCommands(CommandPS4Controller controller, Intake intake, Index index, Shooter shooter, Pivot pivot, Climb climb, Limelight ll, Swerve swerve){
         this.intake = intake;
         this.index = index;
         this.shooter = shooter;
         this.pivot = pivot;
         this.ll = ll;
         this.swerve = swerve;
+        this.climb=climb;
         //this.leds=leds;
         this.controller = controller;
     }
@@ -171,6 +174,19 @@ public class ComposedCommands {
         return new ParallelCommandGroup(
             //leds.shooterStatus(),
             shooter.shoot(5000)
+        );
+    }
+
+    /* TODO check positions and sequence */
+    public Command climb(){
+        return new SequentialCommandGroup(
+            climb.goToPosition(90.0, 0),
+            pivot.goToAngle(25.0, 0),
+            climb.goToPosition(45.0, 0),
+            new ParallelCommandGroup(
+                pivot.goToAngle(90.0, 0),
+                climb.goToPosition(-30.0, 0)
+            )
         );
     }
 

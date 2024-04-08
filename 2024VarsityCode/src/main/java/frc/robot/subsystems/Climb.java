@@ -5,15 +5,19 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.SparkUtilities.SparkUtilities;
 import frc.robot.Constants;
+import frc.robot.commands.SparkPosition;
 
 public class Climb extends SubsystemBase {
   // TODO get climbing positions
@@ -24,7 +28,8 @@ public class Climb extends SubsystemBase {
 
   private SparkPIDController climbController;
 
-  private RelativeEncoder climbEncoder;
+  private RelativeEncoder relativeEncoder;
+  private SparkAbsoluteEncoder absoluteEncoder;
 
   /* CONSTRUCTOR */
 
@@ -41,12 +46,14 @@ public class Climb extends SubsystemBase {
     SparkUtilities.optimizeFrames(leftMotor, false, false, false, false, false, false);
 
     // Encoder Setup
-    climbEncoder = rightMotor.getEncoder();
+    relativeEncoder = rightMotor.getEncoder();
+    absoluteEncoder = rightMotor.getAbsoluteEncoder(Type.kDutyCycle);
 
     climbController = rightMotor.getPIDController();
 
     // PID Setup
     // TODO Base controller configuration
+    climbController.setFeedbackDevice(absoluteEncoder);
     climbController.setP(0);
     climbController.setI(0);
     climbController.setD(0);
@@ -64,15 +71,23 @@ public class Climb extends SubsystemBase {
     climbController.setReference(position, ControlType.kPosition);
   }
 
-  public double getPosition(){
-    return climbEncoder.getPosition();
+  public double getRelativePosition(){
+    return relativeEncoder.getPosition();
+  }
+  public double getAbsolutePosition(){
+    return absoluteEncoder.getPosition();
+  }
+
+  public Command goToPosition(double position, int slot){
+    return new SparkPosition(rightMotor, position, slot, 1.0, this, this::getAbsolutePosition);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("climb/Base Pivot Position", climbEncoder.getPosition());
+    SmartDashboard.putNumber("climb/Relativ Position", getRelativePosition());
+    SmartDashboard.putNumber("climb/Absolute Position", getAbsolutePosition());
 
     SmartDashboard.putNumber("climb/Left Base Current", rightMotor.getOutputCurrent());
     SmartDashboard.putNumber("climb/Right Base Current", leftMotor.getOutputCurrent());

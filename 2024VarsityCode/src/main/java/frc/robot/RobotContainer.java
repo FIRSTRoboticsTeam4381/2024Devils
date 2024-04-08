@@ -56,7 +56,7 @@ public class RobotContainer {
     //public static final LEDs s_LED = new LEDs();
 
     /* Commands */
-   public static final ComposedCommands commands = new ComposedCommands(specialist, s_Intake, s_Index, s_Shooter, s_Pivot, s_LL, s_Swerve);
+   public static final ComposedCommands commands = new ComposedCommands(specialist, s_Intake, s_Index, s_Shooter, s_Pivot, s_Climb, s_LL, s_Swerve);
 
     // Auto Chooser
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -137,6 +137,7 @@ public class RobotContainer {
         driver.PS().onTrue(new InstantCommand(()->s_LL.takeSnapshot())).onFalse(new InstantCommand(()->s_LL.resetSnapshot()));
         driver.L1().onTrue(s_Swerve.nitro());
         driver.cross().onTrue(new InstantCommand(()->s_Swerve.setBrakeMode(true))).onFalse(new InstantCommand(()->s_Swerve.setBrakeMode(false)));
+        driver.povDown().onTrue(commands.climb());
 
         specialist.square().toggleOnTrue(commands.subwooferMode());
         specialist.cross().toggleOnTrue(commands.groundIntake(new ManualPivot(specialist::getLeftY, s_Pivot)));
