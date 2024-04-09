@@ -39,6 +39,7 @@ public class AutoShooter extends Command {
   @Override
   public void initialize() {
     currentVelocity = shooter.getVelocity();
+    currentAngle = pivot.getAngle();
   }
 
   private void calcAngle(){
