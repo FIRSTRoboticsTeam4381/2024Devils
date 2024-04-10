@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.25,
-        "y": 3.232190886635696
+        "x": 3.339994354739065,
+        "y": 3.126793357723663
       },
       "prevControl": {
-        "x": 2.6878798458024877,
-        "y": 2.7403357517128724
+        "x": 2.777874200541553,
+        "y": 2.634938222800839
       },
       "nextControl": null,
       "isLocked": false,
@@ -35,7 +35,7 @@
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 0.6,
+      "waypointRelativePos": 0.45,
       "rotationDegrees": -51.18915861834452,
       "rotateFast": true
     }
@@ -56,7 +56,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0.2,
       "command": {
         "type": "parallel",
         "data": {
@@ -87,6 +87,23 @@
           ]
         }
       }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ShooterSpinUp"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -97,7 +114,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -29.291362170984318,
+    "rotation": -37.89377897762836,
     "rotateFast": false
   },
   "reversed": false,

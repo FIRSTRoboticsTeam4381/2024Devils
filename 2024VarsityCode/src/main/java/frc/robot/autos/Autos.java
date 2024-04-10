@@ -62,6 +62,22 @@ public final class Autos {
     public static Command start4M4M5Red(){
         return new PathPlannerAuto("Start4M4M5-Red");
     }
+    public static Command testAuto1(){
+        return new PathPlannerAuto("New Auto1");
+    }
+    public static Command testAuto2(){
+        return new PathPlannerAuto("New Auto2");
+    }
+    public static Command testAuto3(){
+        return new PathPlannerAuto("New Auto3");
+    }
+    public static Command testAuto4(){
+        //return new PathPlannerAuto("New Auto4");
+        return Commands.none();
+    }
+    public static Command destroy(){
+        return new PathPlannerAuto("Destroy1");
+    }
 
     // TODO test of a single path
     public static Command testPath(){

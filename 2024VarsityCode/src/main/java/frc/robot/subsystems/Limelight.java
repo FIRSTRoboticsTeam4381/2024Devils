@@ -66,7 +66,7 @@ public class Limelight extends SubsystemBase{
       }
       private double estimateDistance(){
         double lastDistance = distanceFromGoal();
-        double error = estimateErrorRed();
+        double error = estimateError();
         double latency = totalLatency();
         double velocity = getTargetRelativeVelocity();
         double estimatedRealDistance = lastDistance+error;

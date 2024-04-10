@@ -25,7 +25,7 @@ public class Index extends SubsystemBase {
   private CANSparkMax indexMotor;
   private DigitalInput[] eyes;
 
-  public static final double INDEX_SPEED = 0.65;
+  public static final double INDEX_SPEED = 0.4;
 
 
   /* CONSTRUCTORS */
@@ -51,7 +51,7 @@ public class Index extends SubsystemBase {
   /* METHODS */
 
   public boolean getEye(int index){
-    return !eyes[index].get();
+    return (index==0?eyes[index].get() : !eyes[index].get());
   }
 
   private void setPercOutput(double speed){

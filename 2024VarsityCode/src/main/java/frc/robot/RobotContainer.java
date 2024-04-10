@@ -112,6 +112,11 @@ public class RobotContainer {
         m_AutoChooser.addOption("BLUE-Start3Pickup3", Autos.start3A3M3A2Blue());
         m_AutoChooser.addOption("BLUE-Start3OutOfTheWay", Autos.start3M3M2Red());
         m_AutoChooser.addOption("BLUE-Start4Pickup2", Autos.start4M4M5Blue());
+        m_AutoChooser.addOption("Test Auto1", Autos.testAuto1());
+        m_AutoChooser.addOption("Test Auto2", Autos.testAuto2());
+        m_AutoChooser.addOption("Test Auto3", Autos.testAuto3());
+        m_AutoChooser.addOption("Test Auto4", Autos.testAuto4());
+        m_AutoChooser.addOption("Destroy", Autos.destroy());
         //m_AutoChooser.addOption("SysId Quas Fwd", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
         //m_AutoChooser.addOption("SysId Quas Rev", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse));
         //m_AutoChooser.addOption("SysId Dyna Fwd", s_Swerve.sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));

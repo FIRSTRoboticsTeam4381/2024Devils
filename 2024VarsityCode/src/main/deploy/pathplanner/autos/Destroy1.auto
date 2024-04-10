@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.48255023756837656,
+      "y": 2.119661414786453
+    },
+    "rotation": -90.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start4Start"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DestroyPath1"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "New Autos",
+  "choreoAuto": false
+}
