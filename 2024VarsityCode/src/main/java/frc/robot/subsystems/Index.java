@@ -129,7 +129,7 @@ public class Index extends SubsystemBase {
     return new FunctionalCommand(
       ()->setPercOutput(INDEX_SPEED*(reversed?-1:1)),
       ()->{},
-      (interrupted)->setPercOutput(0.0),
+      (interrupted)->{}/*setPercOutput(0.0)*/,
       ()->{return reversed?getEye(0):getEye(0)||getEye(1);},
       this
     ).withName("IndexUntilIn");

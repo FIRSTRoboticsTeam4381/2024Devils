@@ -31,7 +31,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.5,
-      "rotationDegrees": 44.08105281373363,
+      "rotationDegrees": 37.61702831299173,
       "rotateFast": true
     }
   ],
@@ -74,13 +74,13 @@
   ],
   "globalConstraints": {
     "maxVelocity": 5.0,
-    "maxAcceleration": 2.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 120.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 32.9844834907032,
+    "rotation": 27.825816933401534,
     "rotateFast": false
   },
   "reversed": false,
