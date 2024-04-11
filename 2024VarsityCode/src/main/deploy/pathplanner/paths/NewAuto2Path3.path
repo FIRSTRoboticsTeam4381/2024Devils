@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.480524393288442,
-        "y": 3.0096849922658473
+        "x": 3.67,
+        "y": 3.44
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.410259374013754,
-        "y": 1.9674205396912936
+        "x": 3.599734980725312,
+        "y": 2.3977355474254463
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.5762369299346287,
-        "y": 2.0845289051491083
+        "x": 0.060960121920242256,
+        "y": 3.0096849922658473
       },
       "prevControl": {
-        "x": 0.9377586292138247,
-        "y": 2.0845289051491083
+        "x": 0.42248182119944044,
+        "y": 3.0096849922658473
       },
       "nextControl": {
-        "x": 0.541104420297284,
-        "y": 2.0845289051491083
+        "x": 0.025827612282897552,
+        "y": 3.0096849922658473
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.9301150756367123,
-        "y": 3.290745069364603
+        "x": 3.0472234410945274,
+        "y": 3.513250963734452
       },
       "prevControl": {
-        "x": 2.52023579653436,
-        "y": 3.056528338448973
+        "x": 2.637344161992175,
+        "y": 3.279034232818822
       },
       "nextControl": null,
       "isLocked": false,
@@ -56,7 +56,19 @@
       "rotateFast": true
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 1.75,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 0.75,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 400.0,
+        "maxAngularAcceleration": 300.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "New Event Marker",
@@ -94,7 +106,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 1.9,
+      "waypointRelativePos": 1.75,
       "command": {
         "type": "parallel",
         "data": {
@@ -111,14 +123,14 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.5,
-    "maxAcceleration": 2.5,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 400.0,
     "maxAngularAcceleration": 300.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -29.744881296942225,
+    "rotation": -43.264295411071586,
     "rotateFast": false
   },
   "reversed": false,

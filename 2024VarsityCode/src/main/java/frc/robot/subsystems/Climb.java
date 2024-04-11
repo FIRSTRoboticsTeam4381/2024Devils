@@ -39,32 +39,32 @@ public class Climb extends SubsystemBase {
     rightMotor = new CANSparkMax(Constants.Climb.rightClimbCAN, MotorType.kBrushless);
     leftMotor = new CANSparkMax(Constants.Climb.leftClimbCAN, MotorType.kBrushless);
 
-    rightMotor.setInverted(false);
-    leftMotor.follow(rightMotor, true);
+    leftMotor.setInverted(true);
+    rightMotor.follow(leftMotor, true);
 
-    SparkUtilities.optimizeFrames(rightMotor, true, false, true, false, false, false);
-    SparkUtilities.optimizeFrames(leftMotor, false, false, false, false, false, false);
+    SparkUtilities.optimizeFrames(rightMotor, false, false, true, false, false, false);
+    SparkUtilities.optimizeFrames(leftMotor, true, false, false, false, false, true);
 
     // Encoder Setup
-    relativeEncoder = rightMotor.getEncoder();
-    absoluteEncoder = rightMotor.getAbsoluteEncoder(Type.kDutyCycle);
+    relativeEncoder = leftMotor.getEncoder();
+    absoluteEncoder = leftMotor.getAbsoluteEncoder(Type.kDutyCycle);
 
-    climbController = rightMotor.getPIDController();
+    climbController = leftMotor.getPIDController();
 
     // PID Setup
     // TODO Base controller configuration
     climbController.setFeedbackDevice(absoluteEncoder);
-    climbController.setP(0);
-    climbController.setI(0);
-    climbController.setD(0);
-    climbController.setFF(0);
+    climbController.setP(0.01, 0);
+    climbController.setI(0, 0);
+    climbController.setD(0, 0);
+    climbController.setFF(0, 0);
     climbController.setOutputRange(-1, 1);
   }
 
   public void manualControl(double speed){
     //if(getPosition()<=0 && speed < 0.0) {speed = 0;}
     
-    rightMotor.set(speed);
+    leftMotor.set(speed);
   }
 
   public void setBaseReference(double position){
@@ -79,14 +79,14 @@ public class Climb extends SubsystemBase {
   }
 
   public Command goToPosition(double position, int slot){
-    return new SparkPosition(rightMotor, position, slot, 1.0, this, this::getAbsolutePosition);
+    return new SparkPosition(leftMotor, position, slot, 0.01, this, this::getAbsolutePosition);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("climb/Relativ Position", getRelativePosition());
+    SmartDashboard.putNumber("climb/Relative Position", getRelativePosition());
     SmartDashboard.putNumber("climb/Absolute Position", getAbsolutePosition());
 
     SmartDashboard.putNumber("climb/Left Base Current", rightMotor.getOutputCurrent());

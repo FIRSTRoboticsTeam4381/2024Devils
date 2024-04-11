@@ -180,6 +180,9 @@ public class ComposedCommands {
     /* TODO check positions and sequence */
     public Command climb(){
         return new SequentialCommandGroup(
+            climb.goToPosition(0.574, 0),
+            climb.goToPosition(0.25, 0)
+            /*
             climb.goToPosition(90.0, 0),
             pivot.goToAngle(25.0, 0),
             climb.goToPosition(45.0, 0),
@@ -187,6 +190,7 @@ public class ComposedCommands {
                 pivot.goToAngle(90.0, 0),
                 climb.goToPosition(-30.0, 0)
             )
+            */
         );
     }
 

@@ -25,7 +25,7 @@ public class Index extends SubsystemBase {
   private CANSparkMax indexMotor;
   private DigitalInput[] eyes;
 
-  public static final double INDEX_SPEED = 0.4;
+  public static final double INDEX_SPEED = 0.35;
 
 
   /* CONSTRUCTORS */
@@ -129,7 +129,7 @@ public class Index extends SubsystemBase {
     return new FunctionalCommand(
       ()->setPercOutput(INDEX_SPEED*(reversed?-1:1)),
       ()->{},
-      (interrupted)->{}/*setPercOutput(0.0)*/,
+      (interrupted)->{setPercOutput(interrupted?0.0:INDEX_SPEED);},
       ()->{return reversed?getEye(0):getEye(0)||getEye(1);},
       this
     ).withName("IndexUntilIn");

@@ -56,7 +56,7 @@ public class AutoShooter extends Command {
     double llDistance = ll.distanceFromGoal();
     double predictedPosition = ll.predictFuturePosition();
     if(llDistance >= 0.3 && llDistance <= 9){
-      double calculatedVelocity = 3898.436881 * Math.pow(1.054948756, predictedPosition)+450;
+      double calculatedVelocity = 3898.436881 * Math.pow(1.054948756, predictedPosition)+350;
       if(calculatedVelocity <= 6300 && calculatedVelocity >= 4000){
         currentVelocity = calculatedVelocity;
       }
