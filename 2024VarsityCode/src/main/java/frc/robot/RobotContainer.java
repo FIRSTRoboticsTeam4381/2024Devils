@@ -95,14 +95,14 @@ public class RobotContainer {
         PathPlannerLogging.setLogActivePathCallback((poses) -> {s_Swerve.mField.getObject("path").setPoses(poses);});
 
         m_AutoChooser.setDefaultOption("None", Autos.none());
-        m_AutoChooser.addOption("RED-Start1Pickup3", Autos.start1A1M1M2Red());
-        m_AutoChooser.addOption("RED-Start2Pickup2", Autos.start2A2M2Red());
-        m_AutoChooser.addOption("RED-Start2Pickup3", Autos.start2A2M1M2Red());
-        m_AutoChooser.addOption("RED-Start2Pickup5", Autos.start2A3A2A1M2M1Red());
-        m_AutoChooser.addOption("RED-Start2UnderStage", Autos.start2A2M3M2Red());
-        m_AutoChooser.addOption("RED-Start3Pickup3", Autos.start3A3M3A2Red());
-        m_AutoChooser.addOption("RED-Start3OutOfTheWay", Autos.start3M3M2Red());
-        m_AutoChooser.addOption("RED-Start4Pickup2", Autos.start4M4M5Red());
+        m_AutoChooser.addOption("RED-Start1Pickup3", Autos.start1A1M1M2Red()); // DONE
+        m_AutoChooser.addOption("RED-Start2Pickup2", Autos.start2A2M2Red()); // TODO - 6
+        m_AutoChooser.addOption("RED-Start2Pickup3", Autos.start2A2M1M2Red()); // TODO - 5
+        m_AutoChooser.addOption("RED-Start2Pickup5", Autos.start2A3A2A1M2M1Red()); // TODO - 4
+        m_AutoChooser.addOption("RED-Start2UnderStage", Autos.start2A2M3M2Red()); // TODO - 2
+        m_AutoChooser.addOption("RED-Start3Pickup3", Autos.start3A3M3A2Red()); // TODO - 3
+        m_AutoChooser.addOption("RED-Start3OutOfTheWay", Autos.start3M3M2Red()); // TODO - 1
+        m_AutoChooser.addOption("RED-Start4Pickup2", Autos.start4M4M5Red()); // DONE
 
         m_AutoChooser.addOption("BLUE-Start1Pickup3", Autos.start1A1M1M2Blue());
         m_AutoChooser.addOption("BLUE-Start2Pickup2", Autos.start2A2M2Blue());
@@ -112,6 +112,7 @@ public class RobotContainer {
         m_AutoChooser.addOption("BLUE-Start3Pickup3", Autos.start3A3M3A2Blue());
         m_AutoChooser.addOption("BLUE-Start3OutOfTheWay", Autos.start3M3M2Red());
         m_AutoChooser.addOption("BLUE-Start4Pickup2", Autos.start4M4M5Blue());
+
         m_AutoChooser.addOption("Test Auto1", Autos.testAuto1());
         m_AutoChooser.addOption("Test Auto2", Autos.testAuto2());
         m_AutoChooser.addOption("Test Auto3", Autos.testAuto3());

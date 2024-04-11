@@ -10,58 +10,56 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 public final class Autos {
-  
-  // TODO register commands in subsystem constructores using NamedCommands.registerCommand()
-  // TODO use AutoBuilder.buildAutoChooser() to choose autos??
+    public static Command start1A1M1M2Red(){ // DONE
+        return new PathPlannerAuto("Start1A1M1M2-Red");
+    }
+    public static Command start2A2M1M2Red(){ // TODO
+        return new PathPlannerAuto("Start2A2M1M2-Red");
+    }
+    public static Command start2A2M2Red(){ // TODO
+        return new PathPlannerAuto("Start2A2M2-Red");
+    }
+    public static Command start2A2M3M2Red(){ // TODO
+        return new PathPlannerAuto("Start2A2M3M2-Red");
+    }
+    public static Command start2A3A2A1M2M1Red(){ // TODO
+        return new PathPlannerAuto("Start2A3A2A1M2M1-Red");
+    }
+    public static Command start3A3M3A2Red(){ // TODO
+        return new PathPlannerAuto("Start3A3M3A2-Red");
+    }
+    public static Command start3M3M2Red(){ // TODO
+        return new PathPlannerAuto("Start3M3M2-Red");
+    }
+    public static Command start4M4M5Red(){ // DONE
+        return new PathPlannerAuto("Start4M4M5-Red");
+    }
 
     public static Command start1A1M1M2Blue(){
         return new PathPlannerAuto("Start1A1M1M2-Blue");
     }
-    public static Command start1A1M1M2Red(){
-        return new PathPlannerAuto("Start1A1M1M2-Red");
-    }
     public static Command start2A2M1M2Blue(){
         return new PathPlannerAuto("Start2A2M1M2-Blue");
-    }
-    public static Command start2A2M1M2Red(){
-        return new PathPlannerAuto("Start2A2M1M2-Red");
     }
     public static Command start2A2M2Blue(){
         return new PathPlannerAuto("Start2A2M2-Blue");
     }
-    public static Command start2A2M2Red(){
-        return new PathPlannerAuto("Start2A2M2-Red");
-    }
     public static Command start2A2M3M2Blue(){
         return new PathPlannerAuto("Start2A2M3M2-Blue");
-    }
-    public static Command start2A2M3M2Red(){
-        return new PathPlannerAuto("Start2A2M3M2-Red");
     }
     public static Command start2A3A2A1M2M1Blue(){
         return new PathPlannerAuto("Start2A3A2A1M2M1-Blue");
     }
-    public static Command start2A3A2A1M2M1Red(){
-        return new PathPlannerAuto("Start2A3A2A1M2M1-Red");
-    }
     public static Command start3A3M3A2Blue(){
         return new PathPlannerAuto("Start3A3M3A2-Blue");
-    }
-    public static Command start3A3M3A2Red(){
-        return new PathPlannerAuto("Start3A3M3A2-Red");
     }
     public static Command start3M3M2Blue(){
         return new PathPlannerAuto("Start3M3M2-Blue");
     }
-    public static Command start3M3M2Red(){
-        return new PathPlannerAuto("Start3M3M2-Red");
-    }
     public static Command start4M4M5Blue(){
         return new PathPlannerAuto("Start4M4M5-Blue");
     }
-    public static Command start4M4M5Red(){
-        return new PathPlannerAuto("Start4M4M5-Red");
-    }
+    
     public static Command testAuto1(){
         return new PathPlannerAuto("New Auto1");
     }
