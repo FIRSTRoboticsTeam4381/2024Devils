@@ -35,7 +35,7 @@
       "minWaypointRelativePos": 0.5,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 0.9,
         "maxAcceleration": 1.0,
         "maxAngularVelocity": 360.0,
         "maxAngularAcceleration": 120.0
@@ -79,7 +79,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.9,
+      "waypointRelativePos": 0.85,
       "command": {
         "type": "parallel",
         "data": {
@@ -107,7 +107,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Start2",
+  "folder": null,
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

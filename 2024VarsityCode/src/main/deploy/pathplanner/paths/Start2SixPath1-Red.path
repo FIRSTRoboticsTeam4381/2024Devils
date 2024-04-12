@@ -139,7 +139,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 1.45,
+      "waypointRelativePos": 1.55,
       "command": {
         "type": "parallel",
         "data": {
@@ -156,7 +156,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 1.95,
+      "waypointRelativePos": 1.7,
       "command": {
         "type": "parallel",
         "data": {
@@ -184,7 +184,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Start2SixPiece",
+  "folder": null,
   "previewStartingState": {
     "rotation": 90.0,
     "velocity": 0

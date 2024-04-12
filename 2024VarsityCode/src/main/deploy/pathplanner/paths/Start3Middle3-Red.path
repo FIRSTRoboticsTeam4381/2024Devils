@@ -109,6 +109,17 @@
         "maxAngularVelocity": 360.0,
         "maxAngularAcceleration": 120.0
       }
+    },
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 1.85,
+      "maxWaypointRelativePos": 2.4,
+      "constraints": {
+        "maxVelocity": 2.5,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 360.0,
+        "maxAngularAcceleration": 120.0
+      }
     }
   ],
   "eventMarkers": [
@@ -148,7 +159,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 2.3,
+      "waypointRelativePos": 2.4,
       "command": {
         "type": "parallel",
         "data": {
@@ -210,7 +221,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Start3",
+  "folder": null,
   "previewStartingState": {
     "rotation": -49.86009621718137,
     "velocity": 0

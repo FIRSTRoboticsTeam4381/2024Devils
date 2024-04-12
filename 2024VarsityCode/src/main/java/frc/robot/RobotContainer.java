@@ -98,10 +98,10 @@ public class RobotContainer {
         m_AutoChooser.addOption("RED-Start1Pickup3", Autos.start1A1M1M2Red()); // DONE
         m_AutoChooser.addOption("RED-Start2Pickup2", Autos.start2A2M2Red()); // TODO - 6
         m_AutoChooser.addOption("RED-Start2Pickup3", Autos.start2A2M1M2Red()); // TODO - 5
-        m_AutoChooser.addOption("RED-Start2Pickup5", Autos.start2A3A2A1M2M1Red()); // TODO - 4
-        m_AutoChooser.addOption("RED-Start2UnderStage", Autos.start2A2M3M2Red()); // TODO - 2
-        m_AutoChooser.addOption("RED-Start3Pickup3", Autos.start3A3M3A2Red()); // TODO - 3
-        m_AutoChooser.addOption("RED-Start3OutOfTheWay", Autos.start3M3M2Red()); // TODO - 1
+        m_AutoChooser.addOption("RED-Start2Pickup5", Autos.start2A3A2A1M2M1Red()); // DONE - Really good first 4, 5th is pretty good, 6th I don't think it will get
+        m_AutoChooser.addOption("RED-Start2UnderStage", Autos.start2A2M3M2Red()); // DONE - Solid, picks up consistently, wheels skid a bit
+        m_AutoChooser.addOption("RED-Start3Pickup3", Autos.start3A3M3A2Red()); // DONE - Amazing, might not have enough time for the 4th but it gets them all in
+        m_AutoChooser.addOption("RED-Start3OutOfTheWay", Autos.start3M3M2Red()); // DONE - Pretty good, picked up both most of the time but some issues with pick up
         m_AutoChooser.addOption("RED-Start4Pickup2", Autos.start4M4M5Red()); // DONE
 
         m_AutoChooser.addOption("BLUE-Start1Pickup3", Autos.start1A1M1M2Blue());
