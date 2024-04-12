@@ -27,6 +27,9 @@ public class Pivot extends SubsystemBase {
   private CANSparkMax rightPivot;
   private CANSparkMax leftPivot;
 
+  private CANSparkMax leader;
+  private CANSparkMax follower;
+
   private AbsoluteEncoder angleEncoder;
 
   private SparkPIDController pivotController;
@@ -47,26 +50,26 @@ public class Pivot extends SubsystemBase {
     // Motor Setup
     rightPivot = new CANSparkMax(Constants.Pivot.rightPivotCAN, MotorType.kBrushless);
     leftPivot = new CANSparkMax(Constants.Pivot.leftPivotCAN, MotorType.kBrushless);
+    angleEncoder = leftPivot.getAbsoluteEncoder(Type.kDutyCycle);
 
-    leftPivot.setInverted(true);
-    rightPivot.follow(leftPivot, true);
+    leader = leftPivot;
+    follower = rightPivot;
+
+    leader.setInverted(true);
+    follower.follow(leader, true);
     
-    rightPivot.setIdleMode(IdleMode.kBrake);
-    leftPivot.setIdleMode(IdleMode.kBrake);
+    leader.setIdleMode(IdleMode.kBrake);
+    follower.setIdleMode(IdleMode.kBrake);
 
-    rightPivot.setSmartCurrentLimit(50);
-    leftPivot.setSmartCurrentLimit(50);
+    leader.setSmartCurrentLimit(50);
+    follower.setSmartCurrentLimit(50);
 
-    SparkUtilities.optimizeFrames(rightPivot, false, false, true, false, false, false);
-    SparkUtilities.optimizeFrames(leftPivot, true, false, true, false, false, true);
-
-    // Encoder Setup
-    angleEncoder = leftPivot.getAbsoluteEncoder(Type.kDutyCycle); // TODO confirm motor that encoder is plugged in
-    //angleEncoder.setPositionConversionFactor(360);
+    SparkUtilities.optimizeFrames(leader, true, false, true, false, false, true);
+    SparkUtilities.optimizeFrames(follower, false, false, true, false, false, false);
 
     // PID Setup
     // TODO retune for new pivot
-    pivotController = leftPivot.getPIDController();
+    pivotController = leader.getPIDController();
     pivotController.setFeedbackDevice(angleEncoder);
     pivotController.setOutputRange(-1, 1);
     pivotController.setPositionPIDWrappingEnabled(true);
@@ -103,7 +106,7 @@ public class Pivot extends SubsystemBase {
     if(speed>0.0 && (angle>95&&angle<350)) {speed = 0.0;}
     if(speed<0.0 && (angle<=5||angle>350)) {speed = 0.0;}
 
-    leftPivot.set(speed);
+    leader.set(speed);
   }
 
   /**
@@ -124,7 +127,7 @@ public class Pivot extends SubsystemBase {
    * @return
    */
   public Command goToAngle(double angle, int slot){
-    return new SparkPosition(leftPivot, angle, slot, 1.0, this, this::getAngle);
+    return new SparkPosition(leader, angle, slot, 1.0, this, this::getAngle);
   }
 
   /**

@@ -8,6 +8,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
@@ -26,9 +27,11 @@ public class Climb extends SubsystemBase {
   private CANSparkMax rightMotor;
   private CANSparkMax leftMotor;
 
+  private CANSparkMax leader;
+  private CANSparkMax follower;
+
   private SparkPIDController climbController;
 
-  private RelativeEncoder relativeEncoder;
   private SparkAbsoluteEncoder absoluteEncoder;
 
   /* CONSTRUCTOR */
@@ -38,23 +41,29 @@ public class Climb extends SubsystemBase {
     // Motor Setup
     rightMotor = new CANSparkMax(Constants.Climb.rightClimbCAN, MotorType.kBrushless);
     leftMotor = new CANSparkMax(Constants.Climb.leftClimbCAN, MotorType.kBrushless);
-
-    leftMotor.setInverted(true);
-    rightMotor.follow(leftMotor, true);
-
-    SparkUtilities.optimizeFrames(rightMotor, false, false, true, false, false, false);
-    SparkUtilities.optimizeFrames(leftMotor, true, false, false, false, false, true);
-
-    // Encoder Setup
-    relativeEncoder = leftMotor.getEncoder();
     absoluteEncoder = leftMotor.getAbsoluteEncoder(Type.kDutyCycle);
 
-    climbController = leftMotor.getPIDController();
+    leader = leftMotor;
+    follower = rightMotor;
 
+    leader.setInverted(true);
+    follower.follow(leader, true);
+
+    leader.setIdleMode(IdleMode.kBrake);
+    follower.setIdleMode(IdleMode.kBrake);
+
+    leader.setSmartCurrentLimit(60);
+    follower.setSmartCurrentLimit(60);
+
+    SparkUtilities.optimizeFrames(leader, true, false, false, false, false, true);
+    SparkUtilities.optimizeFrames(follower, false, false, true, false, false, false);
+
+
+    climbController = leader.getPIDController();
     // PID Setup
     // TODO Base controller configuration
     climbController.setFeedbackDevice(absoluteEncoder);
-    climbController.setP(0.01, 0);
+    climbController.setP(0.001, 0);
     climbController.setI(0, 0);
     climbController.setD(0, 0);
     climbController.setFF(0, 0);
@@ -64,29 +73,25 @@ public class Climb extends SubsystemBase {
   public void manualControl(double speed){
     //if(getPosition()<=0 && speed < 0.0) {speed = 0;}
     
-    leftMotor.set(speed);
+    leader.set(speed);
   }
 
-  public void setBaseReference(double position){
-    climbController.setReference(position, ControlType.kPosition);
+  public void setReference(double position){
+    climbController.setReference(position, ControlType.kPosition, 0);
   }
 
-  public double getRelativePosition(){
-    return relativeEncoder.getPosition();
-  }
   public double getAbsolutePosition(){
     return absoluteEncoder.getPosition();
   }
 
   public Command goToPosition(double position, int slot){
-    return new SparkPosition(leftMotor, position, slot, 0.01, this, this::getAbsolutePosition);
+    return new SparkPosition(leader, position, slot, 0.01, this, this::getAbsolutePosition);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("climb/Relative Position", getRelativePosition());
     SmartDashboard.putNumber("climb/Absolute Position", getAbsolutePosition());
 
     SmartDashboard.putNumber("climb/Left Base Current", rightMotor.getOutputCurrent());
