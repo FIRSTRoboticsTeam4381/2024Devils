@@ -181,16 +181,12 @@ public class ComposedCommands {
     public Command climb(){
         return new SequentialCommandGroup(
             climb.goToPosition(0.574, 0),
-            climb.goToPosition(0.25, 0)
-            /*
-            climb.goToPosition(90.0, 0),
-            pivot.goToAngle(25.0, 0),
-            climb.goToPosition(45.0, 0),
+            pivot.goToAngle(18.5, 2),
+            climb.goToPosition(0.270, 0),
             new ParallelCommandGroup(
-                pivot.goToAngle(90.0, 0),
-                climb.goToPosition(-30.0, 0)
+                pivot.goToAngle(90.0, 1),
+                climb.goToPosition(0.98, 0)
             )
-            */
         );
     }
 

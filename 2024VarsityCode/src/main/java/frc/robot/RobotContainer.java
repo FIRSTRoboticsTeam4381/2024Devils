@@ -96,22 +96,22 @@ public class RobotContainer {
 
         m_AutoChooser.setDefaultOption("None", Autos.none());
         m_AutoChooser.addOption("RED-Start1Pickup3", Autos.start1A1M1M2Red()); // DONE
-        m_AutoChooser.addOption("RED-Start2Pickup2", Autos.start2A2M2Red()); // TODO - 6
-        m_AutoChooser.addOption("RED-Start2Pickup3", Autos.start2A2M1M2Red()); // TODO - 5
+        m_AutoChooser.addOption("RED-Start2Pickup2", Autos.start2A2M2Red()); // DONE
+        m_AutoChooser.addOption("RED-Start2Pickup3", Autos.start2A2M1M2Red()); // not using
         m_AutoChooser.addOption("RED-Start2Pickup5", Autos.start2A3A2A1M2M1Red()); // DONE - Really good first 4, 5th is pretty good, 6th I don't think it will get
         m_AutoChooser.addOption("RED-Start2UnderStage", Autos.start2A2M3M2Red()); // DONE - Solid, picks up consistently, wheels skid a bit
         m_AutoChooser.addOption("RED-Start3Pickup3", Autos.start3A3M3A2Red()); // DONE - Amazing, might not have enough time for the 4th but it gets them all in
         m_AutoChooser.addOption("RED-Start3OutOfTheWay", Autos.start3M3M2Red()); // DONE - Pretty good, picked up both most of the time but some issues with pick up
         m_AutoChooser.addOption("RED-Start4Pickup2", Autos.start4M4M5Red()); // DONE
 
-        m_AutoChooser.addOption("BLUE-Start1Pickup3", Autos.start1A1M1M2Blue());
-        m_AutoChooser.addOption("BLUE-Start2Pickup2", Autos.start2A2M2Blue());
-        m_AutoChooser.addOption("BLUE-Start2Pickup3", Autos.start2A2M1M2Blue());
-        m_AutoChooser.addOption("BLUE-Start2Pickup5", Autos.start2A3A2A1M2M1Blue());
-        m_AutoChooser.addOption("BLUE-Start2UnderStage", Autos.start2A2M3M2Blue());
-        m_AutoChooser.addOption("BLUE-Start3Pickup3", Autos.start3A3M3A2Blue());
-        m_AutoChooser.addOption("BLUE-Start3OutOfTheWay", Autos.start3M3M2Red());
-        m_AutoChooser.addOption("BLUE-Start4Pickup2", Autos.start4M4M5Blue());
+        m_AutoChooser.addOption("BLUE-Start1Pickup3", Autos.start1A1M1M2Blue()); // TODO
+        m_AutoChooser.addOption("BLUE-Start2Pickup2", Autos.start2A2M2Blue()); // TODO
+        m_AutoChooser.addOption("BLUE-Start2Pickup3", Autos.start2A2M1M2Blue()); // TODO
+        m_AutoChooser.addOption("BLUE-Start2Pickup5", Autos.start2A3A2A1M2M1Blue()); // TODO
+        m_AutoChooser.addOption("BLUE-Start2UnderStage", Autos.start2A2M3M2Blue()); // TODO
+        m_AutoChooser.addOption("BLUE-Start3Pickup3", Autos.start3A3M3A2Blue()); // TODO
+        m_AutoChooser.addOption("BLUE-Start3OutOfTheWay", Autos.start3M3M2Red()); // TODO
+        m_AutoChooser.addOption("BLUE-Start4Pickup2", Autos.start4M4M5Blue()); // TODO
 
         m_AutoChooser.addOption("Test Auto1", Autos.testAuto1());
         m_AutoChooser.addOption("Test Auto2", Autos.testAuto2());
@@ -144,7 +144,7 @@ public class RobotContainer {
         driver.PS().onTrue(new InstantCommand(()->s_LL.takeSnapshot())).onFalse(new InstantCommand(()->s_LL.resetSnapshot()));
         driver.L1().onTrue(s_Swerve.nitro());
         driver.cross().onTrue(new InstantCommand(()->s_Swerve.setBrakeMode(true))).onFalse(new InstantCommand(()->s_Swerve.setBrakeMode(false)));
-        driver.povDown().onTrue(commands.climb());
+        driver.PS().onTrue(commands.climb());
 
         specialist.square().toggleOnTrue(commands.subwooferMode());
         specialist.cross().toggleOnTrue(commands.groundIntake(new ManualPivot(specialist::getLeftY, s_Pivot)));

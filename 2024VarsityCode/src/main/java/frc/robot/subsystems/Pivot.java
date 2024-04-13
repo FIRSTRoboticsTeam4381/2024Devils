@@ -85,6 +85,11 @@ public class Pivot extends SubsystemBase {
     pivotController.setI(0.0, 1);
     pivotController.setD(0.006, 1);
     pivotController.setFF(0.0, 1);
+    // Slot 2 = Climbing
+    pivotController.setP(0.03, 2);
+    pivotController.setI(0.00001, 2);
+    pivotController.setD(0.006, 2);
+    pivotController.setFF(0.0, 2);
   }
 
 

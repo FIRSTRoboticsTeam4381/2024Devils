@@ -63,8 +63,8 @@ public class Climb extends SubsystemBase {
     // PID Setup
     // TODO Base controller configuration
     climbController.setFeedbackDevice(absoluteEncoder);
-    climbController.setP(0.001, 0);
-    climbController.setI(0, 0);
+    climbController.setP(3.0, 0);
+    climbController.setI(0.00225, 0);
     climbController.setD(0, 0);
     climbController.setFF(0, 0);
     climbController.setOutputRange(-1, 1);
@@ -85,7 +85,7 @@ public class Climb extends SubsystemBase {
   }
 
   public Command goToPosition(double position, int slot){
-    return new SparkPosition(leader, position, slot, 0.01, this, this::getAbsolutePosition);
+    return new SparkPosition(leader, position+0.25, slot, 0.05, this, this::getAbsolutePosition);
   }
 
   @Override
@@ -97,6 +97,7 @@ public class Climb extends SubsystemBase {
     SmartDashboard.putNumber("climb/Left Base Current", rightMotor.getOutputCurrent());
     SmartDashboard.putNumber("climb/Right Base Current", leftMotor.getOutputCurrent());
     SmartDashboard.putString("climb/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
+    SmartDashboard.putNumber("climb/I Accum", climbController.getIAccum());
   }
 
 
