@@ -48,7 +48,7 @@ public class Intake extends SubsystemBase {
 
   private void setPercOutput(double speed){
     intake.set(-speed);
-    helper.set(-speed*0.5);
+    helper.set(-speed*0.7);
   }
 
 

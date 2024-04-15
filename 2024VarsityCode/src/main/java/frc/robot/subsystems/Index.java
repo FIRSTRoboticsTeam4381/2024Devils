@@ -136,7 +136,7 @@ public class Index extends SubsystemBase {
   }
   public Command indexUntilReady(boolean reversed){
     return new FunctionalCommand(
-      ()->setPercOutput(INDEX_SPEED*0.5*(reversed?-1:1)),
+      ()->setPercOutput(INDEX_SPEED*0.75*(reversed?-1:1)),
       ()->{},
       (interrupted)->setPercOutput(0.0),
       ()->{return getEye(1);},
@@ -151,7 +151,7 @@ public class Index extends SubsystemBase {
    */
   public Command indexUntilShot(){
     return new FunctionalCommand(
-      ()->setPercOutput(INDEX_SPEED),
+      ()->setPercOutput(INDEX_SPEED*0.6),
       ()->{},
       (interrupted)->setPercOutput(0.0),
       ()->{return !getEye(0)&&!getEye(1);},

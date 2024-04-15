@@ -104,14 +104,14 @@ public class RobotContainer {
         m_AutoChooser.addOption("RED-Start3OutOfTheWay", Autos.start3M3M2Red()); // DONE - Pretty good, picked up both most of the time but some issues with pick up
         m_AutoChooser.addOption("RED-Start4Pickup2", Autos.start4M4M5Red()); // DONE
 
-        m_AutoChooser.addOption("BLUE-Start1Pickup3", Autos.start1A1M1M2Blue()); // TODO
-        m_AutoChooser.addOption("BLUE-Start2Pickup2", Autos.start2A2M2Blue()); // TODO
-        m_AutoChooser.addOption("BLUE-Start2Pickup3", Autos.start2A2M1M2Blue()); // TODO
-        m_AutoChooser.addOption("BLUE-Start2Pickup5", Autos.start2A3A2A1M2M1Blue()); // TODO
-        m_AutoChooser.addOption("BLUE-Start2UnderStage", Autos.start2A2M3M2Blue()); // TODO
-        m_AutoChooser.addOption("BLUE-Start3Pickup3", Autos.start3A3M3A2Blue()); // TODO
-        m_AutoChooser.addOption("BLUE-Start3OutOfTheWay", Autos.start3M3M2Red()); // TODO
-        m_AutoChooser.addOption("BLUE-Start4Pickup2", Autos.start4M4M5Blue()); // TODO
+        m_AutoChooser.addOption("BLUE-Start1Pickup3", Autos.start1A1M1M2Blue()); // DONE
+        m_AutoChooser.addOption("BLUE-Start2Pickup2", Autos.start2A2M2Blue()); // good
+        m_AutoChooser.addOption("BLUE-Start2Pickup3", Autos.start2A2M1M2Blue()); // not using
+        m_AutoChooser.addOption("BLUE-Start2Pickup5", Autos.start2A3A2A1M2M1Blue()); // DONE
+        m_AutoChooser.addOption("BLUE-Start2UnderStage", Autos.start2A2M3M2Blue()); // bad
+        m_AutoChooser.addOption("BLUE-Start3Pickup3", Autos.start3A3M3A2Blue()); // won't run that
+        m_AutoChooser.addOption("BLUE-Start3OutOfTheWay", Autos.start3M3M2Blue()); // bad
+        m_AutoChooser.addOption("BLUE-Start4Pickup2", Autos.start4M4M5Blue()); // Pretty good
 
         m_AutoChooser.addOption("Test Auto1", Autos.testAuto1());
         m_AutoChooser.addOption("Test Auto2", Autos.testAuto2());

@@ -53,10 +53,10 @@ public class ComposedCommands {
     public Command groundIntake(Command handoff){
         return new SequentialCommandGroup(
             new ParallelRaceGroup(
-                intake.run(),
+                index.indexUntilIn(false),
                 new ParallelCommandGroup( // Just get the note into the index
                     pivot.goToAngle(Pivot.Positions.intake, 1),
-                    index.indexUntilIn(false)
+                    intake.run()
                 )
             ),
             
@@ -185,7 +185,7 @@ public class ComposedCommands {
             climb.goToPosition(0.270, 0),
             new ParallelCommandGroup(
                 pivot.goToAngle(90.0, 1),
-                climb.goToPosition(0.98, 0)
+                climb.goToPosition(0.99, 0)
             )
         );
     }

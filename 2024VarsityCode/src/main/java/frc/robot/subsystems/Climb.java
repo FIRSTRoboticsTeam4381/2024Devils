@@ -64,7 +64,7 @@ public class Climb extends SubsystemBase {
     // TODO Base controller configuration
     climbController.setFeedbackDevice(absoluteEncoder);
     climbController.setP(3.0, 0);
-    climbController.setI(0.00225, 0);
+    climbController.setI(0.0023, 0);
     climbController.setD(0, 0);
     climbController.setFF(0, 0);
     climbController.setOutputRange(-1, 1);
