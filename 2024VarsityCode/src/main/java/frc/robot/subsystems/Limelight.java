@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -56,17 +58,18 @@ public class Limelight extends SubsystemBase{
 
       private double estimateErrorRed(){
         double distance = distanceFromGoal();
-        double estimatedError = 0.046136349*distance*distance + -0.1901477288*distance + 0.4475928182;
+        double estimatedError = 0.0459039304 * Math.pow(distance, 1.345147159);
         return estimatedError;
       }
       private double estimateErrorBlue(){
         double distance = distanceFromGoal();
-        double estimatedError = 0.0115684023*distance*distance + 0.0179131454*distance + 0.1411925354;
+        double estimatedError = 0.0460594022 * Math.pow(distance, 1.224620869);
         return estimatedError;
       }
+
       private double estimateDistance(){
         double lastDistance = distanceFromGoal();
-        double error = estimateError();
+        double error = DriverStation.getAlliance().get() == Alliance.Blue ? estimateErrorBlue() : estimateErrorRed();
         double latency = totalLatency();
         double velocity = getTargetRelativeVelocity();
         double estimatedRealDistance = lastDistance+error;
