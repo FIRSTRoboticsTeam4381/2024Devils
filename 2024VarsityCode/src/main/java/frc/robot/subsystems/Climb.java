@@ -64,7 +64,7 @@ public class Climb extends SubsystemBase {
     // TODO Base controller configuration
     climbController.setFeedbackDevice(absoluteEncoder);
     climbController.setP(3.0, 0);
-    climbController.setI(0.0023, 0);
+    climbController.setI(0.002, 0);
     climbController.setD(0, 0);
     climbController.setFF(0, 0);
     climbController.setOutputRange(-1, 1);
@@ -85,7 +85,7 @@ public class Climb extends SubsystemBase {
   }
 
   public Command goToPosition(double position, int slot){
-    return new SparkPosition(leader, position+0.25, slot, 0.05, this, this::getAbsolutePosition);
+    return new SparkPosition(leader, position, slot, 0.05, this, this::getAbsolutePosition);
   }
 
   @Override

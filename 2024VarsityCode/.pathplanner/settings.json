@@ -4,11 +4,12 @@
   "holonomicMode": true,
   "pathFolders": [
     "Basics",
+    "Destroy1",
     "New Auto1",
     "New Auto2",
     "New Auto3",
     "New Auto4",
-    "Destroy1",
+    "Worlds Autos",
     "Start1",
     "Start2",
     "Start2SixPiece",
@@ -17,6 +18,7 @@
   ],
   "autoFolders": [
     "New Autos",
+    "Worlds Autos",
     "Start1",
     "Start2",
     "Start3",

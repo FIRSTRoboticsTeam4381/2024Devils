@@ -118,6 +118,7 @@ public class RobotContainer {
         m_AutoChooser.addOption("Test Auto3", Autos.testAuto3());
         m_AutoChooser.addOption("Test Auto4", Autos.testAuto4());
         m_AutoChooser.addOption("Destroy", Autos.destroy());
+        m_AutoChooser.addOption("Just Shoot", Autos.justShoot());
         //m_AutoChooser.addOption("SysId Quas Fwd", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
         //m_AutoChooser.addOption("SysId Quas Rev", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse));
         //m_AutoChooser.addOption("SysId Dyna Fwd", s_Swerve.sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));

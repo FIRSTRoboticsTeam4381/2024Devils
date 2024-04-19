@@ -187,9 +187,9 @@ public class Shooter extends SubsystemBase {
   }
   public Command trapShoot(){
     return new FunctionalCommand(
-      ()->setTrapVelocity(),
+      ()->{setCurrentLimit(85,85);setTrapVelocity();},
       ()->{},
-      (interrupted)->setPercOutput(0, false),
+      (interrupted)->{setCurrentLimit(60, 60);setPercOutput(0, false);},
       ()->{return false;},
       this
     ).withName("Amp Deflect");

@@ -76,6 +76,12 @@ public final class Autos {
     public static Command destroy(){
         return new PathPlannerAuto("Destroy1");
     }
+    public static Command shoot1Taxi(){
+        return new PathPlannerAuto("NewWorldsAuto");
+    }
+    public static Command justShoot(){
+        return new PathPlannerAuto("JustShoot");
+    }
 
     // TODO test of a single path
     public static Command testPath(){

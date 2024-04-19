@@ -24,7 +24,7 @@ import frc.lib.util.SwerveModuleConstants;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static final double stickDeadband = 0.1;
+    public static final double stickDeadband = 0.12;
     public static final int ledPort = 0;
 
     public static final class Intake{

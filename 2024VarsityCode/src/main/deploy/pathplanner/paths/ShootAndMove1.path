@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.57,
-        "y": 6.21
+        "x": 0.7518994781213513,
+        "y": 4.391563704668065
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3052386446096693,
-        "y": 6.756042503963363
+        "x": 1.1500679206779225,
+        "y": 3.6069376561007047
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.141437338509483,
-        "y": 7.272429494930317
+        "x": 3.023801768002964,
+        "y": 0.7260718658384518
       },
       "prevControl": {
-        "x": 7.451210269325471,
-        "y": 7.1255726716996755
-      },
-      "nextControl": {
-        "x": 8.444449476970458,
-        "y": 7.3369001626879715
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 4.64,
-        "y": 6.36
-      },
-      "prevControl": {
-        "x": 5.742112975245627,
-        "y": 6.624342281815154
+        "x": 2.9886692583656194,
+        "y": 1.182794491123932
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,19 +30,19 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 8.365886124032471,
+      "waypointRelativePos": 0.35,
+      "rotationDegrees": -58.92935096276451,
       "rotateFast": false
     }
   ],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 1.6,
-      "maxWaypointRelativePos": 2.0,
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.3,
       "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 4.0,
+        "maxVelocity": 0.75,
+        "maxAcceleration": 2.0,
         "maxAngularVelocity": 360.0,
         "maxAngularAcceleration": 120.0
       }
@@ -66,25 +50,8 @@
   ],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.55,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Intake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 1.55,
+      "name": "Aim",
+      "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
         "data": {
@@ -100,8 +67,8 @@
       }
     },
     {
-      "name": "New Event Marker",
-      "waypointRelativePos": 1.9,
+      "name": "Shoot",
+      "waypointRelativePos": 0.2,
       "command": {
         "type": "parallel",
         "data": {
@@ -118,20 +85,20 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.95,
-    "maxAcceleration": 3.5,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 120.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 19.906189141105052,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Start1",
+  "folder": "Worlds Autos",
   "previewStartingState": {
-    "rotation": 15.722215540122233,
+    "rotation": -60.42216131873865,
     "velocity": 0
   },
   "useDefaultConstraints": false
