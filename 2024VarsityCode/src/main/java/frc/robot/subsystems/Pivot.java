@@ -108,8 +108,8 @@ public class Pivot extends SubsystemBase {
    */
   public void manualControl(double speed){
     double angle = getAngle();
-    if(speed>0.0 && (angle>95&&angle<350)) {speed = 0.0;}
-    if(speed<0.0 && (angle<=5||angle>350)) {speed = 0.0;}
+    if(speed>0.0 && (angle>100&&angle<350)) {speed = 0.0;}
+    if(speed<0.0 && (angle<=3||angle>350)) {speed = 0.0;}
 
     leader.set(speed);
   }

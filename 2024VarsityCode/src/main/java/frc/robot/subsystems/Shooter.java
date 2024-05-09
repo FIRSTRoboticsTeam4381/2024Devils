@@ -36,6 +36,8 @@ public class Shooter extends SubsystemBase {
   public static final double avgRPM = 6100;
 
   private double setpoint = 0.0;
+  //private boolean shootMode=true;
+  private boolean trapMode=false;
 
 
   /* CONSTRUCTOR */
@@ -81,7 +83,7 @@ public class Shooter extends SubsystemBase {
    * @return Boolean determining if it is okay to feed a note to the shooter
    */
   public boolean readyForNote(){
-    return (setpoint != 0 && (setpoint-Math.abs(propEncoder.getVelocity())<300 && setpoint-Math.abs(topEncoder.getVelocity())<300));
+    return (setpoint != 0 && (setpoint-Math.abs(propEncoder.getVelocity())<(trapMode?100:300) && setpoint-Math.abs(topEncoder.getVelocity())<(trapMode?100:300)));
   }
 
   public double getSetpoint(){
@@ -110,19 +112,22 @@ public class Shooter extends SubsystemBase {
    */
   public void setVelocity(double velocity, boolean deflect){
     setpoint = velocity;
-    propController.setReference(velocity, ControlType.kVelocity);
-    topController.setReference(velocity * (deflect?-1.0:1.0), ControlType.kVelocity);
+    propController.setReference(velocity, ControlType.kVelocity, 0);
+    topController.setReference(velocity * (deflect?-1.0:1.0), ControlType.kVelocity, 0);
+    trapMode=false;
   }
 
   public void setAmpVelocity(){
     setpoint = 1800;
-    propController.setReference(1800, ControlType.kVelocity);
-    topController.setReference(-4500, ControlType.kVelocity);
+    propController.setReference(1800, ControlType.kVelocity, 1);
+    topController.setReference(-4500, ControlType.kVelocity, 1);
+    trapMode=false;
   }
   public void setTrapVelocity(){
     setpoint = 1400;
-    propController.setReference(1400, ControlType.kVelocity);
-    topController.setReference(-3500, ControlType.kVelocity);
+    propController.setReference(1400, ControlType.kVelocity, 1);
+    topController.setReference(-4000, ControlType.kVelocity, 1);
+    trapMode=true;
   }
 
   public void setCurrentLimit(int current1, int current2){
@@ -187,7 +192,7 @@ public class Shooter extends SubsystemBase {
   }
   public Command trapShoot(){
     return new FunctionalCommand(
-      ()->{setCurrentLimit(85,85);setTrapVelocity();},
+      ()->{setCurrentLimit(80,80);setTrapVelocity();},
       ()->{},
       (interrupted)->{setCurrentLimit(60, 60);setPercOutput(0, false);},
       ()->{return false;},
@@ -211,9 +216,9 @@ public class Shooter extends SubsystemBase {
 
   public Command ejectFromAmp(){
     return new FunctionalCommand(
-      ()->setVelocity(-2000.0, true), 
+      ()->{setCurrentLimit(80,80);setVelocity(-2000.0, true);}, 
       ()->{}, 
-      (interrupted)->setPercOutput(0.0, false), 
+      (interrupted)->{setCurrentLimit(60,60);setPercOutput(0.0, false);}, 
       ()->{return false;}, 
       this).withName("Eject from amp");
   }
@@ -236,17 +241,29 @@ public class Shooter extends SubsystemBase {
   public void resetPID(){
     // PID Setup
     propController = propMotor.getPIDController();
-    propController.setP(0.001);
-    propController.setI(0.0);
-    propController.setD(0.0);
-    propController.setFF(0.000165);
+    propController.setP(0.001, 0);
+    propController.setI(0.0, 0);
+    propController.setD(0.0, 0);
+    propController.setFF(0.000165, 0);
     propController.setOutputRange(-1, 1);
 
     topController = topMotor.getPIDController();
-    topController.setP(0.0005);
-    topController.setI(0.0);
-    topController.setD(0.0);
-    topController.setFF(0.00016);
+    topController.setP(0.0005, 0);
+    topController.setI(0.0, 0);
+    topController.setD(0.0, 0);
+    topController.setFF(0.00016, 0);
+    topController.setOutputRange(-1, 1);
+
+    propController.setP(0.0005, 1);
+    propController.setI(0.0, 1);
+    propController.setD(0.0, 1);
+    propController.setFF(0.00016, 1);
+    propController.setOutputRange(-1, 1);
+
+    topController.setP(0.00025, 1);
+    topController.setI(0.0, 1);
+    topController.setD(0.0, 1);
+    topController.setFF(0.00016, 1);
     topController.setOutputRange(-1, 1);
   }
 

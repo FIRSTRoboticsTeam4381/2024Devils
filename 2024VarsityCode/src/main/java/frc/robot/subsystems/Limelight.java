@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.Optional;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -68,8 +70,13 @@ public class Limelight extends SubsystemBase{
       }
 
       private double estimateDistance(){
+        Optional<Alliance> allianceOptional = DriverStation.getAlliance();
+        Alliance alliance;
+        if(allianceOptional.isPresent()) alliance=allianceOptional.get();
+        else alliance=Alliance.Red;
+
         double lastDistance = distanceFromGoal();
-        double error = DriverStation.getAlliance().get() == Alliance.Blue ? estimateErrorBlue() : estimateErrorRed();
+        double error = alliance==Alliance.Blue ? estimateErrorBlue() : estimateErrorRed();
         double latency = totalLatency();
         double velocity = getTargetRelativeVelocity();
         double estimatedRealDistance = lastDistance+error;

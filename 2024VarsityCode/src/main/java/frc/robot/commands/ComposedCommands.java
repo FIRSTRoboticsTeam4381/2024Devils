@@ -146,8 +146,8 @@ public class ComposedCommands {
     */
     public Command subwooferMode(){
             return new ParallelCommandGroup(
-                pivot.goToAngle(46.5, 1),
-                shooter.shoot(4000),
+                pivot.goToAngle(49.5, 1),
+                shooter.shoot(3625),
                 setRobotState(State.Subwoofer)
             );
     }

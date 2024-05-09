@@ -2,9 +2,24 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Command Scheduler": "Scheduler",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
-      "/SmartDashboard/Toggle Debug Dashboards": "Command"
+      "/SmartDashboard/Toggle Debug Dashboards": "Command",
+      "/SmartDashboard/configs/Burn Index Settings": "Command",
+      "/SmartDashboard/configs/Burn Intake Settings": "Command",
+      "/SmartDashboard/configs/Burn Pivot Settings": "Command",
+      "/SmartDashboard/configs/Burn Shooter Settings": "Command",
+      "/SmartDashboard/configs/Burn Swerve Settings": "Command",
+      "/SmartDashboard/position/Field": "Field2d",
+      "/SmartDashboard/shooter/Reset PIDs": "Command"
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "open": true
+      }
     }
   },
   "NetworkTables Info": {
