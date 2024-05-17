@@ -4,8 +4,15 @@
 
 package frc.robot.subsystems;
 
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -14,14 +21,70 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Camera extends SubsystemBase {
   /** Creates a new Camera. */
   AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-  
+  private PhotonCamera cam;
+  private Transform3d robotToCam;
+  private PhotonPoseEstimator poseEstimate;
+
   public Camera() {
-    //cam = new PhotonCamera("testCamera");
-    Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));
+    cam = new PhotonCamera("Camera D");
+    robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));
+    poseEstimate = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, cam, robotToCam);
   }
+
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    Pose3d pose;
+    pose = poseEstimate.update().get().estimatedPose;
+  }
+
+
+  public boolean GetTargets() {
+    var result = cam.getLatestResult();
+    boolean hasTargets = result.hasTargets();
+    return hasTargets;
+  }
+
+
+  public double GetTargetYaw() {
+    var result = cam.getLatestResult();
+    PhotonTrackedTarget target = result.getBestTarget();
+    double yaw = target.getYaw();
+    return yaw;
+  }
+
+  public double GetTargetPitch() {
+    var result = cam.getLatestResult();
+    PhotonTrackedTarget target = result.getBestTarget();
+    double pitch = target.getPitch();
+    return pitch;
+  }
+
+  public double GetTargetArea() {
+    var result = cam.getLatestResult();
+    PhotonTrackedTarget target = result.getBestTarget();
+    double area = target.getArea();
+    return area;
+  }
+
+  public int GetAprilTagID() {
+    var result = cam.getLatestResult();
+    PhotonTrackedTarget target = result.getBestTarget();
+    int targetID = target.getFiducialId();
+    return targetID;
+  }
+
+  public double GetAprilTagPoseAmbiguity() {
+    var result = cam.getLatestResult();
+    PhotonTrackedTarget target = result.getBestTarget();
+    double poseAmbiguity = target.getPoseAmbiguity();
+    return poseAmbiguity;
+  }
+
+  public void GetAprilTagPose() {
+    var result = cam.getLatestResult();
+    PhotonTrackedTarget target = result.getBestTarget();
+    // Oddly doesn't work
+    //Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), aprilTagFieldLayout.getTagPose(target.getFiducialId()), cameraToRobot);
   }
 }
