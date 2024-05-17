@@ -289,4 +289,7 @@ public class Swerve extends SubsystemBase{
             m.setBrakeMode(enabled);
         }
     }
+    public void addPoseToField(String label, Pose2d pose){
+        mField.getObject(label).setPose(pose);
+    }
 }
