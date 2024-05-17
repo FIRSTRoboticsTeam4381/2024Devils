@@ -29,10 +29,10 @@ public class PhotonVision extends SubsystemBase {
     /** Creates a new PhotonVision. */
     public PhotonVision() {
         cam1 = new PhotonCamera("camera1"); // TODO change to match name in PhotonVision UI
-        Transform3d cam1location = new Transform3d(0,0,0, new Rotation3d(0,0,0));
+        Transform3d cam1location = new Transform3d(0,0,0, new Rotation3d(0,0,0)); //TODO
 
         cam2 = new PhotonCamera("camera2"); // TODO change to match name in PhotonVision UI
-        Transform3d cam2location = new Transform3d(0,0,0, new Rotation3d(0,0,0));
+        Transform3d cam2location = new Transform3d(0,0,0, new Rotation3d(0,0,0)); //TODO
 
         est1 = new PhotonPoseEstimator(apriltagLayout, PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cam1, cam1location); //TODO could also use AVG if can't configure in UI
         est2 = new PhotonPoseEstimator(apriltagLayout, PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cam2, cam2location);
