@@ -13,6 +13,7 @@ import frc.robot.commands.ManualPivot;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
@@ -54,6 +55,7 @@ public class RobotContainer {
     public static final Shooter s_Shooter = new Shooter();
     public static final Climb s_Climb = new Climb();
     public static final Limelight s_LL = new Limelight();
+    public static final PhotonVision s_Vision = new PhotonVision();
     //public static final LEDs s_LED = new LEDs();
 
     /* Commands */
