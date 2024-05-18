@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 
 public class Camera extends SubsystemBase {
   /** Creates a new Camera. */
@@ -24,20 +25,24 @@ public class Camera extends SubsystemBase {
   private PhotonCamera cam;
   private Transform3d robotToCam;
   private PhotonPoseEstimator poseEstimate;
+  private Pose3d pose;
 
   public Camera() {
     cam = new PhotonCamera("Camera D");
     robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));
-    poseEstimate = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, cam, robotToCam);
+    poseEstimate = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cam, robotToCam);
   }
 
 
   @Override
   public void periodic() {
-    Pose3d pose;
-    pose = poseEstimate.update().get().estimatedPose;
+    if(poseEstimate.update().isPresent()) {
+      pose = poseEstimate.update().get().estimatedPose;
+    }else{
+      pose = new Pose3d();
+    }
+    
   }
-
 
   public boolean GetTargets() {
     var result = cam.getLatestResult();
