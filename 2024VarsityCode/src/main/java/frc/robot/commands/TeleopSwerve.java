@@ -44,7 +44,7 @@ public class TeleopSwerve extends Command{
         rAxis = (Math.abs(rAxis) < Constants.stickDeadband) ? 0 : rAxis;
 
         /* Slow Trigger */
-        double slowdown = 1 - ((controller.getR2Axis()+1.0)/2.0 < Constants.stickDeadband ? 0 : (controller.getR2Axis()+1.0)/2.0);
+        double slowdown = 0.2;
         yAxis *= slowdown;
         xAxis *= slowdown;
         rAxis *= slowdown;

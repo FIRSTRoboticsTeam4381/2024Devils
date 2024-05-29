@@ -28,12 +28,12 @@ public class ComposedCommands {
     private Limelight ll;
     private Swerve swerve;
     //private LEDs leds;
-    private CommandPS4Controller controller;
+    //private CommandPS4Controller controller;
     private State state = State.None;
 
     // TODO change pivot commands over to profiled motion once that's done
 
-    public ComposedCommands(CommandPS4Controller controller, Intake intake, Index index, Shooter shooter, Pivot pivot, Climb climb, Limelight ll, Swerve swerve){
+    public ComposedCommands(Intake intake, Index index, Shooter shooter, Pivot pivot, Climb climb, Limelight ll, Swerve swerve){
         this.intake = intake;
         this.index = index;
         this.shooter = shooter;
@@ -42,7 +42,7 @@ public class ComposedCommands {
         this.swerve = swerve;
         this.climb=climb;
         //this.leds=leds;
-        this.controller = controller;
+        //this.controller = controller;
     }
 
     public Command setRobotState(State state){

@@ -24,6 +24,7 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
@@ -44,7 +45,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 public class RobotContainer {
     /* Controllers */
     private static final CommandPS4Controller driver = new CommandPS4Controller(0);
-    private static final CommandPS4Controller specialist = new CommandPS4Controller(1);
+    //private static final CommandPS4Controller specialist = new CommandPS4Controller(1);
+    private static final CommandPS4Controller adult = new CommandPS4Controller(1);
+    
 
     /* Subsystems */
     public static final Swerve s_Swerve = new Swerve();
@@ -57,16 +60,18 @@ public class RobotContainer {
     //public static final LEDs s_LED = new LEDs();
 
     /* Commands */
-   public static final ComposedCommands commands = new ComposedCommands(specialist, s_Intake, s_Index, s_Shooter, s_Pivot, s_Climb, s_LL, s_Swerve);
+   public static final ComposedCommands commands = new ComposedCommands(s_Intake, s_Index, s_Shooter, s_Pivot, s_Climb, s_LL, s_Swerve);
 
     // Auto Chooser
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
-        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true).withName("Teleop"));
-        s_Pivot.setDefaultCommand(new ManualPivot(specialist::getLeftY, s_Pivot).withName("Manual Pivot"));
-        s_Climb.setDefaultCommand(new ManualClimb(specialist, s_Climb));
+        s_Swerve.setDefaultCommand(new InstantCommand(() -> {
+            s_Swerve.drive(new Translation2d(0,0), 0, false, false);
+        }, s_Swerve));
+        //s_Pivot.setDefaultCommand(new ManualPivot(specialist::getLeftY, s_Pivot).withName("Manual Pivot"));
+        //s_Climb.setDefaultCommand(new ManualClimb(specialist, s_Climb));
 
         SmartDashboard.putData("PDP", new PowerDistribution());
         SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
@@ -139,28 +144,30 @@ public class RobotContainer {
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
         
         // Auto Rotation
-        driver.triangle().whileTrue(new AutoRotatingSwerve(s_Swerve, s_LL, driver, true).withName("Teleop Auto Rotate"));
+        //driver.triangle().whileTrue(new AutoRotatingSwerve(s_Swerve, s_LL, driver, true).withName("Teleop Auto Rotate"));
         // Shoot Note
-        driver.R1().or(specialist.R1()).whileTrue(commands.feedNote());
-        driver.PS().onTrue(new InstantCommand(()->s_LL.takeSnapshot())).onFalse(new InstantCommand(()->s_LL.resetSnapshot()));
-        driver.L1().onTrue(s_Swerve.nitro());
-        driver.cross().onTrue(new InstantCommand(()->s_Swerve.setBrakeMode(true))).onFalse(new InstantCommand(()->s_Swerve.setBrakeMode(false)));
-        driver.PS().onTrue(commands.climb());
+        //driver.R1().or(specialist.R1()).whileTrue(commands.feedNote());
+        //driver.PS().onTrue(new InstantCommand(()->s_LL.takeSnapshot())).onFalse(new InstantCommand(()->s_LL.resetSnapshot()));
+        //driver.L1().onTrue(s_Swerve.nitro());
+        //driver.cross().onTrue(new InstantCommand(()->s_Swerve.setBrakeMode(true))).onFalse(new InstantCommand(()->s_Swerve.setBrakeMode(false)));
+        //driver.PS().onTrue(commands.climb());
 
-        specialist.square().toggleOnTrue(commands.subwooferMode());
-        specialist.cross().toggleOnTrue(commands.groundIntake(new ManualPivot(specialist::getLeftY, s_Pivot)));
-        specialist.circle().whileTrue(commands.ejectNote());
-        specialist.triangle().whileTrue(new AutoShooter(s_Pivot, s_Shooter, s_LL, s_Swerve, true));
+        //specialist.square().toggleOnTrue(commands.subwooferMode());
+        //specialist.cross().toggleOnTrue(commands.groundIntake(new ManualPivot(specialist::getLeftY, s_Pivot)));
+        //specialist.circle().whileTrue(commands.ejectNote());
+        //specialist.triangle().whileTrue(new AutoShooter(s_Pivot, s_Shooter, s_LL, s_Swerve, true));
 
-        specialist.povRight().toggleOnTrue(commands.ampMode());
-        specialist.povDown().whileTrue(commands.reverseAmp());
-        specialist.povLeft().toggleOnTrue(s_Shooter.trapShoot());
-        specialist.povUp().toggleOnTrue(commands.podiumMode());
+        //specialist.povRight().toggleOnTrue(commands.ampMode());
+        //specialist.povDown().whileTrue(commands.reverseAmp());
+        //specialist.povLeft().toggleOnTrue(s_Shooter.trapShoot());
+        //specialist.povUp().toggleOnTrue(commands.podiumMode());
 
-        specialist.L1().toggleOnTrue(commands.startShooter());
-        specialist.PS().toggleOnTrue(commands.allianceLineMode());
+        //specialist.L1().toggleOnTrue(commands.startShooter());
+        //specialist.PS().toggleOnTrue(commands.allianceLineMode());
 
-        driver.touchpad().or(specialist.touchpad()).onTrue(commands.cancelAll());
+        driver.touchpad().onTrue(commands.cancelAll());
+
+        adult.L1().and(adult.R1()).whileTrue(new TeleopSwerve(s_Swerve, driver, true).withName("Teleop"));
     }
 
     private void registerCommands(){
