@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -16,6 +19,8 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
@@ -27,17 +32,22 @@ public class Camera extends SubsystemBase {
   private PhotonPoseEstimator poseEstimate;
   private Pose3d pose;
 
+  StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
+    .getStructTopic("Camera_C (1)", Pose3d.struct).publish();
+
   public Camera() {
-    cam = new PhotonCamera("Camera D");
-    robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));
+    cam = new PhotonCamera("Camera_C (1)");
+    robotToCam = new Transform3d(new Translation3d(0.3, -0.26, 0.21), new Rotation3d(0,-45/180.0*Math.PI,45.0/180.0*Math.PI));
     poseEstimate = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cam, robotToCam);
   }
 
 
   @Override
   public void periodic() {
-    if(poseEstimate.update().isPresent()) {
-      pose = poseEstimate.update().get().estimatedPose;
+    Optional<EstimatedRobotPose> x = poseEstimate.update();
+    if(x.isPresent()) {
+      pose = x.get().estimatedPose;
+      publisher.set(pose);
     }else{
       pose = new Pose3d();
     }

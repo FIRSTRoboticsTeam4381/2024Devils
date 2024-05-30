@@ -60,6 +60,7 @@ public class Swerve extends SubsystemBase{
         );
 
         routine = setupSysId();
+        SmartDashboard.putData(mField);
     }
 
     private SysIdRoutine setupSysId(){
