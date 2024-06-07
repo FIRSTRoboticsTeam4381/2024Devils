@@ -27,27 +27,45 @@ import frc.robot.RobotContainer;
 public class Camera extends SubsystemBase {
   /** Creates a new Camera. */
   AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-  private PhotonCamera cam;
-  private Transform3d robotToCam;
-  private PhotonPoseEstimator poseEstimate;
+  private PhotonCamera camC;
+  private PhotonCamera camD;
+  private Transform3d robotToCamC;
+  private Transform3d robotToCamD;
+  private PhotonPoseEstimator poseEstimateC;
+  private PhotonPoseEstimator poseEstimateD;
   private Pose3d pose;
 
-  StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
+  StructPublisher<Pose3d> publisherC = NetworkTableInstance.getDefault()
     .getStructTopic("Camera_C (1)", Pose3d.struct).publish();
+    
+  StructPublisher<Pose3d> publisherD = NetworkTableInstance.getDefault()
+    .getStructTopic("Camera_D", Pose3d.struct).publish();
+    
 
   public Camera() {
-    cam = new PhotonCamera("Camera_C (1)");
-    robotToCam = new Transform3d(new Translation3d(0.3, -0.26, 0.21), new Rotation3d(0,-45/180.0*Math.PI,45.0/180.0*Math.PI));
-    poseEstimate = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cam, robotToCam);
+    camC = new PhotonCamera("Camera_C (1)");
+    camD = new PhotonCamera("Camera_D");
+    robotToCamC = new Transform3d(new Translation3d(0.3, -0.26, 0.21), new Rotation3d(0,-45/180.0*Math.PI,45.0/180.0*Math.PI));
+    robotToCamD = new Transform3d(new Translation3d(0.3, 0.26, 0.21), new Rotation3d(0,-45/180.0*Math.PI,-45.0/180.0*Math.PI));
+    poseEstimateC = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camC, robotToCamC);
+    poseEstimateD = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camD, robotToCamD);
   }
 
 
   @Override
   public void periodic() {
-    Optional<EstimatedRobotPose> x = poseEstimate.update();
+    Optional<EstimatedRobotPose> x = poseEstimateC.update();
+    Optional<EstimatedRobotPose> y = poseEstimateD.update();
     if(x.isPresent()) {
       pose = x.get().estimatedPose;
-      publisher.set(pose);
+      publisherC.set(pose);
+    }else{
+      pose = new Pose3d();
+    }
+
+    if(y.isPresent()) {
+      pose = y.get().estimatedPose;
+      publisherD.set(pose);
     }else{
       pose = new Pose3d();
     }
@@ -55,49 +73,49 @@ public class Camera extends SubsystemBase {
   }
 
   public boolean GetTargets() {
-    var result = cam.getLatestResult();
+    var result = camC.getLatestResult();
     boolean hasTargets = result.hasTargets();
     return hasTargets;
   }
 
 
   public double GetTargetYaw() {
-    var result = cam.getLatestResult();
+    var result = camC.getLatestResult();
     PhotonTrackedTarget target = result.getBestTarget();
     double yaw = target.getYaw();
     return yaw;
   }
 
   public double GetTargetPitch() {
-    var result = cam.getLatestResult();
+    var result = camC.getLatestResult();
     PhotonTrackedTarget target = result.getBestTarget();
     double pitch = target.getPitch();
     return pitch;
   }
 
   public double GetTargetArea() {
-    var result = cam.getLatestResult();
+    var result = camC.getLatestResult();
     PhotonTrackedTarget target = result.getBestTarget();
     double area = target.getArea();
     return area;
   }
 
   public int GetAprilTagID() {
-    var result = cam.getLatestResult();
+    var result = camC.getLatestResult();
     PhotonTrackedTarget target = result.getBestTarget();
     int targetID = target.getFiducialId();
     return targetID;
   }
 
   public double GetAprilTagPoseAmbiguity() {
-    var result = cam.getLatestResult();
+    var result = camC.getLatestResult();
     PhotonTrackedTarget target = result.getBestTarget();
     double poseAmbiguity = target.getPoseAmbiguity();
     return poseAmbiguity;
   }
 
   public void GetAprilTagPose() {
-    var result = cam.getLatestResult();
+    var result = camC.getLatestResult();
     PhotonTrackedTarget target = result.getBestTarget();
     // Oddly doesn't work
     //Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), aprilTagFieldLayout.getTagPose(target.getFiducialId()), cameraToRobot);
