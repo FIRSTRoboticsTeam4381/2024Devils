@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.lang.reflect.Array;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
@@ -15,6 +16,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -33,6 +35,12 @@ public class Camera extends SubsystemBase {
   private Transform3d robotToCamD;
   private PhotonPoseEstimator poseEstimateC;
   private PhotonPoseEstimator poseEstimateD;
+  private double poseX;
+  private double poseY;
+  private double poseZ;
+  private Pose3d poseR;
+  private Pose3d poseC;
+  private Pose3d poseD;
   private Pose3d pose;
 
   StructPublisher<Pose3d> publisherC = NetworkTableInstance.getDefault()
@@ -40,6 +48,9 @@ public class Camera extends SubsystemBase {
     
   StructPublisher<Pose3d> publisherD = NetworkTableInstance.getDefault()
     .getStructTopic("Camera_D", Pose3d.struct).publish();
+
+  StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
+    .getStructTopic("all", Pose3d.struct).publish();
     
 
   public Camera() {
@@ -49,27 +60,52 @@ public class Camera extends SubsystemBase {
     robotToCamD = new Transform3d(new Translation3d(0.3, 0.26, 0.21), new Rotation3d(0,-45/180.0*Math.PI,-45.0/180.0*Math.PI));
     poseEstimateC = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camC, robotToCamC);
     poseEstimateD = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camD, robotToCamD);
+    pose = new Pose3d();
   }
+
 
 
   @Override
   public void periodic() {
     Optional<EstimatedRobotPose> x = poseEstimateC.update();
     Optional<EstimatedRobotPose> y = poseEstimateD.update();
-    if(x.isPresent()) {
-      pose = x.get().estimatedPose;
-      publisherC.set(pose);
+    if(x.isPresent() && !y.isPresent()) {
+      poseC = x.get().estimatedPose;
+      publisherC.set(poseC);
     }else{
-      pose = new Pose3d();
+      poseC = new Pose3d();
+      poseD = new Pose3d();
     }
 
+    if(!x.isPresent() && y.isPresent()) {
+      poseD = y.get().estimatedPose;
+      publisherD.set(poseD);
+    }else{
+      poseC = new Pose3d();
+      poseD = new Pose3d();
+    }
+
+    if(x.isPresent() && y.isPresent()) {
+      poseC = x.get().estimatedPose;
+      poseD = y.get().estimatedPose;
+      poseX = (poseC.getX() + poseD.getX()) / 2;
+      poseY = (poseC.getY() + poseD.getY()) / 2;
+      poseZ = (poseC.getZ() + poseD.getZ()) / 2;
+      //poseR = poseC.getRotation() + poseD.getRotation();
+      pose = new Pose3d(poseX,poseY,poseZ,null);
+      publisher.set(pose);
+    }else{
+      poseC = new Pose3d();
+      poseD = new Pose3d();
+    }
+    /* 
     if(y.isPresent()) {
       pose = y.get().estimatedPose;
       publisherD.set(pose);
     }else{
       pose = new Pose3d();
     }
-    
+    */
   }
 
   public boolean GetTargets() {
