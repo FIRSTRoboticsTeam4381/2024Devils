@@ -54,22 +54,24 @@ public class Camera extends SubsystemBase {
 
   @Override
   public void periodic() {
-    Optional<EstimatedRobotPose> x = poseEstimateC.update();
-    Optional<EstimatedRobotPose> y = poseEstimateD.update();
-    if(x.isPresent()) {
-      pose = x.get().estimatedPose;
-      publisherC.set(pose);
+    Optional<EstimatedRobotPose> c = poseEstimateC.update();
+    Optional<EstimatedRobotPose> d = poseEstimateD.update();
+
+    if(c.isPresent()) {
+      EstimatedRobotPose pose = c.get();
+      publisherC.set(pose.estimatedPose);
+      RobotContainer.s_Swerve.mSwerveOdometry.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }else{
       pose = new Pose3d();
     }
 
-    if(y.isPresent()) {
-      pose = y.get().estimatedPose;
-      publisherD.set(pose);
+    if(d.isPresent()) {
+      EstimatedRobotPose pose = d.get();
+      publisherD.set(pose.estimatedPose);
+      RobotContainer.s_Swerve.mSwerveOdometry.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }else{
       pose = new Pose3d();
     }
-    
   }
 
   public boolean GetTargets() {
