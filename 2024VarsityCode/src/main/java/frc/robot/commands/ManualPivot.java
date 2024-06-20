@@ -33,7 +33,7 @@ public class ManualPivot extends Command {
   public void execute() {
     double axis = joystick.get();
     axis = Math.abs(axis)<Constants.stickDeadband ? 0.0 : axis;
-    axis *= -0.6;
+    axis *= -0.4;
 
     pivot.manualControl(axis+basicFeedforward());
   }

@@ -46,7 +46,7 @@ public class RobotContainer {
     /* Controllers */
     private static final CommandPS4Controller driver = new CommandPS4Controller(0);
     //private static final CommandPS4Controller specialist = new CommandPS4Controller(1);
-    private static final CommandPS4Controller adult = new CommandPS4Controller(1);
+    //private static final CommandPS4Controller adult = new CommandPS4Controller(1);
     
 
     /* Subsystems */
@@ -67,10 +67,8 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
-        s_Swerve.setDefaultCommand(new InstantCommand(() -> {
-            s_Swerve.drive(new Translation2d(0,0), 0, false, false);
-        }, s_Swerve));
-        //s_Pivot.setDefaultCommand(new ManualPivot(specialist::getLeftY, s_Pivot).withName("Manual Pivot"));
+        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true).withName("Teleop"));
+        s_Pivot.setDefaultCommand(new ManualPivot(driver::getRightY, s_Pivot).withName("Manual Pivot"));
         //s_Climb.setDefaultCommand(new ManualClimb(specialist, s_Climb));
 
         SmartDashboard.putData("PDP", new PowerDistribution());
@@ -146,7 +144,10 @@ public class RobotContainer {
         // Auto Rotation
         //driver.triangle().whileTrue(new AutoRotatingSwerve(s_Swerve, s_LL, driver, true).withName("Teleop Auto Rotate"));
         // Shoot Note
-        //driver.R1().or(specialist.R1()).whileTrue(commands.feedNote());
+        driver.R1().whileTrue(commands.feedNote());
+        driver.cross().toggleOnTrue(commands.groundIntake(new ManualPivot(driver::getRightY, s_Pivot)));
+        driver.circle().whileTrue(commands.ejectNote());
+        driver.L1().toggleOnTrue(commands.startShooter());
         //driver.PS().onTrue(new InstantCommand(()->s_LL.takeSnapshot())).onFalse(new InstantCommand(()->s_LL.resetSnapshot()));
         //driver.L1().onTrue(s_Swerve.nitro());
         //driver.cross().onTrue(new InstantCommand(()->s_Swerve.setBrakeMode(true))).onFalse(new InstantCommand(()->s_Swerve.setBrakeMode(false)));
@@ -167,7 +168,7 @@ public class RobotContainer {
 
         driver.touchpad().onTrue(commands.cancelAll());
 
-        adult.L1().and(adult.R1()).whileTrue(new TeleopSwerve(s_Swerve, driver, true).withName("Teleop"));
+        //adult.L1().and(adult.R1()).whileTrue(new TeleopSwerve(s_Swerve, driver, true).withName("Teleop"));
     }
 
     private void registerCommands(){
