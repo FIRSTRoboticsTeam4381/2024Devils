@@ -45,8 +45,8 @@ public class Camera extends SubsystemBase {
   public Camera() {
     camC = new PhotonCamera("Camera_C (1)");
     camD = new PhotonCamera("Camera_D");
-    robotToCamC = new Transform3d(new Translation3d(0.3, -0.26, 0.21), new Rotation3d(0,-45/180.0*Math.PI,45.0/180.0*Math.PI));
-    robotToCamD = new Transform3d(new Translation3d(0.3, 0.26, 0.21), new Rotation3d(0,-45/180.0*Math.PI,-45.0/180.0*Math.PI));
+    robotToCamC = new Transform3d(new Translation3d(-0.3, 0.26, 0.21), new Rotation3d(0,-45/180.0*Math.PI,225.0/180.0*Math.PI));
+    robotToCamD = new Transform3d(new Translation3d(-0.3, -0.26, 0.21), new Rotation3d(0,-45/180.0*Math.PI,135.0/180.0*Math.PI));
     poseEstimateC = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camC, robotToCamC);
     poseEstimateD = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camD, robotToCamD);
   }
