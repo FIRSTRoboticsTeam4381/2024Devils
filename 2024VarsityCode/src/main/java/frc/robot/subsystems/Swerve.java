@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -26,7 +27,7 @@ import frc.lib.util.LogOrDash;
 import frc.robot.Constants;
 
 public class Swerve extends SubsystemBase{
-    public SwerveDriveOdometry mSwerveOdometry;
+    public SwerveDrivePoseEstimator mSwerveOdometry;
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
     public Field2d mField;
@@ -46,7 +47,7 @@ public class Swerve extends SubsystemBase{
             new SwerveModule(3, Constants.Swerve.Mod3.constants)
         };
 
-        mSwerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getPositions());
+        mSwerveOdometry = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getYaw(), getPositions(), new Pose2d(0,0, new Rotation2d(0))); // TODO initial pose?
 
         // TODO check - auto
         AutoBuilder.configureHolonomic(
@@ -102,7 +103,7 @@ public class Swerve extends SubsystemBase{
                     translation.getX(), 
                     translation.getY(), 
                     rotation),
-                mSwerveOdometry.getPoseMeters(), 
+                mSwerveOdometry.getEstimatedPosition(), 
                 gyro));
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed); 
  
@@ -153,7 +154,7 @@ public class Swerve extends SubsystemBase{
      * @return XY of robot on field
      */
     public Pose2d getPose(){
-        return mSwerveOdometry.getPoseMeters();
+        return mSwerveOdometry.getEstimatedPosition();
     }
 
     /**
@@ -169,7 +170,7 @@ public class Swerve extends SubsystemBase{
     }
 
     public void resetOdometry(Rotation2d yaw){
-        mSwerveOdometry.resetPosition(yaw, getPositions(), mSwerveOdometry.getPoseMeters());
+        mSwerveOdometry.resetPosition(yaw, getPositions(), mSwerveOdometry.getEstimatedPosition());
     }
 
     public SwerveModuleState[] getStates(){
