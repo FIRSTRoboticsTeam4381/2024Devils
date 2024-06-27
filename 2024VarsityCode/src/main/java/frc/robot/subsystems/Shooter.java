@@ -38,6 +38,7 @@ public class Shooter extends SubsystemBase {
   private double setpoint = 0.0;
   //private boolean shootMode=true;
   private boolean trapMode=false;
+  private boolean noiseMaker=false;
 
 
   /* CONSTRUCTOR */
@@ -83,7 +84,7 @@ public class Shooter extends SubsystemBase {
    * @return Boolean determining if it is okay to feed a note to the shooter
    */
   public boolean readyForNote(){
-    return (setpoint != 0 && (setpoint-Math.abs(propEncoder.getVelocity())<(trapMode?100:300) && setpoint-Math.abs(topEncoder.getVelocity())<(trapMode?100:300)));
+    return (setpoint != 0 && (setpoint-Math.abs(propEncoder.getVelocity())<(trapMode?100:300) && setpoint-Math.abs(topEncoder.getVelocity())<(trapMode?100:300))) && !noiseMaker;
   }
 
   public double getSetpoint(){
@@ -174,6 +175,14 @@ public class Shooter extends SubsystemBase {
       interrupted->setPercOutput(0.0, false), 
       ()->{return false;}, 
       this).withName("Holding Velocity "+rpm);
+  }
+  public Command makeNoise(){
+    return new FunctionalCommand(
+      ()->{setVelocity(5000, false);noiseMaker=true;},
+      ()->{},
+      interrupted->{setPercOutput(0.0, false);noiseMaker=false;},
+      ()->{return false;},
+      this).withName("Making Noise ");
   }
 
   /**

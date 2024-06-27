@@ -174,7 +174,7 @@ public class ComposedCommands {
     public Command startShooter(){
         return new ParallelCommandGroup(
             //leds.shooterStatus(),
-            shooter.shoot(2000)
+            shooter.shoot(4000)
         );
     }
 

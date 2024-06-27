@@ -148,6 +148,7 @@ public class RobotContainer {
         driver.cross().toggleOnTrue(commands.groundIntake(new ManualPivot(driver::getRightY, s_Pivot)));
         driver.circle().whileTrue(commands.ejectNote());
         driver.L1().toggleOnTrue(commands.startShooter());
+        driver.square().toggleOnTrue(s_Shooter.makeNoise());
         //driver.PS().onTrue(new InstantCommand(()->s_LL.takeSnapshot())).onFalse(new InstantCommand(()->s_LL.resetSnapshot()));
         //driver.L1().onTrue(s_Swerve.nitro());
         //driver.cross().onTrue(new InstantCommand(()->s_Swerve.setBrakeMode(true))).onFalse(new InstantCommand(()->s_Swerve.setBrakeMode(false)));
