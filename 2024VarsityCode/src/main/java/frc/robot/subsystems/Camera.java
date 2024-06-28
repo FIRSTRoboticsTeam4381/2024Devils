@@ -78,7 +78,6 @@ public class Camera extends SubsystemBase {
       area+=t.getArea();
     }
     SmartDashboard.putNumber("Cam C Target Area", area);
-    camCMatrix.fill(area<0.5?75:0);
 
     List<PhotonTrackedTarget> camDTargets = camD.getLatestResult().getTargets();
     area=0;
@@ -86,7 +85,6 @@ public class Camera extends SubsystemBase {
       area+=t.getArea();
     }
     SmartDashboard.putNumber("Cam D Target Area", area);
-    camDMatrix.fill(area<0.5?75:0);
 
     /*
      * Testing Notes:
