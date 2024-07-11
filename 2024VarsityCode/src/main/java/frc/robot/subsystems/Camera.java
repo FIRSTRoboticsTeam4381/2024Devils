@@ -78,6 +78,18 @@ public class Camera extends SubsystemBase {
       area+=t.getArea();
     }
     SmartDashboard.putNumber("Cam C Target Area", area);
+    SmartDashboard.putNumber("Cam C Matrix Fill", 2.66667/(area*area) -0.833333);
+
+    SmartDashboard.putBoolean("CamC Target", c.isPresent());
+    if(c.isPresent()) {
+      camCMatrix.fill(2.66667/(area*area) -0.833333);
+      //camCMatrix.fill(10);
+      EstimatedRobotPose pose = c.get();
+      publisherC.set(pose.estimatedPose);
+      RobotContainer.s_Swerve.mSwerveOdometry.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, camCMatrix);
+    }else{
+      pose = new Pose3d();
+    }
 
     List<PhotonTrackedTarget> camDTargets = camD.getLatestResult().getTargets();
     area=0;
@@ -85,6 +97,18 @@ public class Camera extends SubsystemBase {
       area+=t.getArea();
     }
     SmartDashboard.putNumber("Cam D Target Area", area);
+    SmartDashboard.putNumber("Cam D Matrix Fill", 2.66667/(area*area) -0.833333);
+
+    SmartDashboard.putBoolean("CamD Target", d.isPresent());
+    if(d.isPresent()) {
+      camDMatrix.fill(2.66667/(area*area) -0.833333);
+      //camDMatrix.fill(10);
+      EstimatedRobotPose pose = d.get();
+      publisherD.set(pose.estimatedPose);
+      RobotContainer.s_Swerve.mSwerveOdometry.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, camDMatrix);
+    }else{
+      pose = new Pose3d();
+    }
 
     /*
      * Testing Notes:
@@ -94,21 +118,6 @@ public class Camera extends SubsystemBase {
      */
 
     //camCMatrix.
-    if(c.isPresent()) {
-      EstimatedRobotPose pose = c.get();
-      publisherC.set(pose.estimatedPose);
-      RobotContainer.s_Swerve.mSwerveOdometry.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, camCMatrix);
-    }else{
-      pose = new Pose3d();
-    }
-
-    if(d.isPresent()) {
-      EstimatedRobotPose pose = d.get();
-      publisherD.set(pose.estimatedPose);
-      RobotContainer.s_Swerve.mSwerveOdometry.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, camDMatrix);
-    }else{
-      pose = new Pose3d();
-    }
   }
 
   public boolean GetTargets() {
