@@ -83,7 +83,7 @@ public class Camera extends SubsystemBase {
     SmartDashboard.putBoolean("CamC Target", c.isPresent());
     if(c.isPresent()) {
       camCMatrix.fill(2.66667/(area*area) -0.833333);
-      //camCMatrix.fill(10);
+      //camCMatrix.fill(0);
       EstimatedRobotPose pose = c.get();
       publisherC.set(pose.estimatedPose);
       RobotContainer.s_Swerve.mSwerveOdometry.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, camCMatrix);
@@ -102,7 +102,7 @@ public class Camera extends SubsystemBase {
     SmartDashboard.putBoolean("CamD Target", d.isPresent());
     if(d.isPresent()) {
       camDMatrix.fill(2.66667/(area*area) -0.833333);
-      //camDMatrix.fill(10);
+      //camDMatrix.fill(0);
       EstimatedRobotPose pose = d.get();
       publisherD.set(pose.estimatedPose);
       RobotContainer.s_Swerve.mSwerveOdometry.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, camDMatrix);
