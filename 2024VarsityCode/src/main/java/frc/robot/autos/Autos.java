@@ -82,6 +82,9 @@ public final class Autos {
     public static Command justShoot(){
         return new PathPlannerAuto("JustShoot");
     }
+    public static Command centerShoot(){
+        return new PathPlannerAuto("Center");
+    }
 
     // TODO test of a single path
     public static Command testPath(){
