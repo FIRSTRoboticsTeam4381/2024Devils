@@ -34,7 +34,7 @@ public class Swerve extends SubsystemBase{
     private SysIdRoutine routine;
 
     public Swerve(){
-        gyro = new AHRS(Port.kUSB);
+        gyro = new AHRS(Port.kMXP);
         zeroGyro();
 
         mField = new Field2d();

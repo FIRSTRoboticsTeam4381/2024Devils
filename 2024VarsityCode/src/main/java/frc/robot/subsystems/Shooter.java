@@ -32,8 +32,8 @@ public class Shooter extends SubsystemBase {
   private SparkPIDController propController;
   private SparkPIDController topController;
 
-  public static final double maxRPM = 6500;
-  public static final double avgRPM = 6100;
+  public static final double maxRPM = 3000;
+  public static final double avgRPM = 2600;
 
   private double setpoint = 0.0;
   //private boolean shootMode=true;
