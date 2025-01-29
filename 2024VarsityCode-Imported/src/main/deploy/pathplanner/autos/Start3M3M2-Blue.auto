@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.45351875938651126,
+      "y": 3.9806823237807545
+    },
+    "rotation": -88.72696997994328
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start3Start-Red"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start3Middle3-Red"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start3Middle2-Red"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Start3",
+  "choreoAuto": false
+}
