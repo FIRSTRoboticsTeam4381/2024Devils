@@ -4,10 +4,7 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
-import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -75,14 +72,6 @@ public final class Constants {
             new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
             new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
         
-        // TODO check - auto - PIDs need to be configured
-        public static final HolonomicPathFollowerConfig holonomicConfig = new HolonomicPathFollowerConfig(
-            new PIDConstants(5.0, 0.0, 0.0), // TODO Translation PID constants
-            new PIDConstants(5.0, 0.0, 0.0), // TODO Rotation PID constants
-            5.95,
-            0.382,
-            new ReplanningConfig() // Default path replanning config. See the API for the options here
-        );
 
         /* Swerve Current Limiting */
         public static final int angleContinuousCurrentLimit = 20;

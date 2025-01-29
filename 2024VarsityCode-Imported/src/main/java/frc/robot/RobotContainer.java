@@ -19,9 +19,6 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Swerve;
 
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.util.PathPlannerLogging;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -73,10 +70,6 @@ public class RobotContainer {
 
         // Configure the button bindings
         configureButtonBindings();
-        
-
-        /* Pathplanner Commands */
-        registerCommands();
 
         /* Burn Flash Buttons */
         configMotorSettingButtons();
@@ -90,10 +83,6 @@ public class RobotContainer {
     }
 
     private void setupAutoOptions(){
-        PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {s_Swerve.mField.setRobotPose(pose);});
-        PathPlannerLogging.setLogTargetPoseCallback((pose) -> {s_Swerve.mField.getObject("target pose").setPose(pose);});
-        PathPlannerLogging.setLogActivePathCallback((poses) -> {s_Swerve.mField.getObject("path").setPoses(poses);});
-
         m_AutoChooser.setDefaultOption("None", Autos.none());
         m_AutoChooser.addOption("RED-Start1Pickup3", Autos.start1A1M1M2Red()); // DONE
         m_AutoChooser.addOption("RED-Start2Pickup2", Autos.start2A2M2Red()); // DONE
@@ -161,16 +150,6 @@ public class RobotContainer {
         specialist.PS().toggleOnTrue(commands.allianceLineMode());
 
         driver.touchpad().or(specialist.touchpad()).onTrue(commands.cancelAll());
-    }
-
-    private void registerCommands(){
-        NamedCommands.registerCommand("Intake", commands.groundIntake(new AutoShooter(s_Pivot, s_Shooter, s_LL, s_Swerve, false)));
-        NamedCommands.registerCommand("StopIntake", s_Intake.instantStop());
-        NamedCommands.registerCommand("ShooterSpinUp", s_Shooter.instantSetVelocityReference(4000, false));
-        NamedCommands.registerCommand("AutoAim", new AutoShooter(s_Pivot, s_Shooter, s_LL, s_Swerve, false));
-        NamedCommands.registerCommand("Shoot", s_Index.run());
-        NamedCommands.registerCommand("ShootUntilOut", s_Index.indexUntilShot());
-        NamedCommands.registerCommand("LowerPivot", s_Pivot.goToAngle(0, 1));
     }
 
     private void configMotorSettingButtons(){

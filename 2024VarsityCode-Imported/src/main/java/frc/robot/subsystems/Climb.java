@@ -3,14 +3,19 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkAbsoluteEncoder;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.SparkAbsoluteEncoder.Type;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkMaxAlternateEncoder;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,13 +29,10 @@ public class Climb extends SubsystemBase {
   // TODO get climbing positions
 
   /* ATTRIBUTES */
-  private CANSparkMax rightMotor;
-  private CANSparkMax leftMotor;
+  private SparkMax rightMotor;
+  private SparkMax leftMotor;
 
-  private CANSparkMax leader;
-  private CANSparkMax follower;
-
-  private SparkPIDController climbController;
+  private SparkClosedLoopController climbController;
 
   private SparkAbsoluteEncoder absoluteEncoder;
 
@@ -38,36 +40,37 @@ public class Climb extends SubsystemBase {
 
   /** Creates a new Climb. */
   public Climb() {
-    // Motor Setup
-    rightMotor = new CANSparkMax(Constants.Climb.rightClimbCAN, MotorType.kBrushless);
-    leftMotor = new CANSparkMax(Constants.Climb.leftClimbCAN, MotorType.kBrushless);
-    absoluteEncoder = leftMotor.getAbsoluteEncoder(Type.kDutyCycle);
-
-    leader = leftMotor;
-    follower = rightMotor;
-
-    leader.setInverted(true);
-    follower.follow(leader, true);
-
-    leader.setIdleMode(IdleMode.kBrake);
-    follower.setIdleMode(IdleMode.kBrake);
-
-    leader.setSmartCurrentLimit(60);
-    follower.setSmartCurrentLimit(60);
-
-    SparkUtilities.optimizeFrames(leader, true, false, false, false, false, true);
-    SparkUtilities.optimizeFrames(follower, false, false, true, false, false, false);
-
-
-    climbController = leader.getPIDController();
-    // PID Setup
-    // TODO Base controller configuration
+    climbController = leader.getClosedLoopController();
     climbController.setFeedbackDevice(absoluteEncoder);
     climbController.setP(3.0, 0);
     climbController.setI(0.002, 0);
     climbController.setD(0, 0);
     climbController.setFF(0, 0);
     climbController.setOutputRange(-1, 1);
+
+    // Motor Setup
+    SparkBaseConfig leftConfig = new SparkMaxConfig()
+                                .inverted(true)
+                                .idleMode(IdleMode.kBrake)
+                                .smartCurrentLimit(60);
+    //leftConfig.closedLoop.feedbackSensor()
+    SparkBaseConfig rightConfig = new SparkMaxConfig().follow(Constants.Climb.leftClimbCAN, true).idleMode(IdleMode.kBrake).smartCurrentLimit(60);
+
+    leftMotor = new SparkMax(Constants.Climb.leftClimbCAN, MotorType.kBrushless);
+    rightMotor = new SparkMax(Constants.Climb.rightClimbCAN, MotorType.kBrushless);
+    leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters,  PersistMode.kPersistParameters);
+    rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters,  PersistMode.kPersistParameters);
+    
+
+    absoluteEncoder = leftMotor.getAbsoluteEncoder();
+    leader = leftMotor;
+    follower = rightMotor;
+
+    //SparkUtilities.optimizeFrames(leader, true, false, false, false, false, true);
+    //SparkUtilities.optimizeFrames(follower, false, false, true, false, false, false);
+
+
+    
   }
 
   public void manualControl(double speed){
