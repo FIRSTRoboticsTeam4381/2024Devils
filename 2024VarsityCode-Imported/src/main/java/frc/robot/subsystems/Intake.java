@@ -4,8 +4,12 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,42 +17,39 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.SparkUtilities.SparkUtilities;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
 
   /* ATTRIBUTES */
 
-  private CANSparkMax intake;
-  private CANSparkMax helper;
+  private SparkMax intake;
+  private SparkMax helper;
 
   public static final double INTAKE_SPEED = 0.95;
+
+  private static final SparkMaxConfig MOTOR_CONFIG = new SparkMaxConfig();
 
 
   /* CONSTRUCTORS */
 
   /** Creates a new Intake. */
   public Intake() {
-    intake = new CANSparkMax(Constants.Intake.primaryIntakeCAN, MotorType.kBrushless);
-    helper = new CANSparkMax(Constants.Intake.helperIntakeCAN, MotorType.kBrushless);
-    intake.setSmartCurrentLimit(55);
-    helper.setSmartCurrentLimit(50);
+    intake = new SparkMax(Constants.Intake.primaryIntakeCAN, MotorType.kBrushless);
+    helper = new SparkMax(Constants.Intake.helperIntakeCAN, MotorType.kBrushless);
 
-    helper.setInverted(false);
+    MOTOR_CONFIG.smartCurrentLimit(50).inverted(true);
 
-    //helper.follow(intake);
-
-    SparkUtilities.optimizeFrames(intake, false, false, false, false, false, false);
-    SparkUtilities.optimizeFrames(helper, false, false, false, false, false, false);
+    intake.configure(MOTOR_CONFIG, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    helper.configure(MOTOR_CONFIG, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
 
   /* METHODS */
 
   private void setPercOutput(double speed){
-    intake.set(-speed);
-    helper.set(-speed*0.7);
+    intake.set(speed);
+    helper.set(speed*0.7);
   }
 
 
@@ -116,18 +117,4 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putNumber("intake/Intake Current", intake.getOutputCurrent());
     SmartDashboard.putNumber("intake/Helper Current", helper.getAppliedOutput());
   }
-
-
-  public void burnFlash(){
-    try{
-      Thread.sleep(1000);
-      intake.burnFlash();
-      Thread.sleep(1000);
-      helper.burnFlash();
-      Thread.sleep(1000);
-    }catch(InterruptedException e){
-      DriverStation.reportError("Thread was interrupted while flashing intake", e.getStackTrace());
-    }
-  }
-  
 }
