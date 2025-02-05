@@ -4,19 +4,19 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.SparkAbsoluteEncoder.Type;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.SparkUtilities.SparkUtilities;
 import frc.robot.Constants;
 import frc.robot.commands.SparkPosition;
 
@@ -24,22 +24,20 @@ public class Pivot extends SubsystemBase {
 
   /* ATTRIBUTES */
   
-  private CANSparkMax rightPivot;
-  private CANSparkMax leftPivot;
+  private SparkMax rightPivot;
+  private SparkMax leftPivot;
 
-  private CANSparkMax leader;
-  private CANSparkMax follower;
+  private static final SparkMaxConfig RIGHT_MOTOR_CONFIG = new SparkMaxConfig();
+  private static final SparkMaxConfig LEFT_MOTOR_CONFIG = new SparkMaxConfig();
 
   private AbsoluteEncoder angleEncoder;
 
-  private SparkPIDController pivotController;
-
   public class Positions{
-    public static final double intake = 47;
-    public static final double human = 115;
-    public static final double amp = 110;
-    public static final double transit = 10;
-    public static final double podium = 34;
+    public static final double INTAKE = 47;
+    public static final double HUMAN = 115;
+    public static final double AMP = 110;
+    public static final double TRANSIT = 10;
+    public static final double PODIUM = 34;
   }
 
 
@@ -48,48 +46,45 @@ public class Pivot extends SubsystemBase {
   /** Creates a new Pivot. */
   public Pivot() {
     // Motor Setup
-    rightPivot = new CANSparkMax(Constants.Pivot.rightPivotCAN, MotorType.kBrushless);
-    leftPivot = new CANSparkMax(Constants.Pivot.leftPivotCAN, MotorType.kBrushless);
-    angleEncoder = leftPivot.getAbsoluteEncoder(Type.kDutyCycle);
+    leftPivot = new SparkMax(Constants.Pivot.leftPivotCAN, MotorType.kBrushless); // Leader
+    rightPivot = new SparkMax(Constants.Pivot.rightPivotCAN, MotorType.kBrushless); // Follower
 
-    leader = leftPivot;
-    follower = rightPivot;
+    LEFT_MOTOR_CONFIG
+		.inverted(true)
+		.idleMode(IdleMode.kBrake)
+		.smartCurrentLimit(50);
 
-    leader.setInverted(true);
-    follower.follow(leader, true);
-    
-    leader.setIdleMode(IdleMode.kBrake);
-    follower.setIdleMode(IdleMode.kBrake);
+	LEFT_MOTOR_CONFIG.closedLoop
+		.feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+		.positionWrappingEnabled(true)
+		.positionWrappingInputRange(0, 360)
+		// Slot 0 = Regular Movement
+		.p(0.015, ClosedLoopSlot.kSlot0)
+		.i(0.0, ClosedLoopSlot.kSlot0)
+		.d(0.01, ClosedLoopSlot.kSlot0)
+		.velocityFF(0.0, ClosedLoopSlot.kSlot0)
+		.outputRange(-1.0, 1.0, ClosedLoopSlot.kSlot0)
+		// Slot 1 = Auto Aiming - More aggressive and more precise
+		.p(0.027, ClosedLoopSlot.kSlot1)
+		.i(0.0, ClosedLoopSlot.kSlot1)
+		.d(0.006, ClosedLoopSlot.kSlot1)
+		.velocityFF(0.0, ClosedLoopSlot.kSlot1)
+		.outputRange(-1.0, 1.0, ClosedLoopSlot.kSlot1)
+		// Slot 3 = Climbing
+		.p(0.03, ClosedLoopSlot.kSlot2)
+		.i(0.00001, ClosedLoopSlot.kSlot2)
+		.d(0.006, ClosedLoopSlot.kSlot2)
+		.velocityFF(0.0, ClosedLoopSlot.kSlot2)
+		.outputRange(-1.0, 1.0, ClosedLoopSlot.kSlot2);
+		
 
-    leader.setSmartCurrentLimit(50);
-    follower.setSmartCurrentLimit(50);
+    RIGHT_MOTOR_CONFIG
+		.follow(leftPivot.getDeviceId(), true)
+		.idleMode(IdleMode.kBrake)
+		.smartCurrentLimit(50);
 
-    SparkUtilities.optimizeFrames(leader, true, false, true, false, false, true);
-    SparkUtilities.optimizeFrames(follower, false, false, true, false, false, false);
 
-    // PID Setup
-    // TODO retune for new pivot
-    pivotController = leader.getPIDController();
-    pivotController.setFeedbackDevice(angleEncoder);
-    pivotController.setOutputRange(-1, 1);
-    pivotController.setPositionPIDWrappingEnabled(true);
-    pivotController.setPositionPIDWrappingMinInput(0);
-    pivotController.setPositionPIDWrappingMaxInput(360);
-    // Slot 0 = Regular Movement
-    pivotController.setP(0.015, 0);
-    pivotController.setI(0.0, 0);
-    pivotController.setD(0.01, 0);
-    pivotController.setFF(0.0, 0);
-    // Slot 1 = Auto Aiming - More aggressive and more precise
-    pivotController.setP(0.027, 1);
-    pivotController.setI(0.0, 1);
-    pivotController.setD(0.006, 1);
-    pivotController.setFF(0.0, 1);
-    // Slot 2 = Climbing
-    pivotController.setP(0.03, 2);
-    pivotController.setI(0.00001, 2);
-    pivotController.setD(0.006, 2);
-    pivotController.setFF(0.0, 2);
+    angleEncoder = leftPivot.getAbsoluteEncoder();
   }
 
 
@@ -111,7 +106,7 @@ public class Pivot extends SubsystemBase {
     if(speed>0.0 && (angle>100&&angle<350)) {speed = 0.0;}
     if(speed<0.0 && (angle<=3||angle>350)) {speed = 0.0;}
 
-    leader.set(speed);
+    leftPivot.set(speed);
   }
 
   /**
@@ -119,8 +114,8 @@ public class Pivot extends SubsystemBase {
    * @param angle
    * @param slot the PID slot number to use. 0 is normal, 1 is auto aim (more aggressive)
    */
-  public void setAngleReference(double angle, int slot){
-    pivotController.setReference(angle, ControlType.kPosition, slot);
+  public void setAngleReference(double angle, ClosedLoopSlot slot){
+    leftPivot.getClosedLoopController().setReference(angle, ControlType.kPosition, slot);
   }
 
 
@@ -132,7 +127,7 @@ public class Pivot extends SubsystemBase {
    * @return
    */
   public Command goToAngle(double angle, int slot){
-    return new SparkPosition(leader, angle, slot, 1.0, this, this::getAngle);
+    return new SparkPosition(leftPivot, angle, slot, 1.0, this, this::getAngle);
   }
 
   /**
@@ -164,17 +159,5 @@ public class Pivot extends SubsystemBase {
     // Current Draw
     SmartDashboard.putNumber("pivot/Right Current", rightPivot.getOutputCurrent());
     SmartDashboard.putNumber("pivot/Left Current", leftPivot.getOutputCurrent());
-  }
-  
-  public void burnFlash(){
-    try{
-      Thread.sleep(1000);
-      rightPivot.burnFlash();
-      Thread.sleep(1000);
-      leftPivot.burnFlash();
-      Thread.sleep(1000);
-    }catch(InterruptedException e){
-      DriverStation.reportError("Thread was interrupted while flashing pivot", e.getStackTrace());
-    }
   }
 }

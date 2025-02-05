@@ -43,8 +43,8 @@ public class Climb extends SubsystemBase {
 
   /** Creates a new Climb. */
   public Climb() {
-    leftMotor = new SparkMax(Constants.Climb.leftClimbCAN, MotorType.kBrushless);
-    rightMotor = new SparkMax(Constants.Climb.rightClimbCAN, MotorType.kBrushless);
+    leftMotor = new SparkMax(Constants.Climb.leftClimbCAN, MotorType.kBrushless); // Leader
+    rightMotor = new SparkMax(Constants.Climb.rightClimbCAN, MotorType.kBrushless); // Follower
 
     LEFT_MOTOR_CONFIG
 		.inverted(true)
