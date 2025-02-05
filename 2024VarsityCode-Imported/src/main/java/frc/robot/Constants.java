@@ -74,15 +74,9 @@ public final class Constants {
         
 
         /* Swerve Current Limiting */
-        public static final int angleContinuousCurrentLimit = 20;
-        public static final int anglePeakCurrentLimit = 400;
-        public static final double anglePeakCurrentDuration = 0.1;
-        public static final boolean angleEnableCurrentLimit = true;
+        public static final int angleCurrentLimit = 30;
+        public static final int driveCurrentLimit = 60;
 
-        public static final int driveContinuousCurrentLimit = 35;
-        public static final int drivePeakCurrentLimit = 60;
-        public static final double drivePeakCurrentDuration = 0.1;
-        public static final boolean driveEnableCurrentLimit = true;
 
         /* Angle Motor PID Values */
         public static final double angleKP = 0.06;
@@ -112,7 +106,7 @@ public final class Constants {
         public static final IdleMode driveNeutralMode = IdleMode.kBrake;
 
         /* Motor Inverts */
-        public static final boolean driveMotorInvert = true;
+        public static final boolean driveMotorInvert = false;
         /*
          * things to check: if this change causes the drive motors to behave in a weird way,
          * change it to false and manually flip the outputs to the drive motor

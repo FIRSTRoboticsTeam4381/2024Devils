@@ -11,6 +11,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,8 +24,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.lib.util.DriftCorrection;
-import frc.lib.util.LogOrDash;
 import frc.robot.Constants;
 
 public class Swerve extends SubsystemBase{
@@ -32,6 +33,16 @@ public class Swerve extends SubsystemBase{
     public Field2d mField;
 
     private SysIdRoutine routine;
+
+    StructArrayPublisher<SwerveModuleState> modStatusPublisher = NetworkTableInstance.getDefault()
+        .getStructArrayTopic("Swerve/ModuleStatus", SwerveModuleState.struct).publish();
+    StructArrayPublisher<SwerveModuleState> modTargetPublisher = NetworkTableInstance.getDefault()
+        .getStructArrayTopic("Swerve/ModuleTarget", SwerveModuleState.struct).publish();
+
+    StructPublisher<ChassisSpeeds> chasStatusPublisher = NetworkTableInstance.getDefault()
+        .getStructTopic("Swerve/ChassisStatus", ChassisSpeeds.struct).publish();
+    StructPublisher<ChassisSpeeds> chasTargetPublisher = NetworkTableInstance.getDefault()
+        .getStructTopic("Swerve/ChassisTarget", ChassisSpeeds.struct).publish();
 
     public Swerve(){
         gyro = new AHRS(NavXComType.kMXP_SPI);
@@ -78,25 +89,31 @@ public class Swerve extends SubsystemBase{
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop){ 
-        SwerveModuleState[] swerveModuleStates =  
-            Constants.Swerve.swerveKinematics.toSwerveModuleStates(DriftCorrection.driftCorrection( 
-                fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds( 
-                    translation.getX(), 
-                    translation.getY(), 
-                    rotation, 
-                    getYaw() 
-                ) 
-                : new ChassisSpeeds( 
-                    translation.getX(), 
-                    translation.getY(), 
-                    rotation),
-                mSwerveOdometry.getPoseMeters(), 
-                gyro));
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed); 
- 
-        for(SwerveModule mod : mSwerveMods){ 
-            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop); 
-        } 
+        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(
+            fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                translation.getX(),
+                translation.getY(),
+                rotation,
+                getYaw()
+            )
+            : new ChassisSpeeds(
+                translation.getX(),
+                translation.getY(),
+                rotation),
+            0.02
+            );
+
+        chasTargetPublisher.set(targetSpeeds);
+
+        SwerveModuleState[] swerveModuleStates = 
+            Constants.Swerve.swerveKinematics.toSwerveModuleStates(targetSpeeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+
+        modTargetPublisher.set(swerveModuleStates);
+
+        for(SwerveModule mod : mSwerveMods){
+            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
+        }
     } 
 
     // TODO check - auto
@@ -196,8 +213,6 @@ public class Swerve extends SubsystemBase{
         mSwerveOdometry.update(getYaw(), getPositions());
         SmartDashboard.putBoolean("swerve/Gyro Calibrated", !gyro.isCalibrating());
 
-        LogOrDash.logNumber("Gyro Angle", getYaw().getDegrees());
-
         SwerveModuleState[] currentStatus = new SwerveModuleState[4];
         double[] targetSpeeds = new double[4];
         double[] targetAngles = new double[4];
@@ -205,19 +220,16 @@ public class Swerve extends SubsystemBase{
 
         SmartDashboard.putNumber("swerve/rotation", getYaw().getDegrees()-180);
         SmartDashboard.putNumber("match/Match Timer", DriverStation.getMatchTime());
-
-        for(SwerveModule m : mSwerveMods){
-            SmartDashboard.putNumber("swerve/mod"+m.moduleNumber+"/Angle Current", m.getAngleCurrent());
-            SmartDashboard.putNumber("swerve/mod"+m.moduleNumber+"/Drive Current", m.getDriveCurrent());
-        }
         
         for(SwerveModule mod : mSwerveMods){
-            mod.sendTelemetry();
             currentStatus[mod.moduleNumber] = mod.getState();
             targetSpeeds[mod.moduleNumber] = mod.getDesiredSpeed();
             targetAngles[mod.moduleNumber] = mod.getDesiredAngle();
             absoluteAngles[mod.moduleNumber] = mod.getAngle().getDegrees();
         }
+
+        modStatusPublisher.set(currentStatus);
+        chasStatusPublisher.set(getRobotRelativeSpeeds());
 
 
         // Compile swerve status for AdvantageScope
@@ -244,31 +256,5 @@ public class Swerve extends SubsystemBase{
 
         mField.setRobotPose(getPose());
         SmartDashboard.putData("position/Field", mField);
-
-
-        LogOrDash.logNumber("Gyro Pitch", gyro.getPitch());
-        LogOrDash.logNumber("Gyro Roll", gyro.getRoll());
-        LogOrDash.logNumber("Gyro Yaw", gyro.getYaw());
-        LogOrDash.logString("XY Coord", "(" + getPose().getX() + ", " + getPose().getY() + ")");
-    }
-
-    public Command configToFlash(){
-        return new InstantCommand(() -> {
-            for(SwerveModule mod : mSwerveMods)
-            {
-                mod.burnFlash();
-            }
-        }, this).ignoringDisable(true);
-    }
-
-    private void setDriveCurrentLimit(int limit){
-        for(SwerveModule m : mSwerveMods){
-            m.setDriveCurrentLimit(limit);
-        }
-    }
-    public void setBrakeMode(boolean enabled){
-        for(SwerveModule m : mSwerveMods){
-            m.setBrakeMode(enabled);
-        }
     }
 }

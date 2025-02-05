@@ -1,18 +1,25 @@
 package frc.robot.subsystems; 
  
-import com.revrobotics.CANSparkFlex; 
-import com.revrobotics.CANSparkMax; 
 import com.revrobotics.RelativeEncoder; 
-import com.revrobotics.SparkAbsoluteEncoder; 
-import com.revrobotics.SparkPIDController; 
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType; 
- 
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.EncoderConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import frc.lib.math.Conversions; 
-import frc.lib.util.LogOrDash;
 import frc.lib.util.SwerveModuleConstants;
-import frc.lib.util.SparkUtilities.SparkUtilities;
 import frc.robot.Constants; 
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward; 
@@ -28,18 +35,18 @@ public class SwerveModule {
  
     /* ATTRIBUTES */ 
     public int moduleNumber; 
-    private CANSparkMax mAngleMotor; 
-    private CANSparkFlex mDriveMotor; 
+    private SparkMax mAngleMotor;
+    private SparkFlex mDriveMotor;
  
     private RelativeEncoder mDriveEncoder; 
-    private SparkAbsoluteEncoder mAngleEncoder;
-
-    private SparkPIDController drivePIDController;
-    private SparkPIDController anglePIDController;
+    private AbsoluteEncoder mAngleEncoder;
  
     private double mLastAngle; 
     private double mDesiredAngle; 
     private double mLastSpeed; 
+
+    private static final SparkFlexConfig DRIVE_CONFIG = new SparkFlexConfig();
+    private static final SparkMaxConfig ANGLE_CONFIG = new SparkMaxConfig();
  
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA); 
  
@@ -49,44 +56,82 @@ public class SwerveModule {
     public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){ 
         this.moduleNumber = moduleNumber; 
 
-        configAngleMotor(moduleConstants.angleMotorID);
-        configDriveMotor(moduleConstants.driveMotorID);
-        setBrakeMode(true);
 
+
+
+        /* ANGLE MOTOR CONFIGURATION */
+        mAngleMotor = new SparkMax(moduleConstants.angleMotorID, MotorType.kBrushless);
+        ANGLE_CONFIG
+            .smartCurrentLimit(Constants.Swerve.angleCurrentLimit)
+            .inverted(Constants.Swerve.angleMotorInvert)
+            .idleMode(IdleMode.kBrake);
+
+        ANGLE_CONFIG.closedLoop
+            .p(Constants.Swerve.angleKP)
+            .i(Constants.Swerve.angleKI)
+            .d(Constants.Swerve.angleKD)
+            .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+            .velocityFF(Constants.Swerve.angleKF)
+            .positionWrappingEnabled(true)
+            .positionWrappingInputRange(0, 360);
+
+        ANGLE_CONFIG.absoluteEncoder
+            .inverted(Constants.Swerve.angleMotorInvert)
+            .positionConversionFactor(360);
+
+        SparkMaxConfig motorConfig = new SparkMaxConfig();
+        AbsoluteEncoderConfig encoderConfig = new AbsoluteEncoderConfig();
+        ClosedLoopConfig controllerConfig = new ClosedLoopConfig();
+
+        mAngleMotor.configure(ANGLE_CONFIG, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+
+        /* DRIVE MOTOR CONFIGURATION */
+        mDriveMotor = new SparkFlex(moduleConstants.driveMotorID, MotorType.kBrushless);
+        DRIVE_CONFIG
+            .closedLoopRampRate(Constants.Swerve.closedLoopRamp)
+            .openLoopRampRate(Constants.Swerve.openLoopRamp)
+            .smartCurrentLimit(Constants.Swerve.driveCurrentLimit)
+            .idleMode(IdleMode.kBrake)
+            .inverted(Constants.Swerve.driveMotorInvert);
+
+        DRIVE_CONFIG.encoder
+            .positionConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio)
+            .velocityConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio / 60.0);
+
+        DRIVE_CONFIG.closedLoop
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+            .p(Constants.Swerve.driveKP)
+            .i(Constants.Swerve.driveKI)
+            .d(Constants.Swerve.driveKD)
+            .velocityFF(Constants.Swerve.driveKF);
+
+        mDriveMotor.configure(DRIVE_CONFIG, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+
+        mAngleEncoder = mAngleMotor.getAbsoluteEncoder();
+        mDriveEncoder = mDriveMotor.getEncoder();
         mLastAngle = getState().angle.getDegrees(); 
     } 
-
-    public void voltageDrive(double v){
-        anglePIDController.setReference(0, ControlType.kPosition);
-        mDriveMotor.setVoltage(v);
-    }
-
-    public void sysIdLog(SysIdRoutineLog log){
-        log.motor("m"+moduleNumber).voltage(
-            edu.wpi.first.units.Units.Volts.of(mDriveMotor.getAppliedOutput() * RobotController.getBatteryVoltage())
-            ).linearVelocity(edu.wpi.first.units.Units.MetersPerSecond.of(mDriveEncoder.getVelocity()))
-            .linearPosition(edu.wpi.first.units.Units.Meters.of(mDriveMotor.getEncoder().getPosition()));
-    }
-
  
  
     /* METHODS */
  
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) 
     { 
-        desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
+        desiredState.optimize(getState().angle);
  
         if(isOpenLoop){ // TELEOP 
             double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed; 
-            mDriveMotor.set(percentOutput * -1); // TODO remove when inverting works
+            mDriveMotor.set(percentOutput);
         } 
         else{ // AUTO 
-            double velocity = Conversions.MPStoRPM(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio); //TODO update for neos? 
-            drivePIDController.setReference(velocity * -1, ControlType.kVelocity, 0, feedforward.calculate(desiredState.speedMetersPerSecond * -1)); // TODO fix when inverts work
+            double velocity = Conversions.MPStoRPM(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
+            mDriveMotor.getClosedLoopController().setReference(velocity, ControlType.kVelocity, ClosedLoopSlot.kSlot0, feedforward.calculate(desiredState.speedMetersPerSecond));
         } 
  
         double angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01)) ? mLastAngle : desiredState.angle.getDegrees(); //Prevent rotating module if speed is less than 1%. Prevents jittering. 
-        anglePIDController.setReference(angle+180, ControlType.kPosition); 
+        mDriveMotor.getClosedLoopController().setReference(angle+180, ControlType.kPosition); 
         mDesiredAngle = angle; 
         mLastAngle = angle;
         SmartDashboard.putNumber("swerve/mod"+moduleNumber+"/velocitySetpointMPS", desiredState.speedMetersPerSecond);
@@ -132,186 +177,19 @@ public class SwerveModule {
     public double getDesiredSpeed(){ 
         return mLastSpeed; 
     }
+ 
 
-
-    /* CONFIGURATION */
-    private void configAngleMotor(int id){
-        mAngleMotor = new CANSparkMax(id, MotorType.kBrushless);
-        SparkUtilities.optimizeFrames(mAngleMotor, false, false, false, false, false, true);
-        mAngleMotor.setInverted(Constants.Swerve.angleMotorInvert);
-        mAngleMotor.setSmartCurrentLimit(30);
-
-        mAngleEncoder = mAngleMotor.getAbsoluteEncoder(com.revrobotics.SparkAbsoluteEncoder.Type.kDutyCycle); 
-        mAngleEncoder.setPositionConversionFactor(360); 
-        mAngleEncoder.setInverted(Constants.Swerve.canCoderInvert);
-
-        anglePIDController = mAngleMotor.getPIDController();
-        anglePIDController.setFeedbackDevice(mAngleEncoder); 
-        anglePIDController.setPositionPIDWrappingMinInput(0); 
-        anglePIDController.setPositionPIDWrappingMaxInput(360); 
-        anglePIDController.setPositionPIDWrappingEnabled(true); 
-        anglePIDController.setP(Constants.Swerve.angleKP); 
-        anglePIDController.setI(Constants.Swerve.angleKI); 
-        anglePIDController.setD(Constants.Swerve.angleKD);
-
-        /*
-         * TODO I know why inverting the encoder fixed it. Because for some reason the encoder invert
-         * was in the motor invert so inverting the encoder ACTUALLY inverted the motor :/
-         */
-    }
-    private void configDriveMotor(int id){
-        /* Drive Motor Config */ 
-        mDriveMotor = new CANSparkFlex(id, MotorType.kBrushless); 
-        SparkUtilities.optimizeFrames(mDriveMotor, false, true, true, false, false, false); 
-        mDriveMotor.setInverted(false); // TODO Setting this to true breaks it. Manually invert motor sets and encoder reads
-        setDriveCurrentLimit(60);
-        //configDriveMotor();
-
-        /* Drive Encoder Config */
-        mDriveEncoder = mDriveMotor.getEncoder(); 
-        // Set to m/s for speed and m for distance 
-        mDriveEncoder.setPositionConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio); 
-        mDriveEncoder.setVelocityConversionFactor(Constants.Swerve.wheelCircumference / Constants.Swerve.driveGearRatio / 60.0); 
-
-        drivePIDController = mDriveMotor.getPIDController();
-        drivePIDController.setFeedbackDevice(mDriveEncoder);
-        drivePIDController.setP(Constants.Swerve.driveKP);
-        drivePIDController.setI(Constants.Swerve.angleKI);
-        drivePIDController.setD(Constants.Swerve.driveKD);
-    }
- 
- 
-    /* LOGGING AND SAVING */ 
- 
-    public void sendTelemetry(){ 
-        //LogOrDash.logNumber("swerve/m" + moduleNumber + "/cancoder", getAngle().getDegrees()); 
-        LogOrDash.logNumber("swerve/m" + moduleNumber + "/angle/position", getState().angle.getDegrees()); 
-        LogOrDash.logNumber("swerve/m" + moduleNumber + "/drive/velocity", getState().speedMetersPerSecond); 
-        LogOrDash.logNumber("swerve/m" + moduleNumber + "/drive/velocity", getPosition().distanceMeters); 
-        LogOrDash.logNumber("swerve/m" + moduleNumber + "/angle/setpoint", mDesiredAngle); 
-        LogOrDash.logNumber("swerve/m" + moduleNumber + "/drive/setpoint", mLastSpeed); 
-         
-        LogOrDash.sparkMaxDiagnostics("swerve/m" + moduleNumber + "/angle", mAngleMotor); 
-        LogOrDash.sparkMaxDiagnostics("swerve/m" + moduleNumber + "/drive", mDriveMotor); 
- 
-        LogOrDash.logNumber("swerve/m"+moduleNumber+"/angle/raw_analog", mAngleEncoder.getPosition()); 
-    } 
- 
-    /** 
-     * Set settings for this motor controller and save tham to its flash memory. 
-     *  
-     * This is only intended to be done when hardware is replace or settings changed, 
-     * NOT on each boot! This prevents failed configuration or carryover from previous code. 
-     */ 
-    public void configToFlash() 
-    { 
-        try 
-        { 
-            // Drive motor 
-            LogOrDash.checkRevError("drive motor "+moduleNumber+" clear", 
-                mDriveMotor.restoreFactoryDefaults()); 
-             
-            Thread.sleep(1000); 
- 
-            SparkPIDController pid = mDriveMotor.getPIDController(); 
- 
-            LogOrDash.checkRevError("drive motor "+moduleNumber+" kp", 
-                pid.setP(Constants.Swerve.driveKP)); 
-            LogOrDash.checkRevError("drive motor "+moduleNumber+" ki", 
-                pid.setI(Constants.Swerve.driveKI)); 
-            LogOrDash.checkRevError("drive motor "+moduleNumber+" kd", 
-                pid.setD(Constants.Swerve.driveKD)); 
-            LogOrDash.checkRevError("drive motor "+moduleNumber+" kf", 
-                pid.setFF(Constants.Swerve.driveKF)); 
-                 
-            LogOrDash.checkRevError("drive motor "+moduleNumber+" open loop ramp", 
-                mDriveMotor.setOpenLoopRampRate(Constants.Swerve.openLoopRamp)); 
- 
-            LogOrDash.checkRevError("drive motor "+moduleNumber+" closed loop ramp", 
-                mDriveMotor.setOpenLoopRampRate(Constants.Swerve.closedLoopRamp)); 
-             
-            LogOrDash.checkRevError("drive motor "+moduleNumber+" current", 
-                mDriveMotor.setSmartCurrentLimit(Constants.Swerve.drivePeakCurrentLimit, Constants.Swerve.driveContinuousCurrentLimit)); 
- 
-            LogOrDash.checkRevError("drive motor "+moduleNumber+" idle mode", 
-                mDriveMotor.setIdleMode(Constants.Swerve.driveNeutralMode)); 
- 
-            // This doesn't return a RevLibError apparently 
-            mDriveMotor.setInverted(Constants.Swerve.driveMotorInvert); 
- 
-            Thread.sleep(1000); 
-            LogOrDash.checkRevError("drive motor "+moduleNumber+" BURN", 
-                mDriveMotor.burnFlash()); 
-            Thread.sleep(1000); 
- 
-            // Anale motor 
-            LogOrDash.checkRevError("angle motor "+moduleNumber+" clear", 
-                mAngleMotor.restoreFactoryDefaults()); 
-             
-            Thread.sleep(1000); 
- 
-            pid = mAngleMotor.getPIDController(); 
- 
-            LogOrDash.checkRevError("angle motor "+moduleNumber+" kp", 
-                pid.setP(Constants.Swerve.angleKP)); 
-            LogOrDash.checkRevError("angle motor "+moduleNumber+" ki", 
-                pid.setI(Constants.Swerve.angleKI)); 
-            LogOrDash.checkRevError("angle motor "+moduleNumber+" kd", 
-                pid.setD(Constants.Swerve.angleKD)); 
-            LogOrDash.checkRevError("angle motor "+moduleNumber+" kf", 
-                pid.setFF(Constants.Swerve.angleKF)); 
-             
-            LogOrDash.checkRevError("angle motor "+moduleNumber+" current", 
-                mAngleMotor.setSmartCurrentLimit(Constants.Swerve.anglePeakCurrentLimit, Constants.Swerve.angleContinuousCurrentLimit)); 
- 
-            LogOrDash.checkRevError("angle motor "+moduleNumber+" idle mode", 
-                mAngleMotor.setIdleMode(Constants.Swerve.angleNeutralMode)); 
- 
-            // This doesn't return a RevLibError apparently 
-            mAngleMotor.setInverted(Constants.Swerve.angleMotorInvert); 
-  
-            Thread.sleep(1000); 
-            LogOrDash.checkRevError("angle motor "+moduleNumber+" BURN", 
-                mAngleMotor.burnFlash()); 
-            Thread.sleep(1000); 
-        } 
-        catch(InterruptedException e) 
-        { 
-            DriverStation.reportError("Main thread interrupted while flashing swerve module!", e.getStackTrace()); 
-        } 
-    } 
-
-
-    public void burnFlash(){
-        try{
-          Thread.sleep(1000);
-          mDriveMotor.burnFlash();
-          Thread.sleep(1000);
-          mAngleMotor.burnFlash();
-          Thread.sleep(1000);
-        }catch(InterruptedException e){
-          DriverStation.reportError("Thread was interrupted while flashing swerve module", e.getStackTrace());
-        }
-      }
-
-    public double getAngleCurrent(){
-        return mAngleMotor.getOutputCurrent();
-    }
-    public double getDriveCurrent(){
-        return mDriveMotor.getOutputCurrent();
+   
+    /* SysId Testing */
+    public void voltageDrive(double v){
+        mDriveMotor.getClosedLoopController().setReference(0, ControlType.kPosition);
+        mDriveMotor.setVoltage(v);
     }
 
-    public void setDriveCurrentLimit(int limit){
-        mDriveMotor.setSmartCurrentLimit(limit);
-    }
-
-    public void setBrakeMode(boolean enabled){
-        if(enabled){
-            mDriveMotor.setIdleMode(IdleMode.kBrake);
-            mAngleMotor.setIdleMode(IdleMode.kBrake);
-        }else{
-            mDriveMotor.setIdleMode(IdleMode.kCoast);
-            mAngleMotor.setIdleMode(IdleMode.kCoast);
-        }
+    public void sysIdLog(SysIdRoutineLog log){
+        log.motor("m"+moduleNumber).voltage(
+            edu.wpi.first.units.Units.Volts.of(mDriveMotor.getAppliedOutput() * RobotController.getBatteryVoltage())
+            ).linearVelocity(edu.wpi.first.units.Units.MetersPerSecond.of(mDriveEncoder.getVelocity()))
+            .linearPosition(edu.wpi.first.units.Units.Meters.of(mDriveMotor.getEncoder().getPosition()));
     }
 } 
