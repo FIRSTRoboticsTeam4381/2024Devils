@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
-import com.kauailabs.navx.frc.AHRS;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -34,7 +35,7 @@ public class Swerve extends SubsystemBase{
     private SysIdRoutine routine;
 
     public Swerve(){
-        gyro = new AHRS(Port.kUSB);
+        gyro = new AHRS(NavXComType.kMXP_SPI);
         zeroGyro();
 
         mField = new Field2d();
