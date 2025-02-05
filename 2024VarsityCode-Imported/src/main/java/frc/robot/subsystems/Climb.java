@@ -18,6 +18,7 @@ import com.revrobotics.spark.SparkMaxAlternateEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -86,7 +87,7 @@ public class Climb extends SubsystemBase {
     return absoluteEncoder.getPosition();
   }
 
-  public Command goToPosition(double position, int slot){
+  public Command goToPosition(double position, ClosedLoopSlot slot){
     return new SparkPosition(leftMotor, position, slot, 0.05, this, this::getAbsolutePosition);
   }
 

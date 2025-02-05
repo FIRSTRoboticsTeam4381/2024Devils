@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import com.revrobotics.spark.ClosedLoopSlot;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -75,7 +77,7 @@ public class AutoShooter extends Command {
     SmartDashboard.putNumber("autoaim/Calculated Angle", currentAngle);
     SmartDashboard.putNumber("autoaim/Calculated Velocity", currentVelocity);
 
-    pivot.setAngleReference(currentAngle, 1);
+    pivot.setAngleReference(currentAngle, ClosedLoopSlot.kSlot1);
     shooter.setVelocity(currentVelocity, false);
   }
 

@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
@@ -29,7 +28,6 @@ public class ComposedCommands {
     private Climb climb;
     private Limelight ll;
     private Swerve swerve;
-    //private LEDs leds;
     private CommandPS4Controller controller;
     private State state = State.None;
 
@@ -43,7 +41,6 @@ public class ComposedCommands {
         this.ll = ll;
         this.swerve = swerve;
         this.climb=climb;
-        //this.leds=leds;
         this.controller = controller;
     }
 
@@ -67,13 +64,12 @@ public class ComposedCommands {
                 handoff,
                 index.indexUntilReady(false)
             )
-        );
+        ).withName("Ground Intake");
     }
 
     public Command humanIntake(){
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
-                //leds.intakeWaiting(),
                 pivot.goToAngle(Pivot.Positions.HUMAN, ClosedLoopSlot.kSlot0),
                 index.indexUntilIn(true), // Stops when cancelled
                 shooter.eject() // Stops when cancelled
@@ -103,94 +99,60 @@ public class ComposedCommands {
     }
 
     /* AMP MODE TOGGLE */
-    /*
-    public Command ampMode(){
-        return new ParallelCommandGroup(
-            //leds.shooterStatus(),
-            pivot.goToAngle(Pivot.Positions.amp, 0),
-            shooter.ampShoot() // Stops when cancelled
-        ).withName("Amp Mode");
-    }
-    */
     public Command ampMode(){
             return new ParallelCommandGroup(
                 pivot.goToAngle(Pivot.Positions.AMP, ClosedLoopSlot.kSlot0),
                 shooter.ampShoot(),
                 setRobotState(State.Amp)
-            );
+            ).withName("Amp Mode");
     }
 
     /* PODIUM MODE */
-    /*
-    public Command podiumMode(){
-        return new ParallelCommandGroup(
-            pivot.goToAngle(32, 1),
-            shooter.shoot(4670)
-        ).withName("Podium Mode");
-    }
-    */
     public Command podiumMode(){
             return new ParallelCommandGroup(
                 pivot.goToAngle(32, ClosedLoopSlot.kSlot1),
                 shooter.shoot(4670),
                 setRobotState(State.Podium)
-            );
+            ).withName("Podium Mode");
     }
 
     /* SUBWOOFER MODE */
-    /*
-    public Command subwooferMode(){
-        return new ParallelCommandGroup(
-            pivot.goToAngle(46.5, 1),
-            shooter.shoot(4000)
-        ).withName("Subwoofer Mode");
-    }
-    */
     public Command subwooferMode(){
             return new ParallelCommandGroup(
                 pivot.goToAngle(49.5, ClosedLoopSlot.kSlot1),
                 shooter.shoot(3625),
                 setRobotState(State.Subwoofer)
-            );
+            ).withName("Subwoofer Mode");
     }
 
     /* ALLIANCE LINE MODE */
-    /*
-    public Command allianceLineMode(){
-        return new ParallelCommandGroup(
-            pivot.goToAngle(35,1),
-            shooter.shoot(4475)
-        ).withName("Alliance Line Mode");
-    }
-    */
     public Command allianceLineMode(){
             return new ParallelCommandGroup(
                 pivot.goToAngle(35, ClosedLoopSlot.kSlot1),
                 shooter.shoot(4475),
                 setRobotState(State.Alliance)
-            );
+            ).withName("Alliance Line Mode");
     }
     
 
     /* START SHOOTER */
     public Command startShooter(){
         return new ParallelCommandGroup(
-            //leds.shooterStatus(),
             shooter.shoot(5000)
-        );
+        ).withName("Shooter Running");
     }
 
     /* TODO check positions and sequence */
     public Command climb(){
         return new SequentialCommandGroup(
-            climb.goToPosition(0.674, 0),
+            climb.goToPosition(0.674, ClosedLoopSlot.kSlot0),
             pivot.goToAngle(18.5, ClosedLoopSlot.kSlot1),
-            climb.goToPosition(0.370, 0),
+            climb.goToPosition(0.370, ClosedLoopSlot.kSlot0),
             new ParallelCommandGroup(
                 pivot.goToAngle(90.0, ClosedLoopSlot.kSlot1),
-                climb.goToPosition(0.02, 0)
+                climb.goToPosition(0.02, ClosedLoopSlot.kSlot0)
             )
-        );
+        ).withName("Climbing");
     }
 
     /* FEED NOTE IF READY */
