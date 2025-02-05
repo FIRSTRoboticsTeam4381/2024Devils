@@ -132,8 +132,7 @@ public class RobotContainer {
         // Shoot Note
         driver.R1().or(specialist.R1()).whileTrue(commands.feedNote());
         driver.PS().onTrue(new InstantCommand(()->s_LL.takeSnapshot())).onFalse(new InstantCommand(()->s_LL.resetSnapshot()));
-        driver.L1().onTrue(s_Swerve.nitro());
-        driver.cross().onTrue(new InstantCommand(()->s_Swerve.setBrakeMode(true))).onFalse(new InstantCommand(()->s_Swerve.setBrakeMode(false)));
+        driver.cross().onTrue(new InstantCommand(()->s_Swerve.setBrakeMode(false))).onFalse(new InstantCommand(()->s_Swerve.setBrakeMode(true)));
         driver.PS().onTrue(commands.climb());
 
         specialist.square().toggleOnTrue(commands.subwooferMode());

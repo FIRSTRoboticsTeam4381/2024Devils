@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
-import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -48,17 +47,6 @@ public class Swerve extends SubsystemBase{
         };
 
         mSwerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getPositions());
-
-        // TODO check - auto
-        AutoBuilder.configureHolonomic(
-            this::getPose, // Robot pose supplier
-            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-            this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            this::drive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-            Constants.Swerve.holonomicConfig,
-            () -> {return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;},
-            this // Reference to this subsystem to set requirements
-        );
 
         routine = setupSysId();
     }
@@ -277,13 +265,6 @@ public class Swerve extends SubsystemBase{
         for(SwerveModule m : mSwerveMods){
             m.setDriveCurrentLimit(limit);
         }
-    }
-    public Command nitro(){
-        return new SequentialCommandGroup(
-            new InstantCommand(()->setDriveCurrentLimit(80)),
-            new WaitCommand(5),
-            new InstantCommand(()->setDriveCurrentLimit(60))
-        );
     }
     public void setBrakeMode(boolean enabled){
         for(SwerveModule m : mSwerveMods){
