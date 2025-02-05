@@ -3,12 +3,15 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkFlex;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,24 +19,23 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.SparkUtilities.SparkUtilities;
 import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
   
   /* ATTRIBUTES */
 
-  private CANSparkFlex propMotor;
-  private CANSparkFlex topMotor;
+  private SparkFlex propMotor;
+  private SparkFlex topMotor;
+
+  private static final SparkFlexConfig PROP_MOTOR_CONFIG = new SparkFlexConfig();
+  private static final SparkFlexConfig TOP_MOTOR_CONFIG = new SparkFlexConfig();
 
   private RelativeEncoder propEncoder;
   private RelativeEncoder topEncoder;
 
-  private SparkPIDController propController;
-  private SparkPIDController topController;
-
-  public static final double maxRPM = 6500;
-  public static final double avgRPM = 6100;
+  public static final double MAX_RPM = 6500;
+  public static final double NORMAL_RPM = 4000; // A basic speed to use that works generally well for demos/etc
 
   private double setpoint = 0.0;
   //private boolean shootMode=true;
@@ -44,27 +46,51 @@ public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
   public Shooter() {
     // Motor Setup
-    propMotor = new CANSparkFlex(Constants.Shooter.propCAN, MotorType.kBrushless);
-    topMotor = new CANSparkFlex(Constants.Shooter.topCAN, MotorType.kBrushless);
+    propMotor = new SparkFlex(Constants.Shooter.propCAN, MotorType.kBrushless);
+    topMotor = new SparkFlex(Constants.Shooter.topCAN, MotorType.kBrushless);
 
-    propMotor.setSmartCurrentLimit(60);
-    topMotor.setSmartCurrentLimit(60);
+    PROP_MOTOR_CONFIG
+      .smartCurrentLimit(60)
+      .idleMode(IdleMode.kCoast)
+      .inverted(true);
 
-    propMotor.setIdleMode(IdleMode.kCoast);
-    topMotor.setIdleMode(IdleMode.kCoast);
+	PROP_MOTOR_CONFIG.closedLoop
+		.p(0.001, ClosedLoopSlot.kSlot0)
+		.i(0.0, ClosedLoopSlot.kSlot0)
+		.d(0.0, ClosedLoopSlot.kSlot0)
+		.velocityFF(0.000165, ClosedLoopSlot.kSlot0)
+		.outputRange(-1.0, 1.0, ClosedLoopSlot.kSlot0)
+		.p(0.0005, ClosedLoopSlot.kSlot1)
+		.i(0.0, ClosedLoopSlot.kSlot1)
+		.d(0.0, ClosedLoopSlot.kSlot1)
+		.velocityFF(0.00016, ClosedLoopSlot.kSlot1)
+		.outputRange(-1.0, 1.0, ClosedLoopSlot.kSlot1);
 
-    propMotor.setInverted(true);
-    topMotor.setInverted(true);
-    //bottomMotor.follow(propMotor, true);
+	propMotor.configure(PROP_MOTOR_CONFIG, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    SparkUtilities.optimizeFrames(propMotor, true, true, false, false, false, false);
-    SparkUtilities.optimizeFrames(topMotor, false, true, false, false, false, false);
+	
+	TOP_MOTOR_CONFIG
+		.smartCurrentLimit(60)
+		.idleMode(IdleMode.kCoast)
+		.inverted(true);
+
+	TOP_MOTOR_CONFIG.closedLoop
+		.p(0.0005, ClosedLoopSlot.kSlot0)
+		.i(0.0, ClosedLoopSlot.kSlot0)
+		.d(0.0, ClosedLoopSlot.kSlot0)
+		.velocityFF(0.00016, ClosedLoopSlot.kSlot0)
+		.outputRange(-1.0, 1.0, ClosedLoopSlot.kSlot0)
+		.p(0.00025, ClosedLoopSlot.kSlot1)
+		.i(0.0, ClosedLoopSlot.kSlot1)
+		.d(0.0, ClosedLoopSlot.kSlot1)
+		.velocityFF(0.00016, ClosedLoopSlot.kSlot1)
+		.outputRange(-1.0, 1.0, ClosedLoopSlot.kSlot1);
+
+	topMotor.configure(TOP_MOTOR_CONFIG, ResetMode.kResetSafeParameters, PersistMode. kPersistParameters);
 
     // Encoder Setup
     propEncoder = propMotor.getEncoder();
     topEncoder = topMotor.getEncoder();
-
-    resetPID();
   }
 
 
@@ -99,7 +125,7 @@ public class Shooter extends SubsystemBase {
    * @param deflect Whether the top motor should be flipped so as to allow the note to be deflected through the top
    */
   public void setPercOutput(double speed, boolean deflect){
-    setpoint = speed*maxRPM;
+    setpoint = speed*MAX_RPM;
     propMotor.set(speed);
     topMotor.set(speed * (deflect?-1:1));
   }
@@ -112,27 +138,30 @@ public class Shooter extends SubsystemBase {
    */
   public void setVelocity(double velocity, boolean deflect){
     setpoint = velocity;
-    propController.setReference(velocity, ControlType.kVelocity, 0);
-    topController.setReference(velocity * (deflect?-1.0:1.0), ControlType.kVelocity, 0);
+    propMotor.getClosedLoopController().setReference(velocity, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+    topMotor.getClosedLoopController().setReference(velocity * (deflect?-1.0:1.0), ControlType.kVelocity, ClosedLoopSlot.kSlot0);
     trapMode=false;
   }
 
   public void setAmpVelocity(){
     setpoint = 1800;
-    propController.setReference(1800, ControlType.kVelocity, 1);
-    topController.setReference(-4500, ControlType.kVelocity, 1);
+    propMotor.getClosedLoopController().setReference(1800, ControlType.kVelocity, ClosedLoopSlot.kSlot1);
+    propMotor.getClosedLoopController().setReference(-4500, ControlType.kVelocity, ClosedLoopSlot.kSlot1);
     trapMode=false;
   }
   public void setTrapVelocity(){
     setpoint = 1400;
-    propController.setReference(1400, ControlType.kVelocity, 1);
-    topController.setReference(-4000, ControlType.kVelocity, 1);
+    propMotor.getClosedLoopController().setReference(1400, ControlType.kVelocity, ClosedLoopSlot.kSlot1);
+    propMotor.getClosedLoopController().setReference(-4000, ControlType.kVelocity, ClosedLoopSlot.kSlot1);
     trapMode=true;
   }
 
   public void setCurrentLimit(int current1, int current2){
-    propMotor.setSmartCurrentLimit(current1);
-    topMotor.setSmartCurrentLimit(current2);
+	PROP_MOTOR_CONFIG.smartCurrentLimit(current1);
+	TOP_MOTOR_CONFIG.smartCurrentLimit(current2);
+
+	propMotor.configure(PROP_MOTOR_CONFIG, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+	topMotor.configure(TOP_MOTOR_CONFIG, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
   
 
@@ -238,36 +267,6 @@ public class Shooter extends SubsystemBase {
   */
 
 
-  public void resetPID(){
-    // PID Setup
-    propController = propMotor.getPIDController();
-    propController.setP(0.001, 0);
-    propController.setI(0.0, 0);
-    propController.setD(0.0, 0);
-    propController.setFF(0.000165, 0);
-    propController.setOutputRange(-1, 1);
-
-    topController = topMotor.getPIDController();
-    topController.setP(0.0005, 0);
-    topController.setI(0.0, 0);
-    topController.setD(0.0, 0);
-    topController.setFF(0.00016, 0);
-    topController.setOutputRange(-1, 1);
-
-    propController.setP(0.0005, 1);
-    propController.setI(0.0, 1);
-    propController.setD(0.0, 1);
-    propController.setFF(0.00016, 1);
-    propController.setOutputRange(-1, 1);
-
-    topController.setP(0.00025, 1);
-    topController.setI(0.0, 1);
-    topController.setD(0.0, 1);
-    topController.setFF(0.00016, 1);
-    topController.setOutputRange(-1, 1);
-  }
-
-
   /* PERIODIC */
 
   @Override
@@ -284,18 +283,5 @@ public class Shooter extends SubsystemBase {
 
     SmartDashboard.putNumber("shooter/Propellor Current", propMotor.getOutputCurrent());
     SmartDashboard.putNumber("shooter/Top Current", topMotor.getOutputCurrent());
-  }
-
-
-  public void burnFlash(){
-    try{
-      Thread.sleep(1000);
-      propMotor.burnFlash();
-      Thread.sleep(1000);
-      topMotor.burnFlash();
-      Thread.sleep(1000);
-    }catch(InterruptedException e){
-      DriverStation.reportError("Thread was interrupted while flashing shooter", e.getStackTrace());
-    }
   }
 }
