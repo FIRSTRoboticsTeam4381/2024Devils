@@ -3,27 +3,32 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.SparkUtilities.SparkUtilities;
 import frc.robot.Constants;
 
 public class Index extends SubsystemBase {
 
   /* ATTRIBUTES */
 
-  private CANSparkMax indexMotor;
+  private SparkMax indexMotor;
   private DigitalInput[] eyes;
+
+  private static final SparkMaxConfig MOTOR_CONFIG = new SparkMaxConfig();
 
   public static final double INDEX_SPEED = 0.75;
 
@@ -35,16 +40,14 @@ public class Index extends SubsystemBase {
     eyes = new DigitalInput[2];
     eyes[0] = new DigitalInput(Constants.Index.indexDIO1);
     eyes[1] = new DigitalInput(Constants.Index.indexDIO2);
-    //DigitalOutput eye1 = new DigitalOutput(0);
-    //DigitalOutput eye2 = new DigitalOutput(8);
-    //eye1.set(true);
-    //eye2.set(true);
-    //eye1.close();
-    //eye2.close();
-    indexMotor = new CANSparkMax(Constants.Index.indexCAN, MotorType.kBrushless);
-    indexMotor.setSmartCurrentLimit(30);
 
-    SparkUtilities.optimizeFrames(indexMotor, false, false, false, false, false, false);
+
+    indexMotor = new SparkMax(Constants.Index.indexCAN, MotorType.kBrushless);
+
+	MOTOR_CONFIG
+		.smartCurrentLimit(30);
+
+	indexMotor.configure(MOTOR_CONFIG, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
 
@@ -184,16 +187,5 @@ public class Index extends SubsystemBase {
     SmartDashboard.putString("index/Active Command", this.getCurrentCommand()==null?"None":this.getCurrentCommand().getName());
 
     SmartDashboard.putNumber("index/Index Current", indexMotor.getOutputCurrent());
-  }
-
-
-  public void burnFlash(){
-    try{
-      Thread.sleep(1000);
-      indexMotor.burnFlash();
-      Thread.sleep(1000);
-    }catch(InterruptedException e){
-      DriverStation.reportError("Thread was interrupted while flashing index", e.getStackTrace());
-    }
   }
 }

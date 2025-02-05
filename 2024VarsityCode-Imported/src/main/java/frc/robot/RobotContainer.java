@@ -3,7 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
-import frc.lib.util.LogOrDash;
 import frc.robot.autos.Autos;
 import frc.robot.commands.AutoRotatingSwerve;
 import frc.robot.commands.AutoShooter;
@@ -71,9 +70,6 @@ public class RobotContainer {
         // Configure the button bindings
         configureButtonBindings();
 
-        /* Burn Flash Buttons */
-        configMotorSettingButtons();
-
         /* Autonomous Chooser */
         setupAutoOptions();
 
@@ -132,7 +128,6 @@ public class RobotContainer {
         // Shoot Note
         driver.R1().or(specialist.R1()).whileTrue(commands.feedNote());
         driver.PS().onTrue(new InstantCommand(()->s_LL.takeSnapshot())).onFalse(new InstantCommand(()->s_LL.resetSnapshot()));
-        driver.cross().onTrue(new InstantCommand(()->s_Swerve.setBrakeMode(false))).onFalse(new InstantCommand(()->s_Swerve.setBrakeMode(true)));
         driver.PS().onTrue(commands.climb());
 
         specialist.square().toggleOnTrue(commands.subwooferMode());
@@ -149,20 +144,6 @@ public class RobotContainer {
         specialist.PS().toggleOnTrue(commands.allianceLineMode());
 
         driver.touchpad().or(specialist.touchpad()).onTrue(commands.cancelAll());
-    }
-
-    private void configMotorSettingButtons(){
-        // Button to turn on/off sending debug data to the dashboard
-        SmartDashboard.putData("Toggle Debug Dashboards", LogOrDash.toggleDashboard());
-        //SmartDashboard.putData("Burn Spark Settings", s_Swerve.configToFlash());
-        SmartDashboard.putData("configs/Burn Intake Settings", new InstantCommand(() -> s_Intake.burnFlash()));
-        SmartDashboard.putData("configs/Burn Index Settings", new InstantCommand(() -> s_Index.burnFlash()));
-        SmartDashboard.putData("configs/Burn Shooter Settings", new InstantCommand(() -> s_Shooter.burnFlash()));
-        SmartDashboard.putData("configs/Burn Pivot Settings", new InstantCommand(() -> s_Pivot.burnFlash()));
-        //SmartDashboard.putData("configs/Burn Climb Settings", new InstantCommand(() -> s_Climb.burnFlash()));
-        SmartDashboard.putData("configs/Burn Swerve Settings", new InstantCommand(() -> s_Swerve.configToFlash()));
-
-        SmartDashboard.putData("shooter/Reset PIDs", new InstantCommand(() -> s_Shooter.resetPID()));
     }
 
     /**
