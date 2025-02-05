@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import com.revrobotics.spark.ClosedLoopSlot;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -56,7 +58,7 @@ public class ComposedCommands {
             new ParallelRaceGroup(
                 index.indexUntilIn(false),
                 new ParallelCommandGroup( // Just get the note into the index
-                    pivot.goToAngle(Pivot.Positions.intake, 1),
+                    pivot.goToAngle(Pivot.Positions.INTAKE, ClosedLoopSlot.kSlot1),
                     intake.run()
                 )
             ),
@@ -72,12 +74,12 @@ public class ComposedCommands {
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
                 //leds.intakeWaiting(),
-                pivot.goToAngle(Pivot.Positions.human, 0),
+                pivot.goToAngle(Pivot.Positions.HUMAN, ClosedLoopSlot.kSlot0),
                 index.indexUntilIn(true), // Stops when cancelled
                 shooter.eject() // Stops when cancelled
             ),
             new ParallelCommandGroup(
-                pivot.goToAngle(Pivot.Positions.transit, 0),
+                pivot.goToAngle(Pivot.Positions.TRANSIT, ClosedLoopSlot.kSlot0),
                 index.indexUntilReady(false)
             )
         ).withName("Human Intake");
@@ -112,7 +114,7 @@ public class ComposedCommands {
     */
     public Command ampMode(){
             return new ParallelCommandGroup(
-                pivot.goToAngle(Pivot.Positions.amp, 0),
+                pivot.goToAngle(Pivot.Positions.AMP, ClosedLoopSlot.kSlot0),
                 shooter.ampShoot(),
                 setRobotState(State.Amp)
             );
@@ -129,7 +131,7 @@ public class ComposedCommands {
     */
     public Command podiumMode(){
             return new ParallelCommandGroup(
-                pivot.goToAngle(32, 1),
+                pivot.goToAngle(32, ClosedLoopSlot.kSlot1),
                 shooter.shoot(4670),
                 setRobotState(State.Podium)
             );
@@ -146,7 +148,7 @@ public class ComposedCommands {
     */
     public Command subwooferMode(){
             return new ParallelCommandGroup(
-                pivot.goToAngle(49.5, 1),
+                pivot.goToAngle(49.5, ClosedLoopSlot.kSlot1),
                 shooter.shoot(3625),
                 setRobotState(State.Subwoofer)
             );
@@ -163,7 +165,7 @@ public class ComposedCommands {
     */
     public Command allianceLineMode(){
             return new ParallelCommandGroup(
-                pivot.goToAngle(35, 1),
+                pivot.goToAngle(35, ClosedLoopSlot.kSlot1),
                 shooter.shoot(4475),
                 setRobotState(State.Alliance)
             );
@@ -182,10 +184,10 @@ public class ComposedCommands {
     public Command climb(){
         return new SequentialCommandGroup(
             climb.goToPosition(0.674, 0),
-            pivot.goToAngle(18.5, 2),
+            pivot.goToAngle(18.5, ClosedLoopSlot.kSlot1),
             climb.goToPosition(0.370, 0),
             new ParallelCommandGroup(
-                pivot.goToAngle(90.0, 1),
+                pivot.goToAngle(90.0, ClosedLoopSlot.kSlot1),
                 climb.goToPosition(0.02, 0)
             )
         );

@@ -10,6 +10,8 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -83,6 +85,10 @@ public class Pivot extends SubsystemBase {
 		.idleMode(IdleMode.kBrake)
 		.smartCurrentLimit(50);
 
+	
+	leftPivot.configure(LEFT_MOTOR_CONFIG, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+	rightPivot.configure(RIGHT_MOTOR_CONFIG, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
 
     angleEncoder = leftPivot.getAbsoluteEncoder();
   }
@@ -126,7 +132,7 @@ public class Pivot extends SubsystemBase {
    * @param angle Angle to travel to
    * @return
    */
-  public Command goToAngle(double angle, int slot){
+  public Command goToAngle(double angle, ClosedLoopSlot slot){
     return new SparkPosition(leftPivot, angle, slot, 1.0, this, this::getAngle);
   }
 
@@ -137,7 +143,7 @@ public class Pivot extends SubsystemBase {
    */
   public Command holdPosition(double position){
     return new FunctionalCommand(
-      ()->setAngleReference(position, 0), 
+      ()->setAngleReference(position, ClosedLoopSlot.kSlot0), 
       ()->{}, 
       interrupted->{}, 
       ()->{return false;}, 
