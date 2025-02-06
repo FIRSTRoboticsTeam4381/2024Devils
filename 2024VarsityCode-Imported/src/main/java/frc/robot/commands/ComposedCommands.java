@@ -171,13 +171,6 @@ public class ComposedCommands {
         return new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()).withName("Cancel All");
     }
 
-    /* TOGGLE AUTO AIMING */
-    public Command autoAim(boolean stopOnEnd){
-        return new SequentialCommandGroup(
-            new AutoShooter(pivot, shooter, ll, swerve, stopOnEnd)
-        ).withName("Auto Aim");
-    }
-
     private enum State{
         GroundIntake,
         HumanIntake,

@@ -47,10 +47,12 @@ public class Limelight extends SubsystemBase{
         return captureLatency()+pipelineLatency();
     }
     
+    /*
       private double getTargetRelativeVelocity(){
         double robotVelocity = RobotContainer.s_Swerve.getRobotRelativeSpeeds().vxMetersPerSecond; // Since the Limelight is on the front of the robot, the only helpful velocity is the axis that is facing the target
         return -robotVelocity;
       }
+        */
 
       private double estimateError(){
         double distance = distanceFromGoal();
@@ -69,6 +71,7 @@ public class Limelight extends SubsystemBase{
         return estimatedError;
       }
 
+      /*
       private double estimateDistance(){
         Optional<Alliance> allianceOptional = DriverStation.getAlliance();
         Alliance alliance;
@@ -90,6 +93,7 @@ public class Limelight extends SubsystemBase{
         double predictedPosition = estimateDistance() - predictedTravel;
         return predictedPosition;
       }
+        */
 
       
 
@@ -191,8 +195,8 @@ public class Limelight extends SubsystemBase{
         SmartDashboard.putNumber("limelight/goalDistance (Feet)", distanceFromGoal()*3.281);
         SmartDashboard.putNumber("limelight/targetXOffset", targetXOffset());
         SmartDashboard.putNumber("limelight/Estimate Error", estimateError());
-        SmartDashboard.putNumber("limelight/Estimated Distance", estimateDistance());
-        SmartDashboard.putNumber("limelight/Predicted Position", predictFuturePosition());
+        //SmartDashboard.putNumber("limelight/Estimated Distance", estimateDistance());
+        //SmartDashboard.putNumber("limelight/Predicted Position", predictFuturePosition());
         //SmartDashboard.putNumber("limelight/Calculated Angle", currentAngle);
     }
 

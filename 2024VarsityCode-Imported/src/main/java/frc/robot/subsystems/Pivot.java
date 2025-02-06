@@ -56,6 +56,9 @@ public class Pivot extends SubsystemBase {
 		.idleMode(IdleMode.kBrake)
 		.smartCurrentLimit(50);
 
+    LEFT_MOTOR_CONFIG.absoluteEncoder
+    .positionConversionFactor(360);
+
 	LEFT_MOTOR_CONFIG.closedLoop
 		.feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
 		.positionWrappingEnabled(true)

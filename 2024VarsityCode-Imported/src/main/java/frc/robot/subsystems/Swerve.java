@@ -1,38 +1,48 @@
 package frc.robot.subsystems;
 
+import java.util.Optional;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.SerialPort.Port;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants;
 
+@Logged
 public class Swerve extends SubsystemBase{
-    public SwerveDriveOdometry mSwerveOdometry;
+    public SwerveDrivePoseEstimator swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
-    public Field2d mField;
 
-    private SysIdRoutine routine;
+    // Secondary references for automated logging
+    private SwerveModule FL;
+    private SwerveModule FR;
+    private SwerveModule BL;
+    private SwerveModule BR;
 
     StructArrayPublisher<SwerveModuleState> modStatusPublisher = NetworkTableInstance.getDefault()
         .getStructArrayTopic("Swerve/ModuleStatus", SwerveModuleState.struct).publish();
@@ -44,11 +54,15 @@ public class Swerve extends SubsystemBase{
     StructPublisher<ChassisSpeeds> chasTargetPublisher = NetworkTableInstance.getDefault()
         .getStructTopic("Swerve/ChassisTarget", ChassisSpeeds.struct).publish();
 
+    public final Field2d field = new Field2d();
+    private Pose2d startPose = new Pose2d(Units.inchesToMeters(177), Units.inchesToMeters(214), Rotation2d.fromDegrees(0));
+
+
     public Swerve(){
         gyro = new AHRS(NavXComType.kMXP_SPI);
         zeroGyro();
 
-        mField = new Field2d();
+        SmartDashboard.putData(this);
 
         mSwerveMods = new SwerveModule[]{
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -57,38 +71,42 @@ public class Swerve extends SubsystemBase{
             new SwerveModule(3, Constants.Swerve.Mod3.constants)
         };
 
-        mSwerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getPositions());
+        // Set references for auto logging
+        FL = mSwerveMods[0];
+        FR = mSwerveMods[1];
+        BL = mSwerveMods[2];
+        BR = mSwerveMods[3];
 
-        routine = setupSysId();
+        swerveOdometry = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getYaw(), getPositions(), startPose);
+
+        // Setup position logging
+        SmartDashboard.putData("Field", field);
+        //m_field.setRobotPose(startPose);
+
+        // Logging callback for current robot pose
+        PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+            // Do whatever you want with the pose here
+            field.setRobotPose(pose);
+        });
+
+        // Logging callback for target robot pose
+        PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+            // Do whatever you want with the pose here
+            field.getObject("target").setPose(pose);
+        });
+
+        // Logging callback for the active path, this is sent as a list of poses
+        PathPlannerLogging.setLogActivePathCallback((poses) -> {
+            // Do whatever you want with the poses here
+            field.getObject("path").setPoses(poses);
+        });
+
+
+          setupSysIDTests();
     }
 
-    private SysIdRoutine setupSysId(){
-        SysIdRoutine routine = new SysIdRoutine(
-            new SysIdRoutine.Config(), 
-            new SysIdRoutine.Mechanism(
-                (volts) -> {
-                    for(int i = 0; i < mSwerveMods.length; i++){
-                        mSwerveMods[i].voltageDrive(volts.in(edu.wpi.first.units.Units.Volts));
-                    }
-                }, 
-                (log) -> {
-                    for(int i = 0; i < mSwerveMods.length; i++){
-                        mSwerveMods[i].sysIdLog(log);
-                    }
-                }, 
-                this)
-                );
-        return routine;
-    }
-
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction){
-        return routine.quasistatic(direction);
-    }
-    public Command sysIdDynamic(SysIdRoutine.Direction direction){
-        return routine.dynamic(direction);
-    }
-
-    public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop){ 
+    public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop){
+        
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(
             fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
                 translation.getX(),
@@ -114,7 +132,7 @@ public class Swerve extends SubsystemBase{
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
-    } 
+    }
 
     // TODO check - auto
     public void drive(ChassisSpeeds robotRelativeSpeeds){
@@ -125,7 +143,7 @@ public class Swerve extends SubsystemBase{
 
     // TODO check - auto
     /* Used by PathPlanner AutoBuilder */
-    public ChassisSpeeds getRobotRelativeSpeeds(){
+    private ChassisSpeeds getRobotRelativeSpeeds(){
         return Constants.Swerve.swerveKinematics.toChassisSpeeds(
             mSwerveMods[0].getState(),
             mSwerveMods[1].getState(),
@@ -133,17 +151,6 @@ public class Swerve extends SubsystemBase{
             mSwerveMods[3].getState()
         );
     }
-
-    /*
-    public double odometryDistanceFromGoal(){
-        Alliance alliance = DriverStation.getAlliance().get();
-        double[] redGoal = {16, 5.5, 0};
-        double[] blueGoal = {0, 5.5, 0};
-        Pose2d robotPose = getPose();
-        double distance = Math.sqrt(Math.pow(robotPose.getX()-(alliance==Alliance.Red?redGoal[0]:blueGoal[0]),2) + Math.pow(robotPose.getY()-(alliance==Alliance.Red?redGoal[1]:blueGoal[1]),2));
-        return distance;
-    }
-    */
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates){
@@ -154,11 +161,22 @@ public class Swerve extends SubsystemBase{
         }
     }
 
+    public Command brake() {
+        return new RunCommand(() -> {
+            setModuleStates(new SwerveModuleState[]{
+                new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(45))
+            });
+        },this);
+    }
+
     /**
      * @return XY of robot on field
      */
     public Pose2d getPose(){
-        return mSwerveOdometry.getPoseMeters();
+        return swerveOdometry.getEstimatedPosition();
     }
 
     /**
@@ -166,15 +184,11 @@ public class Swerve extends SubsystemBase{
      * @param pose Desired new pose
      */
     public void resetOdometry(Pose2d pose){
-        mSwerveOdometry.resetPosition(getYaw(), getPositions(), pose);
+        swerveOdometry.resetPosition(getYaw(), getPositions(), pose);
     }
 
     public void resetOdometry(Pose2d pose, Rotation2d yaw){
-        mSwerveOdometry.resetPosition(yaw, getPositions(), pose);
-    }
-
-    public void resetOdometry(Rotation2d yaw){
-        mSwerveOdometry.resetPosition(yaw, getPositions(), mSwerveOdometry.getPoseMeters());
+        swerveOdometry.resetPosition(yaw, getPositions(), pose);
     }
 
     public SwerveModuleState[] getStates(){
@@ -210,51 +224,72 @@ public class Swerve extends SubsystemBase{
 
     @Override
     public void periodic(){
-        mSwerveOdometry.update(getYaw(), getPositions());
-        SmartDashboard.putBoolean("swerve/Gyro Calibrated", !gyro.isCalibrating());
+        swerveOdometry.update(getYaw(), getPositions());
+        
+        resetToEdge();
+
+        SmartDashboard.putNumber("Gyro Angle", getYaw().getDegrees());
 
         SwerveModuleState[] currentStatus = new SwerveModuleState[4];
-        double[] targetSpeeds = new double[4];
-        double[] targetAngles = new double[4];
-        double[] absoluteAngles = new double[4];
-
-        SmartDashboard.putNumber("swerve/rotation", getYaw().getDegrees()-180);
-        SmartDashboard.putNumber("match/Match Timer", DriverStation.getMatchTime());
         
         for(SwerveModule mod : mSwerveMods){
+            mod.sendTelemetry();
             currentStatus[mod.moduleNumber] = mod.getState();
-            targetSpeeds[mod.moduleNumber] = mod.getDesiredSpeed();
-            targetAngles[mod.moduleNumber] = mod.getDesiredAngle();
-            absoluteAngles[mod.moduleNumber] = mod.getAngle().getDegrees();
         }
 
         modStatusPublisher.set(currentStatus);
         chasStatusPublisher.set(getRobotRelativeSpeeds());
 
 
-        // Compile swerve status for AdvantageScope
-        double[] targetStateAdv = new double[8];
-        double[] currentStateAdv = new double[8];
-        double[] absoluteStateAdv = new double[8];
-        for(int i=0; i<4;i++)
-        {
-            targetStateAdv[2*i] = targetAngles[i];
-            targetStateAdv[2*i+1] = targetSpeeds[i];
-            
-            currentStateAdv[2*i] = currentStatus[i].angle.getDegrees();
-            currentStateAdv[2*i+1] = currentStatus[i].speedMetersPerSecond;
-
-            absoluteStateAdv[2*i] = absoluteAngles[i];
-            absoluteStateAdv[2*i+1] = 8;//Arbitrary to make these easier to see
-        }
-
-        SmartDashboard.putNumberArray("swerve/status", currentStateAdv);
-        SmartDashboard.putNumberArray("swerve/target", targetStateAdv);
-        SmartDashboard.putNumberArray("swerve/absolute", absoluteStateAdv);
+        SmartDashboard.putNumber("Gyro Pitch", gyro.getPitch());
+        SmartDashboard.putNumber("Gyro Roll", gyro.getRoll());
+        SmartDashboard.putNumber("Gyro Yaw", gyro.getYaw());
         
-        //SmartDashboard.putNumber("position/Distance From Goal (Odometry)", odometryDistanceFromGoal());
+        SmartDashboard.putNumber("Gyro Yaw Velocity", gyro.getRate());
 
-        mField.setRobotPose(getPose());
-        SmartDashboard.putData("position/Field", mField);
+        field.setRobotPose(getPose());
     }
+
+
+    private void setupSysIDTests() {
+
+        SysIdRoutine routine = new SysIdRoutine(
+                new SysIdRoutine.Config(),
+                new SysIdRoutine.Mechanism(
+                    (v) -> {
+                        for(int j = 0; j < mSwerveMods.length; j++)
+                        {
+                            mSwerveMods[j].setVoltage(v.in(edu.wpi.first.units.Units.Volts));
+                        }
+                    }, 
+                    (log) ->
+                    {
+                        for(int j = 0; j < mSwerveMods.length; j++)
+                        {
+                            mSwerveMods[j].logSysIDData(log);
+                        }
+                    }, 
+                    this)
+            );
+
+            SmartDashboard.putData("SysID/drive/dyn_f", routine.dynamic(Direction.kForward));
+            SmartDashboard.putData("SysID/drive/dyn_r", routine.dynamic(Direction.kReverse));
+            SmartDashboard.putData("SysID/drive/quas_f", routine.quasistatic(Direction.kForward));
+            SmartDashboard.putData("SysID/drive/quas_r", routine.quasistatic(Direction.kReverse));
+
+    }
+
+    public void resetToEdge() {
+        if (getPose().getY() > 8.1) {
+            swerveOdometry.resetPosition(getYaw(), getPositions(), new Pose2d(getPose().getX(), 8.1, getYaw()));        // Need to replace getPose(), getPost gets the current position, we need the desired position in the field
+          } else if (getPose().getY() < -0.1) {
+            swerveOdometry.resetPosition(getYaw(), getPositions(), new Pose2d(getPose().getX(), -0.1, getYaw()));      
+          } if (getPose().getX() > 17.6) {
+            swerveOdometry.resetPosition(getYaw(), getPositions(), new Pose2d(17.6, getPose().getY(), getYaw())); 
+          } else if (getPose().getX() < -0.1) {
+            swerveOdometry.resetPosition(getYaw(), getPositions(), new Pose2d(-0.1, getPose().getY(), getYaw())); 
+          }
+    }
+
+
 }

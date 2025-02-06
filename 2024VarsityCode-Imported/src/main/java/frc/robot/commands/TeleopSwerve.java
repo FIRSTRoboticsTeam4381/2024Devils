@@ -1,15 +1,18 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Rotation2d;
+import java.util.function.Supplier;
+
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Swerve;
 
+@Logged
 public class TeleopSwerve extends Command{
     
     private double rotation;
@@ -17,63 +20,76 @@ public class TeleopSwerve extends Command{
     private boolean openLoop;
 
     private Swerve s_Swerve;
-    private CommandXboxController controller;
+    //private CommandPS4Controller controller;
+    //private CommandPS4Controller controller2;
+    private Supplier<Double> forward;
+    private Supplier<Double> leftright;
+    private Supplier<Double> rotate;
+    private Supplier<Trigger> slow;
 
+    static StructArrayPublisher<Translation2d> pointPub = NetworkTableInstance.getDefault()
+    .getStructArrayTopic("joystick", Translation2d.struct).publish();
+    
     /*
      * Driver Control command
      * @param s_Swerve Swerve subsystem
      * @param controller PS4 controller
      * @param openLoop True
      */
-    public TeleopSwerve(Swerve s_Swerve, CommandXboxController controller, boolean openLoop){
+    public TeleopSwerve(Swerve s_Swerve, Supplier<Double> forward, Supplier<Double> leftright, Supplier<Double> rotate, boolean openLoop, Supplier<Trigger> slow){
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
-        this.controller = controller;
+        this.forward = forward;
+        this.leftright = leftright;
+        this.rotate = rotate;
         this.openLoop = openLoop;
+        this.slow = slow;
+
     }
 
     @Override
     public void execute(){
-        double yAxis = -controller.getLeftY();
-        double xAxis = -controller.getLeftX();
-        double rAxis = -controller.getRightX();
+        double yAxis = -forward.get();
+        double xAxis = -leftright.get();
+        double rAxis = -rotate.get();
 
-        /* Deadbands */
+        
+
+        // Deadbands
         yAxis = (Math.abs(yAxis) < Constants.stickDeadband) ? 0 : yAxis;
         xAxis = (Math.abs(xAxis) < Constants.stickDeadband) ? 0 : xAxis;
         rAxis = (Math.abs(rAxis) < Constants.stickDeadband) ? 0 : rAxis;
 
         /* Slow Trigger */
-        double slowdown = 1 - ((controller.getRightTriggerAxis()+1.0)/2.0 < Constants.stickDeadband ? 0 : (controller.getRightTriggerAxis()+1.0)/2.0);
+        double slowdown = (slow.get().getAsBoolean() ? .25 : 1);
         yAxis *= slowdown;
         xAxis *= slowdown;
         rAxis *= slowdown;
 
-        /* Slowdown from Pivot */
-        if(RobotContainer.s_Pivot.getAngle() > 65 && RobotContainer.s_Pivot.getAngle() < 350){
-            yAxis *= 0.5;
-            xAxis *= 0.5;
-            rAxis *= 0.5;
-        }
-
         /* Calculates inputs for swerve subsystem */
         translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);
-        SmartDashboard.putNumber("teleopSwerve/Controller yVel", translation.getX());
-        SmartDashboard.putNumber("teleopSwerve/Controller xVel", translation.getY());
-        fieldSpeeds();
         rotation = rAxis * Constants.Swerve.maxAngularVelocity;
-        s_Swerve.drive(translation, rotation, controller.leftBumper().getAsBoolean()?false:true, openLoop);
-    }
+        s_Swerve.drive(translation, rotation, true, openLoop);
 
-    private void fieldSpeeds(){
-        Rotation2d rotation = s_Swerve.getYaw();
-        double robotY = s_Swerve.getRobotRelativeSpeeds().vxMetersPerSecond;
-        double robotX = s_Swerve.getRobotRelativeSpeeds().vyMetersPerSecond;
 
-        double fieldY = robotY*rotation.getCos() + robotX*rotation.getSin();
-        double fieldX = robotY*rotation.getSin() + robotX*rotation.getCos();
-        SmartDashboard.putNumber("teleopSwerve/Calculated yVel", fieldY);
-        SmartDashboard.putNumber("teleopSwerve/Calculated xVel", fieldX);
+        /*
+        Translation2d x = new Translation2d(yAxis, xAxis);
+
+        Translation2d y = new Translation2d(RobotContainer.interpolateNow(x.getNorm(), 0.1), x.getAngle());
+
+        x = x.times(RobotContainer.interpolateNow(x.getNorm(), 0.1));
+        
+        pointPub.set(new Translation2d[] {
+            new Translation2d(yAxis, xAxis),
+            new Translation2d(0, y.getNorm()),
+            new Translation2d(RobotContainer.interpolateNow(xAxis, 0.1),0),
+            y
+        });
+
+        translation = y.times(Constants.Swerve.maxSpeed);
+        s_Swerve.drive(translation, rotation, true, openLoop);
+
+        */
     }
 }

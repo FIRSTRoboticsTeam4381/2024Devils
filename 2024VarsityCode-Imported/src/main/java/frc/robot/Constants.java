@@ -106,7 +106,7 @@ public final class Constants {
         public static final IdleMode driveNeutralMode = IdleMode.kBrake;
 
         /* Motor Inverts */
-        public static final boolean driveMotorInvert = false;
+        public static final boolean driveMotorInvert = true;
         /*
          * things to check: if this change causes the drive motors to behave in a weird way,
          * change it to false and manually flip the outputs to the drive motor

@@ -3,8 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
-import frc.robot.commands.AutoRotatingSwerve;
-import frc.robot.commands.AutoShooter;
 import frc.robot.commands.ComposedCommands;
 import frc.robot.commands.ManualClimb;
 import frc.robot.commands.ManualPivot;
@@ -60,7 +58,7 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
-        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, true).withName("Teleop"));
+        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver::getLeftY, driver::getLeftX, driver::getRightX, true, driver::leftBumper).withName("Teleop"));
         s_Pivot.setDefaultCommand(new ManualPivot(specialist::getLeftY, s_Pivot).withName("Manual Pivot"));
         s_Climb.setDefaultCommand(new ManualClimb(specialist, s_Climb));
 
@@ -86,9 +84,6 @@ public class RobotContainer {
         driver.start()
             .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
-        
-        // Auto Rotation
-        driver.y().whileTrue(new AutoRotatingSwerve(s_Swerve, s_LL, driver, true).withName("Teleop Auto Rotate"));
         // Shoot Note
         driver.rightBumper().or(specialist.rightBumper()).whileTrue(commands.feedNote());
         //driver.back().onTrue(new InstantCommand(()->s_LL.takeSnapshot())).onFalse(new InstantCommand(()->s_LL.resetSnapshot()));
@@ -97,7 +92,6 @@ public class RobotContainer {
         specialist.x().toggleOnTrue(commands.subwooferMode());
         specialist.a().toggleOnTrue(commands.groundIntake(new ManualPivot(specialist::getLeftY, s_Pivot)));
         specialist.b().whileTrue(commands.ejectNote());
-        specialist.y().whileTrue(new AutoShooter(s_Pivot, s_Shooter, s_LL, s_Swerve, true));
 
         specialist.povRight().toggleOnTrue(commands.ampMode());
         specialist.povDown().whileTrue(commands.reverseAmp());
