@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Swerve;
@@ -16,7 +17,7 @@ public class TeleopSwerve extends Command{
     private boolean openLoop;
 
     private Swerve s_Swerve;
-    private CommandPS4Controller controller;
+    private CommandXboxController controller;
 
     /*
      * Driver Control command
@@ -24,7 +25,7 @@ public class TeleopSwerve extends Command{
      * @param controller PS4 controller
      * @param openLoop True
      */
-    public TeleopSwerve(Swerve s_Swerve, CommandPS4Controller controller, boolean openLoop){
+    public TeleopSwerve(Swerve s_Swerve, CommandXboxController controller, boolean openLoop){
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
@@ -44,7 +45,7 @@ public class TeleopSwerve extends Command{
         rAxis = (Math.abs(rAxis) < Constants.stickDeadband) ? 0 : rAxis;
 
         /* Slow Trigger */
-        double slowdown = 1 - ((controller.getR2Axis()+1.0)/2.0 < Constants.stickDeadband ? 0 : (controller.getR2Axis()+1.0)/2.0);
+        double slowdown = 1 - ((controller.getRightTriggerAxis()+1.0)/2.0 < Constants.stickDeadband ? 0 : (controller.getRightTriggerAxis()+1.0)/2.0);
         yAxis *= slowdown;
         xAxis *= slowdown;
         rAxis *= slowdown;
@@ -62,7 +63,7 @@ public class TeleopSwerve extends Command{
         SmartDashboard.putNumber("teleopSwerve/Controller xVel", translation.getY());
         fieldSpeeds();
         rotation = rAxis * Constants.Swerve.maxAngularVelocity;
-        s_Swerve.drive(translation, rotation, controller.L1().getAsBoolean()?false:true, openLoop);
+        s_Swerve.drive(translation, rotation, controller.leftBumper().getAsBoolean()?false:true, openLoop);
     }
 
     private void fieldSpeeds(){

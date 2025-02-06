@@ -6,15 +6,16 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.subsystems.Climb;
 
 public class ManualClimb extends Command {
-  private CommandPS4Controller controller;
+  private CommandXboxController controller;
   private Climb climb;
 
   /** Creates a new ManualClimb. */
-  public ManualClimb(CommandPS4Controller specialsController, Climb climb) {
+  public ManualClimb(CommandXboxController specialsController, Climb climb) {
     controller = specialsController;
     this.climb = climb;
 

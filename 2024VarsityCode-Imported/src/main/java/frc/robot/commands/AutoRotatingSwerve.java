@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Limelight;
@@ -18,7 +19,7 @@ public class AutoRotatingSwerve extends Command{
 
     private Swerve s_Swerve;
     private Limelight s_LL;
-    private CommandPS4Controller controller;
+    private CommandXboxController controller;
 
     private PIDController rotationController;
 
@@ -28,7 +29,7 @@ public class AutoRotatingSwerve extends Command{
      * @param controller PS4 controller
      * @param openLoop True
      */
-    public AutoRotatingSwerve(Swerve s_Swerve, Limelight s_LL, CommandPS4Controller controller, boolean openLoop){
+    public AutoRotatingSwerve(Swerve s_Swerve, Limelight s_LL, CommandXboxController controller, boolean openLoop){
         // TODO
         rotationController = new PIDController(0.0075, 0.0, 0.001);
 
@@ -50,7 +51,7 @@ public class AutoRotatingSwerve extends Command{
         xAxis = (Math.abs(xAxis) < Constants.stickDeadband) ? 0 : xAxis;
 
         /* Slow Trigger */
-        double slowdown = 1 - ((controller.getR2Axis()+1.0)/2.0 < Constants.stickDeadband ? 0 : (controller.getR2Axis()+1.0)/2.0);
+        double slowdown = 1 - ((controller.getRightTriggerAxis()+1.0)/2.0 < Constants.stickDeadband ? 0 : (controller.getRightTriggerAxis()+1.0)/2.0);
         yAxis *= slowdown;
         xAxis *= slowdown;
 

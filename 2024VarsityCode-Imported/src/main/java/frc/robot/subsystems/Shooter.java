@@ -35,7 +35,7 @@ public class Shooter extends SubsystemBase {
   private RelativeEncoder topEncoder;
 
   public static final double MAX_RPM = 6500;
-  public static final double NORMAL_RPM = 4000; // A basic speed to use that works generally well for demos/etc
+  public static final double NORMAL_RPM = 2000; // A basic speed to use that works generally well for demos/etc
 
   private double setpoint = 0.0;
   //private boolean shootMode=true;

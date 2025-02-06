@@ -3,7 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
-import frc.robot.autos.Autos;
 import frc.robot.commands.AutoRotatingSwerve;
 import frc.robot.commands.AutoShooter;
 import frc.robot.commands.ComposedCommands;
@@ -30,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -39,8 +39,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
  */
 public class RobotContainer {
     /* Controllers */
-    private static final CommandPS4Controller driver = new CommandPS4Controller(0);
-    private static final CommandPS4Controller specialist = new CommandPS4Controller(1);
+    private static final CommandXboxController driver = new CommandXboxController(0);
+    private static final CommandXboxController specialist = new CommandXboxController(1);
 
     /* Subsystems */
     public static final Swerve s_Swerve = new Swerve();
@@ -70,45 +70,9 @@ public class RobotContainer {
         // Configure the button bindings
         configureButtonBindings();
 
-        /* Autonomous Chooser */
-        setupAutoOptions();
-
         // LED Status Effects
         //s_LED.clear();
         //CommandScheduler.getInstance().schedule(s_LED.noteStoredConditional());
-    }
-
-    private void setupAutoOptions(){
-        m_AutoChooser.setDefaultOption("None", Autos.none());
-        m_AutoChooser.addOption("RED-Start1Pickup3", Autos.start1A1M1M2Red()); // DONE
-        m_AutoChooser.addOption("RED-Start2Pickup2", Autos.start2A2M2Red()); // DONE
-        m_AutoChooser.addOption("RED-Start2Pickup3", Autos.start2A2M1M2Red()); // not using
-        m_AutoChooser.addOption("RED-Start2Pickup5", Autos.start2A3A2A1M2M1Red()); // DONE - Really good first 4, 5th is pretty good, 6th I don't think it will get
-        m_AutoChooser.addOption("RED-Start2UnderStage", Autos.start2A2M3M2Red()); // DONE - Solid, picks up consistently, wheels skid a bit
-        m_AutoChooser.addOption("RED-Start3Pickup3", Autos.start3A3M3A2Red()); // DONE - Amazing, might not have enough time for the 4th but it gets them all in
-        m_AutoChooser.addOption("RED-Start3OutOfTheWay", Autos.start3M3M2Red()); // DONE - Pretty good, picked up both most of the time but some issues with pick up
-        m_AutoChooser.addOption("RED-Start4Pickup2", Autos.start4M4M5Red()); // DONE
-
-        m_AutoChooser.addOption("BLUE-Start1Pickup3", Autos.start1A1M1M2Blue()); // DONE
-        m_AutoChooser.addOption("BLUE-Start2Pickup2", Autos.start2A2M2Blue()); // good
-        m_AutoChooser.addOption("BLUE-Start2Pickup3", Autos.start2A2M1M2Blue()); // not using
-        m_AutoChooser.addOption("BLUE-Start2Pickup5", Autos.start2A3A2A1M2M1Blue()); // DONE
-        m_AutoChooser.addOption("BLUE-Start2UnderStage", Autos.start2A2M3M2Blue()); // bad
-        m_AutoChooser.addOption("BLUE-Start3Pickup3", Autos.start3A3M3A2Blue()); // won't run that
-        m_AutoChooser.addOption("BLUE-Start3OutOfTheWay", Autos.start3M3M2Blue()); // bad
-        m_AutoChooser.addOption("BLUE-Start4Pickup2", Autos.start4M4M5Blue()); // Pretty good
-
-        m_AutoChooser.addOption("Test Auto1", Autos.testAuto1());
-        m_AutoChooser.addOption("Test Auto2", Autos.testAuto2());
-        m_AutoChooser.addOption("Test Auto3", Autos.testAuto3());
-        m_AutoChooser.addOption("Test Auto4", Autos.testAuto4());
-        m_AutoChooser.addOption("Destroy", Autos.destroy());
-        m_AutoChooser.addOption("Just Shoot", Autos.justShoot());
-        //m_AutoChooser.addOption("SysId Quas Fwd", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
-        //m_AutoChooser.addOption("SysId Quas Rev", s_Swerve.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse));
-        //m_AutoChooser.addOption("SysId Dyna Fwd", s_Swerve.sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
-        //m_AutoChooser.addOption("SysId Dyna Rev", s_Swerve.sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse));
-        SmartDashboard.putData(m_AutoChooser);
     }
 
     /**
@@ -119,31 +83,31 @@ public class RobotContainer {
    */
     private void configureButtonBindings(){
         // Button to reset swerve odometry and angle
-        driver.options()
+        driver.start()
             .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
         
         // Auto Rotation
-        driver.triangle().whileTrue(new AutoRotatingSwerve(s_Swerve, s_LL, driver, true).withName("Teleop Auto Rotate"));
+        driver.y().whileTrue(new AutoRotatingSwerve(s_Swerve, s_LL, driver, true).withName("Teleop Auto Rotate"));
         // Shoot Note
-        driver.R1().or(specialist.R1()).whileTrue(commands.feedNote());
-        driver.PS().onTrue(new InstantCommand(()->s_LL.takeSnapshot())).onFalse(new InstantCommand(()->s_LL.resetSnapshot()));
-        driver.PS().onTrue(commands.climb());
+        driver.rightBumper().or(specialist.rightBumper()).whileTrue(commands.feedNote());
+        //driver.back().onTrue(new InstantCommand(()->s_LL.takeSnapshot())).onFalse(new InstantCommand(()->s_LL.resetSnapshot()));
+        //driver.back().onTrue(commands.climb());
 
-        specialist.square().toggleOnTrue(commands.subwooferMode());
-        specialist.cross().toggleOnTrue(commands.groundIntake(new ManualPivot(specialist::getLeftY, s_Pivot)));
-        specialist.circle().whileTrue(commands.ejectNote());
-        specialist.triangle().whileTrue(new AutoShooter(s_Pivot, s_Shooter, s_LL, s_Swerve, true));
+        specialist.x().toggleOnTrue(commands.subwooferMode());
+        specialist.a().toggleOnTrue(commands.groundIntake(new ManualPivot(specialist::getLeftY, s_Pivot)));
+        specialist.b().whileTrue(commands.ejectNote());
+        specialist.y().whileTrue(new AutoShooter(s_Pivot, s_Shooter, s_LL, s_Swerve, true));
 
         specialist.povRight().toggleOnTrue(commands.ampMode());
         specialist.povDown().whileTrue(commands.reverseAmp());
         specialist.povLeft().toggleOnTrue(s_Shooter.trapShoot());
         specialist.povUp().toggleOnTrue(commands.podiumMode());
 
-        specialist.L1().toggleOnTrue(commands.startShooter());
-        specialist.PS().toggleOnTrue(commands.allianceLineMode());
+        specialist.leftBumper().toggleOnTrue(commands.startShooter());
+        //specialist.back().toggleOnTrue(commands.allianceLineMode());
 
-        driver.touchpad().or(specialist.touchpad()).onTrue(commands.cancelAll());
+        driver.back().or(specialist.back()).onTrue(commands.cancelAll());
     }
 
     /**
