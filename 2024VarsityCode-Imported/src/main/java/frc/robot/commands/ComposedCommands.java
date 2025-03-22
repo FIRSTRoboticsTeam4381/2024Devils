@@ -29,12 +29,12 @@ public class ComposedCommands {
     private Climb climb;
     private Limelight ll;
     private Swerve swerve;
-    private CommandXboxController controller;
+    private CommandPS4Controller controller;
     private State state = State.None;
 
     // TODO change pivot commands over to profiled motion once that's done
 
-    public ComposedCommands(CommandXboxController controller, Intake intake, Index index, Shooter shooter, Pivot pivot, Climb climb, Limelight ll, Swerve swerve){
+    public ComposedCommands(CommandPS4Controller controller, Intake intake, Index index, Shooter shooter, Pivot pivot, Climb climb, Limelight ll, Swerve swerve){
         this.intake = intake;
         this.index = index;
         this.shooter = shooter;

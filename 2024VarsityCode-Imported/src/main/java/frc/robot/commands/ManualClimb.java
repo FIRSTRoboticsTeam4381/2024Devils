@@ -11,11 +11,11 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Climb;
 
 public class ManualClimb extends Command {
-  private CommandXboxController controller;
+  private CommandPS4Controller controller;
   private Climb climb;
 
   /** Creates a new ManualClimb. */
-  public ManualClimb(CommandXboxController specialsController, Climb climb) {
+  public ManualClimb(CommandPS4Controller specialsController, Climb climb) {
     controller = specialsController;
     this.climb = climb;
 

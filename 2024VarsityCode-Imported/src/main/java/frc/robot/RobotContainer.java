@@ -18,14 +18,19 @@ import frc.robot.subsystems.Swerve;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -37,8 +42,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
  */
 public class RobotContainer {
     /* Controllers */
-    private static final CommandXboxController driver = new CommandXboxController(0);
-    private static final CommandXboxController specialist = new CommandXboxController(1);
+    private static final CommandPS4Controller driver = new CommandPS4Controller(0);
+    private static final CommandPS4Controller specialist = new CommandPS4Controller(1);
 
     /* Subsystems */
     public static final Swerve s_Swerve = new Swerve();
@@ -58,7 +63,7 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer(){
-        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver::getLeftY, driver::getLeftX, driver::getRightX, true, driver::leftBumper).withName("Teleop"));
+        s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver::getLeftY, driver::getLeftX, driver::getRightX, true, driver::L1).withName("Teleop"));
         s_Pivot.setDefaultCommand(new ManualPivot(specialist::getLeftY, s_Pivot).withName("Manual Pivot"));
         s_Climb.setDefaultCommand(new ManualClimb(specialist, s_Climb));
 
@@ -81,27 +86,27 @@ public class RobotContainer {
    */
     private void configureButtonBindings(){
         // Button to reset swerve odometry and angle
-        driver.start()
+        driver.options()
             .onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())
             .alongWith(new InstantCommand(() -> s_Swerve.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0))))));
         // Shoot Note
-        driver.rightBumper().or(specialist.rightBumper()).whileTrue(commands.feedNote());
+        driver.R1().or(specialist.R1()).whileTrue(commands.feedNote());
         //driver.back().onTrue(new InstantCommand(()->s_LL.takeSnapshot())).onFalse(new InstantCommand(()->s_LL.resetSnapshot()));
         //driver.back().onTrue(commands.climb());
 
-        specialist.x().toggleOnTrue(commands.subwooferMode());
-        specialist.a().toggleOnTrue(commands.groundIntake(new ManualPivot(specialist::getLeftY, s_Pivot)));
-        specialist.b().whileTrue(commands.ejectNote());
+        specialist.square().toggleOnTrue(commands.subwooferMode());
+        specialist.cross().toggleOnTrue(commands.groundIntake(new ManualPivot(specialist::getLeftY, s_Pivot)));
+        specialist.circle().whileTrue(commands.ejectNote());
 
         specialist.povRight().toggleOnTrue(commands.ampMode());
         specialist.povDown().whileTrue(commands.reverseAmp());
         specialist.povLeft().toggleOnTrue(s_Shooter.trapShoot());
         specialist.povUp().toggleOnTrue(commands.podiumMode());
 
-        specialist.leftBumper().toggleOnTrue(commands.startShooter());
+        specialist.L1().toggleOnTrue(commands.startShooter());
         //specialist.back().toggleOnTrue(commands.allianceLineMode());
 
-        driver.back().or(specialist.back()).onTrue(commands.cancelAll());
+        driver.touchpad().or(specialist.touchpad()).onTrue(commands.cancelAll());
     }
 
     /**
@@ -112,4 +117,19 @@ public class RobotContainer {
     public Command getAutonomousCommand(){
         return m_AutoChooser.getSelected();
     }
+
+      
+  // Static reference to the robot class
+  // Previously we used static subsystems, but this appears to break things in 2025
+  // Use getRobot() to get the robot object
+  private static RobotContainer robotReference;
+
+  /**
+   * Get a reference to the RobotContainer object in use
+   * @return the active RobotContainer object
+   */
+  public static RobotContainer getRobot()
+  {
+    return robotReference;
+  }
 }
